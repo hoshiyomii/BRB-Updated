@@ -1,0 +1,11 @@
+{
+    "name": "hoshiyomi/barangay",
+    "autoload": {
+        "psr-4": {
+            "Hoshiyomi\\Barangay\\": "src/"
+        }
+    },
+    "require": {
+        "phpoffice/phpspreadsheet": "^4.1"
+    }
+}
