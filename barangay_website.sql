@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 19, 2025 at 05:14 AM
+-- Generation Time: Apr 22, 2025 at 04:23 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -66,8 +66,8 @@ CREATE TABLE `announcements` (
 --
 
 INSERT INTO `announcements` (`id`, `title`, `content`, `type`, `max_participants`, `created_at`, `registered_participants`, `image_path`, `genre`) VALUES
-(16, 'Testing Announcement', 'This announcement is used for the user manual.', 'event', 50, '2025-02-12 13:38:24', 1, 'uploads/user man.jpg', ''),
-(17, 'Adding New Announcement', 'Para sa user manual :O', 'event', 50, '2025-02-12 13:46:51', 0, 'uploads/user man.jpg', ''),
+(16, 'Testing Announcement', 'This announcement is used for the user manual.', 'event', 50, '2025-02-12 13:38:24', 2, 'uploads/user man.jpg', ''),
+(17, 'Adding New Announcement', 'Para sa user manual :O', 'event', 50, '2025-02-12 13:46:51', 1, 'uploads/user man.jpg', ''),
 (21, 'Test for Genre 4', 'Testing genre', 'view-only', NULL, '2025-04-02 15:22:46', 0, NULL, 'Healthcare and Safety'),
 (22, 'Test for Genre 5', 'Genre test', 'view-only', NULL, '2025-04-02 15:22:57', 0, NULL, 'Social and Community');
 
@@ -90,7 +90,8 @@ CREATE TABLE `certificate_of_indigency` (
 --
 
 INSERT INTO `certificate_of_indigency` (`id`, `user_id`, `occupancy`, `income`, `created_at`) VALUES
-(1, 2, 'Programmer', 2.00, '2025-04-16 14:00:20');
+(1, 2, 'Programmer', 2.00, '2025-04-16 14:00:20'),
+(2, 6, 'Gajillionare', 99999999.99, '2025-04-22 12:10:51');
 
 -- --------------------------------------------------------
 
@@ -101,7 +102,7 @@ INSERT INTO `certificate_of_indigency` (`id`, `user_id`, `occupancy`, `income`, 
 CREATE TABLE `certificate_of_residency` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `birthdate` date NOT NULL,
+  `resident_since` date NOT NULL DEFAULT '2025-01-01',
   `date` date NOT NULL,
   `id_image` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
@@ -111,8 +112,9 @@ CREATE TABLE `certificate_of_residency` (
 -- Dumping data for table `certificate_of_residency`
 --
 
-INSERT INTO `certificate_of_residency` (`id`, `user_id`, `birthdate`, `date`, `id_image`, `created_at`) VALUES
-(1, 2, '2011-02-02', '2025-04-16', 'uploads/670e1fc607d825c1a783f4308043be28.jpg', '2025-04-16 13:21:19');
+INSERT INTO `certificate_of_residency` (`id`, `user_id`, `resident_since`, `date`, `id_image`, `created_at`) VALUES
+(1, 2, '2025-01-01', '2025-04-16', 'uploads/670e1fc607d825c1a783f4308043be28.jpg', '2025-04-16 13:21:19'),
+(2, 6, '2025-04-11', '2025-04-22', 'uploads/FwwlkrDX0Ag5Mj7.jpg', '2025-04-22 11:30:51');
 
 -- --------------------------------------------------------
 
@@ -126,6 +128,7 @@ CREATE TABLE `clearance_major_construction` (
   `schedule` datetime NOT NULL,
   `contractor` varchar(255) NOT NULL,
   `construction_address` varchar(255) NOT NULL,
+  `infrastructures` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -133,8 +136,9 @@ CREATE TABLE `clearance_major_construction` (
 -- Dumping data for table `clearance_major_construction`
 --
 
-INSERT INTO `clearance_major_construction` (`id`, `user_id`, `schedule`, `contractor`, `construction_address`, `created_at`) VALUES
-(1, 2, '2025-04-04 23:28:00', 'Testing', 'Testing Street', '2025-04-16 15:27:04');
+INSERT INTO `clearance_major_construction` (`id`, `user_id`, `schedule`, `contractor`, `construction_address`, `infrastructures`, `created_at`) VALUES
+(1, 2, '2025-04-04 23:28:00', 'Testing', 'Testing Street', '', '2025-04-16 15:27:04'),
+(2, 6, '2025-05-31 12:08:00', 'The Construction Company', 'Oflsd Street, 0424 lot 32', 'House', '2025-04-22 13:06:03');
 
 -- --------------------------------------------------------
 
@@ -216,7 +220,9 @@ CREATE TABLE `registrations` (
 --
 
 INSERT INTO `registrations` (`id`, `announcement_id`, `user_id`, `name`, `email`, `registered_at`) VALUES
-(6, 16, 5, 'Bryan.laoke', 'bryan.laoke@email.com', '2025-02-12 13:39:51');
+(6, 16, 5, 'Bryan.laoke', 'bryan.laoke@email.com', '2025-02-12 13:39:51'),
+(7, 17, 6, 'BryanLaoke', 'hoshiyomi08@gmail.com', '2025-04-22 13:14:54'),
+(8, 16, 6, 'BryanLaoke', 'hoshiyomi08@gmail.com', '2025-04-22 13:14:58');
 
 -- --------------------------------------------------------
 
@@ -233,6 +239,7 @@ CREATE TABLE `repair_and_construction` (
   `contractor_name` varchar(255) NOT NULL,
   `contractor_contact` varchar(15) NOT NULL,
   `activity_nature` enum('Repairs','Minor Construction','Construction','Demolition') NOT NULL,
+  `construction_address` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -240,10 +247,11 @@ CREATE TABLE `repair_and_construction` (
 -- Dumping data for table `repair_and_construction`
 --
 
-INSERT INTO `repair_and_construction` (`id`, `user_id`, `date_of_request`, `homeowner_name`, `homeowner_contact`, `contractor_name`, `contractor_contact`, `activity_nature`, `created_at`) VALUES
-(1, 2, '2025-04-17', 'Fasdasdiko', '92304934949', 'Testing', '23402304', 'Repairs', '2025-04-15 14:26:23'),
-(2, 2, '2025-04-16', '', 'Testing', 'Awooga', '4124253235532', 'Repairs', '2025-04-16 16:12:56'),
-(3, 2, '2025-04-16', 'Jane Doe', '92304934949', 'Awooga asdads', '412425323553223', 'Minor Construction', '2025-04-16 16:17:29');
+INSERT INTO `repair_and_construction` (`id`, `user_id`, `date_of_request`, `homeowner_name`, `homeowner_contact`, `contractor_name`, `contractor_contact`, `activity_nature`, `construction_address`, `created_at`) VALUES
+(1, 2, '2025-04-17', 'Fasdasdiko', '92304934949', 'Testing', '23402304', 'Repairs', NULL, '2025-04-15 14:26:23'),
+(2, 2, '2025-04-16', '', 'Testing', 'Awooga', '4124253235532', 'Repairs', NULL, '2025-04-16 16:12:56'),
+(3, 2, '2025-04-16', 'Jane Doe', '92304934949', 'Awooga asdads', '412425323553223', 'Minor Construction', NULL, '2025-04-16 16:17:29'),
+(4, 1, '2025-04-19', 'John Doe', '34562523', 'Testing', '03588357344', 'Demolition', 'Testing Street awooga', '2025-04-19 04:00:53');
 
 -- --------------------------------------------------------
 
@@ -275,7 +283,8 @@ INSERT INTO `users` (`id`, `username`, `password`, `first_name`, `last_name`, `g
 (2, 'user2', '$2y$10$Mggs9pMcCTsH.q9tVV44I.Hn8.k5Kgl/LO9os6lBKK.GSe5nBKffO', 'Jane', 'Doe', 'Female', '091234567892', 'user2@gmail.com', '2025-02-05', 'asd', '8', '2025-02-11 11:53:42'),
 (3, 'bryan', '$2y$10$IaCL/9OMrYV1.B8iWFQqlOIrlh5YN0LllFfYmrJFG4CL9UVowPZBO', 'bryan', 'last', 'Male', '09217327039', 'bryan@gmail.com', '2025-02-05', 'asd', '32', '2025-02-11 14:32:25'),
 (4, 'Laoke', '$2y$10$nUYpUdZjpZbC/v602M0R5OG3HEYPoSNWUKeJiRS3KPMl5SkT2qIDK', 'Bryan', 'Laoke', 'Male', '09217327039', 'laoke@email.com', '2025-01-29', '32', '3434', '2025-02-12 11:33:51'),
-(5, 'Bryan.laoke', '$2y$10$VRLPTjmISYVkOet69sBnwONpu9IcQQDepO6mz/yxbNOiomuGwd4Sa', 'Bryan', 'Laoke', 'Male', '09123456789', 'bryan.laoke@email.com', '2004-06-07', 'Piling Santos', '23', '2025-02-12 13:34:34');
+(5, 'Bryan.laoke', '$2y$10$VRLPTjmISYVkOet69sBnwONpu9IcQQDepO6mz/yxbNOiomuGwd4Sa', 'Bryan', 'Laoke', 'Male', '09123456789', 'bryan.laoke@email.com', '2004-06-07', 'Piling Santos', '23', '2025-02-12 13:34:34'),
+(6, 'BryanLaoke', '$2y$10$hjjuTSW3M8DlBPAjxWyO.et0uFpoxAPilIpDLlfLKqlWX7fsrruSS', 'Bryan', 'Laoke', 'Male', '021312351234', 'hoshiyomi08@gmail.com', '2004-06-07', 'Testing Street', '2423', '2025-04-22 11:30:28');
 
 -- --------------------------------------------------------
 
@@ -303,7 +312,8 @@ CREATE TABLE `work_permit_utilities` (
 --
 
 INSERT INTO `work_permit_utilities` (`id`, `user_id`, `date_of_request`, `date_of_work`, `contact_no`, `address`, `service_provider`, `other_service_provider`, `nature_of_work`, `created_at`, `utility_type`, `other_utility_type`) VALUES
-(1, 2, '2025-04-16', '2025-04-10', '123123123', 'asd 8', 'Others', 'Test2', 'Repair/Maintenance', '2025-04-16 10:56:11', 'Others', 'Test');
+(1, 2, '2025-04-16', '2025-04-10', '123123123', 'asd 8', 'Others', 'Test2', 'Repair/Maintenance', '2025-04-16 10:56:11', 'Others', 'Test'),
+(2, 1, '2025-04-19', '2025-05-03', '2509824892480', 'asd wqeqew', 'Globe', NULL, 'Repair/Maintenance', '2025-04-19 06:57:26', 'Internet', NULL);
 
 --
 -- Indexes for dumped tables
@@ -406,19 +416,19 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `certificate_of_indigency`
 --
 ALTER TABLE `certificate_of_indigency`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `certificate_of_residency`
 --
 ALTER TABLE `certificate_of_residency`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `clearance_major_construction`
 --
 ALTER TABLE `clearance_major_construction`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `document_requests`
@@ -436,25 +446,25 @@ ALTER TABLE `new_business_permit`
 -- AUTO_INCREMENT for table `registrations`
 --
 ALTER TABLE `registrations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `repair_and_construction`
 --
 ALTER TABLE `repair_and_construction`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `work_permit_utilities`
 --
 ALTER TABLE `work_permit_utilities`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
