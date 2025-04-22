@@ -373,18 +373,8 @@ $result = $stmt->get_result();
                         <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-3" style="width: 50px; height: 50px;">
                             <i class="fa fa-x-ray text-primary fs-5"></i>
                         </div>
-                        <h4 class="mb-2" style="font-size: 18px;">Business Clearance</h4>
-                        <p class="mb-3" style="font-size: 14px;">Issuing clearances for businesses to operate legally and meet local requirements.</p>
-                        <a class="view-popup" href="view_document.php?type=business_clearance" style="font-size: 16px; padding: 12px 25px; background-color: #007bff; color: white; border-radius: 30px; font-weight: bold; text-decoration: none;">View</a>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="service-item bg-light rounded h-100 p-4">
-                        <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-3" style="width: 50px; height: 50px;">
-                            <i class="fa fa-x-ray text-primary fs-5"></i>
-                        </div>
                         <h4 class="mb-2" style="font-size: 18px;">New Business Permit</h4>
-                        <p class="mb-3" style="font-size: 14px;">Assistance in acquiring new business permits for healthcare-related establishments.</p>
+                        <p class="mb-3" style="font-size: 14px;">Issuing clearances for businesses to operate legally and meet local requirements.</p>
                         <a class="view-popup" href="view_document.php?type=new_business_permit" style="font-size: 16px; padding: 12px 25px; background-color: #007bff; color: white; border-radius: 30px; font-weight: bold; text-decoration: none;">View</a>
                     </div>
                 </div>

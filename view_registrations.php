@@ -10,8 +10,8 @@ include 'db.php';
 // Fetch all events for the dropdown
 $events_result = $conn->query("SELECT id, title FROM announcements WHERE type = 'event'");
 
-// Get selected event ID from the form submission
-$selected_event_id = isset($_POST['event_id']) ? $_POST['event_id'] : '';
+// Get selected event ID from the query parameter
+$selected_event_id = isset($_GET['event_id']) ? $_GET['event_id'] : '';
 
 // Fetch registrations with event titles, filtered by selected event if any
 $sql = "SELECT registrations.*, announcements.title AS event_title 
@@ -36,15 +36,21 @@ if (!$result) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Registrations</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script>
+        function filterRegistrations() {
+            var eventId = document.getElementById('event_id').value;
+            window.location.href = 'view_registrations.php?event_id=' + eventId;
+        }
+    </script>
 </head>
 <body>
     <div class="container">
         <h1 class="mt-5">View Registrations</h1>
 
-        <form method="POST" class="mb-3">
+        <form method="GET" class="mb-3">
             <div class="form-group">
                 <label for="event_id">Filter by Event:</label>
-                <select name="event_id" id="event_id" class="form-control">
+                <select name="event_id" id="event_id" class="form-control" onchange="filterRegistrations()">
                     <option value="">All Events</option>
                     <?php while ($event = $events_result->fetch_assoc()): ?>
                         <option value="<?php echo $event['id']; ?>" <?php if ($event['id'] == $selected_event_id) echo 'selected'; ?>>
@@ -53,7 +59,6 @@ if (!$result) {
                     <?php endwhile; ?>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Filter</button>
         </form>
 
         <form method="POST" action="export_registrations.php" class="mb-3">

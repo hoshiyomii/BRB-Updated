@@ -32,8 +32,108 @@ $user_query = $conn->query("SELECT * FROM users WHERE username = '$username'");
 $user = $user_query->fetch_assoc();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Handle form submission
     $user_id = $user['id'];
+
+    if ($document_type === 'repair_and_construction') {
+        $construction_address = $_POST['construction_address'];
+        $date_of_request = date('Y-m-d'); // Automatically set to the current date
+        $homeowner_name = $user['first_name'] . ' ' . $user['last_name']; // Default to requester's name
+        $homeowner_contact = $_POST['homeowner_contact'];
+        $contractor_name = $_POST['contractor_name'];
+        $contractor_contact = $_POST['contractor_contact'];
+        $activity_nature = $_POST['activity_nature'];
+
+        $stmt = $conn->prepare("INSERT INTO repair_and_construction (user_id, construction_address, date_of_request, homeowner_name, homeowner_contact, contractor_name, contractor_contact, activity_nature) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("isssssss", $user_id, $construction_address, $date_of_request, $homeowner_name, $homeowner_contact, $contractor_name, $contractor_contact, $activity_nature);
+        $stmt->execute();
+        $stmt->close();
+
+        echo "<script>alert('Request submitted successfully!'); window.location.href = 'index.php';</script>";
+        exit();
+    }
+
+    if ($document_type === 'work_permit_utilities') {
+        $date_of_request = date('Y-m-d'); // Automatically set to the current date
+        $date_of_work = $_POST['date_of_work'];
+        $contact_no = $_POST['contact_no'];
+        $address = $_POST['address'];
+        $service_provider = $_POST['service_provider'];
+        $other_service_provider = $service_provider === 'Others' ? $_POST['other_service_provider'] : null;
+        $utility_type = $_POST['utility_type'];
+        $other_utility_type = $utility_type === 'Others' ? $_POST['other_utility_type'] : null;
+        $nature_of_work = $_POST['nature_of_work'];
+
+        $stmt = $conn->prepare("INSERT INTO work_permit_utilities (user_id, date_of_request, date_of_work, contact_no, address, service_provider, other_service_provider, utility_type, other_utility_type, nature_of_work) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("isssssssss", $user_id, $date_of_request, $date_of_work, $contact_no, $address, $service_provider, $other_service_provider, $utility_type, $other_utility_type, $nature_of_work);
+        $stmt->execute();
+        $stmt->close();
+
+        echo "<script>alert('Request submitted successfully!'); window.location.href = 'index.php';</script>";
+        exit();
+    }
+
+    if ($document_type === 'certificate_of_residency') {
+        $resident_since = $_POST['resident_since'];
+        $date = date('Y-m-d'); // Automatically set to the current date
+        $id_image = 'uploads/' . basename($_FILES['id_image']['name']);
+        move_uploaded_file($_FILES['id_image']['tmp_name'], $id_image);
+
+        $stmt = $conn->prepare("INSERT INTO certificate_of_residency (user_id, resident_since, date, id_image) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("isss", $user_id, $resident_since, $date, $id_image);
+        $stmt->execute();
+        $stmt->close();
+
+        echo "<script>alert('Request submitted successfully!'); window.location.href = 'index.php';</script>";
+        exit();
+    }
+
+    if ($document_type === 'certificate_of_indigency') {
+        $occupancy = $_POST['occupancy'];
+        $income = $_POST['income'];
+
+        $stmt = $conn->prepare("INSERT INTO certificate_of_indigency (user_id, occupancy, income) VALUES (?, ?, ?)");
+        $stmt->bind_param("iss", $user_id, $occupancy, $income);
+        $stmt->execute();
+        $stmt->close();
+
+        echo "<script>alert('Request submitted successfully!'); window.location.href = 'index.php';</script>";
+        exit();
+    }
+
+    if ($document_type === 'new_business_permit') {
+        $owner = $user['first_name'] . ' ' . $user['last_name'];
+        $location = $_POST['location'];
+        $business_name = $_POST['business_name'];
+        $nature_of_business = $_POST['nature_of_business'];
+        $business_type = $_POST['business_type'];
+        $co_owner = $business_type === 'Shared' ? $_POST['co_owner'] : null;
+        $date = date('Y-m-d'); // Automatically set to the current date
+    
+        $stmt = $conn->prepare("INSERT INTO new_business_permit (user_id, owner, location, business_name, nature_of_business, business_type, co_owner, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("isssssss", $user_id, $owner, $location, $business_name, $nature_of_business, $business_type, $co_owner, $date);
+        $stmt->execute();
+        $stmt->close();
+    
+        echo "<script>alert('Request submitted successfully!'); window.location.href = 'index.php';</script>";
+        exit();
+    }
+
+    if ($document_type === 'clearance_major_construction') {
+        $schedule = $_POST['schedule'];
+        $contractor = $_POST['contractor'];
+        $construction_address = $_POST['construction_address'];
+        $infrastructures = $_POST['infrastructures'];
+
+        $stmt = $conn->prepare("INSERT INTO clearance_major_construction (user_id, schedule, contractor, construction_address, infrastructures) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("issss", $user_id, $schedule, $contractor, $construction_address, $infrastructures);
+        $stmt->execute();
+        $stmt->close();
+
+        echo "<script>alert('Request submitted successfully!'); window.location.href = 'index.php';</script>";
+        exit();
+    }
+
+    // Handle form submission
     $contractor = isset($_POST['contractor']) ? $_POST['contractor'] : null;
     $schedule = isset($_POST['schedule']) ? $_POST['schedule'] : null;
     $type = isset($_POST['type']) ? $_POST['type'] : null;
@@ -90,23 +190,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="text" class="form-control" id="address" name="address" value="<?php echo htmlspecialchars($user['street'] . ' ' . $user['house_number']); ?>" readonly>
             </div>
 
+
+
             <?php if ($document_type === 'repair_and_construction'): ?>
                 <div class="form-group">
-                    <label for="contractor">Contractor</label>
-                    <input type="text" class="form-control" id="contractor" name="contractor" required>
+                    <label for="construction_address">Construction Address</label>
+                    <input type="text" class="form-control" id="construction_address" name="construction_address" required>
                 </div>
                 <div class="form-group">
-                    <label for="schedule">Schedule</label>
-                    <input type="datetime-local" class="form-control" id="schedule" name="schedule" required>
+                    <label for="date_of_request">Date of Request</label>
+                    <input type="date" class="form-control" id="date_of_request" name="date_of_request" value="<?php echo date('Y-m-d'); ?>" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="type">Type</label>
-                    <select class="form-control" id="type" name="type" required>
-                        <option value="Renovation">Renovation</option>
-                        <option value="Repair">Repair</option>
-                        <option value="Others">Others</option>
+                    <label for="homeowner_name">Name of Homeowner</label>
+                    <input type="text" class="form-control" id="homeowner_name" name="homeowner_name" value="<?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="homeowner_contact">Contact Number of Homeowner</label>
+                    <input type="text" class="form-control" id="homeowner_contact" name="homeowner_contact" required>
+                </div>
+                <div class="form-group">
+                    <label for="contractor_name">Name of Contractor</label>
+                    <input type="text" class="form-control" id="contractor_name" name="contractor_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="contractor_contact">Contact Number of Contractor</label>
+                    <input type="text" class="form-control" id="contractor_contact" name="contractor_contact" required>
+                </div>
+                <div class="form-group">
+                    <label for="activity_nature">Nature of Activity</label>
+                    <select class="form-control" id="activity_nature" name="activity_nature" required>
+                        <option value="Repairs">Repairs</option>
+                        <option value="Minor Construction">Minor Construction</option>
+                        <option value="Construction">Construction</option>
+                        <option value="Demolition">Demolition</option>
                     </select>
                 </div>
+
+
+
             <?php elseif ($document_type === 'work_permit_utilities'): ?>
                 <div class="form-group">
                     <label for="utility_type">Utility Type</label>
@@ -117,51 +239,163 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <option value="Others">Others</option>
                     </select>
                 </div>
+                <div class="form-group" id="other_utility_type_group" style="display: none;">
+                    <label for="other_utility_type">Specify Other Utility Type</label>
+                    <input type="text" class="form-control" id="other_utility_type" name="other_utility_type">
+                </div>
+                <script>
+                    document.getElementById('utility_type').addEventListener('change', function() {
+                        const otherUtilityGroup = document.getElementById('other_utility_type_group');
+                        if (this.value === 'Others') {
+                            otherUtilityGroup.style.display = 'block';
+                        } else {
+                            otherUtilityGroup.style.display = 'none';
+                            document.getElementById('other_utility_type').value = '';
+                        }
+                    });
+                </script>
+
+
+
                 <div class="form-group">
-                    <label for="company">Company</label>
-                    <select class="form-control" id="company" name="company" required>
+                    <label for="date_of_request">Date of Request</label>
+                    <input type="date" class="form-control" id="date_of_request" name="date_of_request" value="<?php echo date('Y-m-d'); ?>" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="date_of_work">Date of Work</label>
+                    <input type="date" class="form-control" id="date_of_work" name="date_of_work" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact_no">Contact No.</label>
+                    <input type="text" class="form-control" id="contact_no" name="contact_no" required>
+                </div>
+                <div class="form-group">
+                    <label for="service_provider">Service Provider</label>
+                    <select class="form-control" id="service_provider" name="service_provider" required>
                         <option value="Meralco">Meralco</option>
-                        <option value="Maynilad">Maynilad</option>
+                        <option value="Globe">Globe</option>
                         <option value="PLDT">PLDT</option>
-                        <option value="Converge">Converge</option>
+                        <option value="Sky Cable">Sky Cable</option>
+                        <option value="CIGNAL">CIGNAL</option>
+                        <option value="Manila Water">Manila Water</option>
+                        <option value="Smart">Smart</option>
+                        <option value="Bayantel">Bayantel</option>
+                        <option value="Destiny">Destiny</option>
                         <option value="Others">Others</option>
                     </select>
                 </div>
+                <div class="form-group" id="other_service_provider_group" style="display: none;">
+                    <label for="other_service_provider">Specify Other Service Provider</label>
+                    <input type="text" class="form-control" id="other_service_provider" name="other_service_provider">
+                </div>
+                <div class="form-group">
+                    <label for="nature_of_work">Nature of Work</label>
+                    <select class="form-control" id="nature_of_work" name="nature_of_work" required>
+                        <option value="New installation">New installation</option>
+                        <option value="Repair/Maintenance">Repair/Maintenance</option>
+                        <option value="Permanent Disconnection">Permanent Disconnection</option>
+                        <option value="Reconnection">Reconnection</option>
+                    </select>
+                </div>
+                <script>
+                    document.getElementById('service_provider').addEventListener('change', function() {
+                        const otherGroup = document.getElementById('other_service_provider_group');
+                        if (this.value === 'Others') {
+                            otherGroup.style.display = 'block';
+                        } else {
+                            otherGroup.style.display = 'none';
+                            document.getElementById('other_service_provider').value = '';
+                        }
+                    });
+                </script>
+
+
+
             <?php elseif ($document_type === 'certificate_of_residency'): ?>
+                <div class="form-group">
+                    <label for="birthdate">Birthdate</label>
+                    <input type="date" class="form-control" id="birthdate" name="birthdate" value="<?php echo htmlspecialchars($user['birthdate']); ?>" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="resident_since">Resident of Blue Ridge B Since</label>
+                    <input type="date" class="form-control" id="resident_since" name="resident_since" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" class="form-control" id="date" name="date" value="<?php echo date('Y-m-d'); ?>" readonly>
+                </div>
                 <div class="form-group">
                     <label for="id_image">Attach ID Image</label>
                     <input type="file" class="form-control" id="id_image" name="id_image" required>
                 </div>
+
+
+
             <?php elseif ($document_type === 'certificate_of_indigency'): ?>
                 <div class="form-group">
                     <label for="occupancy">Occupancy</label>
                     <input type="text" class="form-control" id="occupancy" name="occupancy" required>
                 </div>
                 <div class="form-group">
-                    <label for="monthly_salary">Monthly Salary</label>
-                    <input type="number" class="form-control" id="monthly_salary" name="monthly_salary" required>
+                    <label for="income">Income</label>
+                    <input type="number" class="form-control" id="income" name="income" required>
                 </div>
+
+
+
             <?php elseif ($document_type === 'business_clearance'): ?>
                 <div class="form-group">
                     <label for="clearance_image">Attach Existing Clearance Image</label>
                     <input type="file" class="form-control" id="clearance_image" name="clearance_image" required>
                 </div>
+
+
+
             <?php elseif ($document_type === 'new_business_permit'): ?>
                 <div class="form-group">
-                    <label for="ownership_type">Ownership Type</label>
-                    <select class="form-control" id="ownership_type" name="ownership_type" required>
+                    <label for="owner">Owner</label>
+                    <input type="text" class="form-control" id="owner" name="owner" value="<?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" class="form-control" id="location" name="location" required>
+                </div>
+                <div class="form-group">
+                    <label for="business_name">Name of Business</label>
+                    <input type="text" class="form-control" id="business_name" name="business_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="nature_of_business">Nature of Business</label>
+                    <input type="text" class="form-control" id="nature_of_business" name="nature_of_business" required>
+                </div>
+                <div class="form-group">
+                    <label for="business_type">Business Type</label>
+                    <select class="form-control" id="business_type" name="business_type" required>
                         <option value="Solo">Solo</option>
                         <option value="Shared">Shared</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="business_name">Business Name</label>
-                    <input type="text" class="form-control" id="business_name" name="business_name" required>
+                <div class="form-group" id="co_owner_group" style="display: none;">
+                    <label for="co_owner">Co-owner</label>
+                    <input type="text" class="form-control" id="co_owner" name="co_owner">
                 </div>
                 <div class="form-group">
-                    <label for="business_type">Business Type</label>
-                    <input type="text" class="form-control" id="business_type" name="business_type" required>
+                    <label for="date">Date</label>
+                    <input type="date" class="form-control" id="date" name="date" value="<?php echo date('Y-m-d'); ?>" readonly>
                 </div>
+                <script>
+                    document.getElementById('business_type').addEventListener('change', function() {
+                        const coOwnerGroup = document.getElementById('co_owner_group');
+                        if (this.value === 'Shared') {
+                            coOwnerGroup.style.display = 'block';
+                        } else {
+                            coOwnerGroup.style.display = 'none';
+                            document.getElementById('co_owner').value = '';
+                        }
+                    });
+                </script>
+
+                
             <?php elseif ($document_type === 'clearance_major_construction'): ?>
                 <div class="form-group">
                     <label for="schedule">Schedule</label>
@@ -170,6 +404,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="form-group">
                     <label for="contractor">Contractor</label>
                     <input type="text" class="form-control" id="contractor" name="contractor" required>
+                </div>
+                <div class="form-group">
+                    <label for="construction_address">Construction Address</label>
+                    <input type="text" class="form-control" id="construction_address" name="construction_address" required>
+                </div>
+                <div class="form-group">
+                    <label for="infrastructures">Infrastructures</label>
+                    <input type="text" class="form-control" id="infrastructures" name="infrastructures" required>
                 </div>
             <?php endif; ?>
 
