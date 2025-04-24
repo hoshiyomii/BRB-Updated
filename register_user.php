@@ -162,13 +162,32 @@
                     </select>
                 </div>
                 <div class="col-12">
-                    <input type="text" class="form-control border-0" placeholder="Street" style="height: 55px;" name="street" required>
+                    <label for="street">Street:</label>
+                    <select class="form-control border-0" id="street" name="street" required>
+                        <option value="" disabled selected>Select your street</option>
+                        <option value="Boni Serrano Avenue">Boni Serrano Avenue (formerly Santolan Road)</option>
+                        <option value="Comets Loop">Comets Loop</option>
+                        <option value="Crestline Road">Crestline Road</option>
+                        <option value="Evening Glow Road">Evening Glow Road</option>
+                        <option value="FVR Road">FVR Road</option>
+                        <option value="Highland Drive">Highland Drive</option>
+                        <option value="Hillside Drive">Hillside Drive</option>
+                        <option value="Hillside Loop">Hillside Loop</option>
+                        <option value="Milky Way Drive">Milky Way Drive</option>
+                        <option value="Moonlight Loop">Moonlight Loop</option>
+                        <option value="Promenade Lane">Promenade Lane</option>
+                        <option value="Rajah Matanda Street">Rajah Matanda Street</option>
+                        <option value="Riverside Drive">Riverside Drive</option>
+                        <option value="Starline Drive">Starline Drive</option>
+                        <option value="Twin Peaks Drive">Twin Peaks Drive</option>
+                        <option value="Union Lane">Union Lane</option>
+                    </select>
                 </div>
                 <div class="col-12">
                     <input type="text" class="form-control border-0" placeholder="House Number" style="height: 55px;" id="house_number" name="house_number" required>
                 </div>
-                <p id="errorMsg" style="color: red;"></p>
                 <div class="col-12">
+                    <p id="errorMsg" style="color: red;"> </p>
                     <button class="btn btn-primary w-100 py-3" type="submit">Register</button>
                 </div>
             </div>
@@ -177,6 +196,6 @@
 </div>
     </div>
 
-    <script src="register.js"></script>
+    <script src="register.js?v=1" defer></script>
 </body>
 </html>

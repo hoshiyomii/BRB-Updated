@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $image_path = $announcement['image_path']; // Default to current image
 
     // Handle image upload (if new image is uploaded)
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $upload_dir = "uploads/"; // Define your upload directory
         $image_name = basename($_FILES['image']['name']);
         $target_path = $upload_dir . $image_name;
@@ -30,13 +30,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Move the uploaded image to the specified directory
         if (move_uploaded_file($_FILES['image']['tmp_name'], $target_path)) {
             $image_path = $target_path; // Update the image path
+        } else {
+            echo "Error uploading the file.";
+            exit();
         }
+    } else {
+        // Retain the existing image or set default if none exists
+        $image_path = isset($announcement['image_path']) ? $announcement['image_path'] : 'uploads/default.jpg';
+    }
+
+    if (isset($_POST['active_until']) && !empty($_POST['active_until'])) {
+        $activeUntil = $_POST['active_until'];
+    } else {
+        $activeUntil = null; // No expiration date
     }
 
     // Update the announcement in the database
-    $sql = "UPDATE announcements SET title=?, content=?, type=?, max_participants=?, image_path=? WHERE id=?";
+    $sql = "UPDATE announcements SET title=?, content=?, type=?, max_participants=?, image_path=?, active_until=? WHERE id=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssisi", $title, $content, $type, $max_participants, $image_path, $id);
+    $stmt->bind_param("sssissi", $title, $content, $type, $max_participants, $image_path, $activeUntil, $id);
 
     if ($stmt->execute()) {
         header("Location: admin_dashboard.php");
@@ -79,6 +91,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <div class="form-group">
                 <label for="image">Upload New Image:</label>
                 <input type="file" class="form-control-file" id="image" name="image">
+            </div>
+            <div class="form-group">
+                <label for="active_until">Active Until (Optional):</label>
+                <input type="datetime-local" id="active_until" name="active_until" class="form-control" 
+                       value="<?php echo isset($row['active_until']) ? date('Y-m-d\TH:i', strtotime($row['active_until'])) : ''; ?>">
             </div>
             <button type="submit" class="btn btn-primary">Update Announcement</button>
         </form>

@@ -85,6 +85,9 @@ $result = $conn->query($sql);
                 <a href="service.php" class="nav-item nav-link">Service</a>
                 <a href="contact.php" class="nav-item nav-link active">Contact</a>
                     <?php if (isset($_SESSION["username"])): ?>
+                        <a href="dashboard.php" class="nav-item nav-link">Dashboard</a>
+                    <?php endif; ?>
+                    <?php if (isset($_SESSION["username"])): ?>
                         <!-- <p>Hello, <?php echo htmlspecialchars($_SESSION["username"]); ?>!</p> -->
                         <a href="logout.php" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Log-Out<i class="fa fa-arrow-right ms-3"></i></a>
                     <?php else: ?>

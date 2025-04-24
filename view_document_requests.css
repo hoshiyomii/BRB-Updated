@@ -1,0 +1,67 @@
+
+.container {
+    margin: 10px auto; /* Reduce top and bottom margin */
+    max-width: 85%; /* Increase the width of the container */
+}
+
+/* Table styling */
+.table {
+    font-size: 0.9rem; 
+}
+
+.table thead th {
+    background-color: #343a40; 
+    color: #fff; 
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9; 
+}
+
+
+.table tbody tr {
+    transition: background-color 0.3s ease; 
+}
+
+.table tbody tr[style*="background-color: #d4edda;"] {
+    background-color: #d4edda !important; 
+}
+
+.table tbody tr[style*="background-color: #f8d7da;"] {
+    background-color: #f8d7da !important; 
+}
+
+.table tbody tr[style*="background-color: #fff3cd;"] {
+    background-color: #fff3cd !important; 
+}
+
+/* Button styling */
+.btn-sm {
+    padding: 0.25rem 0.5rem; 
+    font-size: 0.8rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem; 
+}
+
+#document_type {
+    max-width: 300px; 
+    margin-bottom: 1rem; 
+}

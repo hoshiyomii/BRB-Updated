@@ -140,6 +140,11 @@ if (!$announcement) {
                 <!-- Display Created At Timestamp -->
                 <p><strong>Posted on:</strong> <?php echo date("F j, Y, g:i a", strtotime($announcement['created_at'])); ?></p>
 
+                <!-- Display Active Until -->
+                <p><strong>Active Until:</strong> 
+                    <?php echo $announcement['active_until'] ? date("F j, Y, g:i a", strtotime($announcement['active_until'])) : 'No expiration'; ?>
+                </p>
+
                 <?php if ($announcement['type'] === 'event'): ?>
                     <p><strong>Max Participants:</strong> <?php echo $announcement['max_participants']; ?></p>
                     <p><strong>Registered Participants:</strong> <span id="count"><?php echo $announcement['registered_participants']; ?></span></p>

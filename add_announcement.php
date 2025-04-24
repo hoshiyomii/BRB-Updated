@@ -16,21 +16,36 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $image_path = NULL;
 
     // Handle image upload
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-        $upload_dir = "uploads/"; // Define your upload directory
-        $image_name = basename($_FILES['image']['name']);
-        $target_path = $upload_dir . $image_name;
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = 'uploads/';
+        $fileName = basename($_FILES['image']['name']);
+        $targetFilePath = $uploadDir . $fileName;
 
-        // Move the uploaded image to the specified directory
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $target_path)) {
-            $image_path = $target_path; // Update the image path
+        // Move the uploaded file to the target directory
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFilePath)) {
+            $imagePath = $targetFilePath;
+        } else {
+            echo "Error uploading the file.";
+            exit();
         }
+    } else {
+        // Set default image if no file is uploaded
+        $imagePath = 'uploads/default.jpg';
     }
 
-    // SQL query
-    $sql = "INSERT INTO announcements (title, content, type, genre, max_participants, image_path) VALUES (?, ?, ?, ?, ?, ?)";
+    if (isset($_POST['active_until']) && !empty($_POST['active_until'])) {
+        $activeUntil = $_POST['active_until'];
+    } else {
+        $activeUntil = null; // No expiration date
+    }
+
+    $maxParticipants = isset($_POST['max_participants']) ? (int)$_POST['max_participants'] : 0;
+
+    // Insert the announcement into the database
+    $sql = "INSERT INTO announcements (title, content, genre, type, image_path, active_until, is_active, max_participants) 
+            VALUES (?, ?, ?, ?, ?, ?, 1, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssds", $title, $content, $type, $genre, $max_participants, $image_path);
+    $stmt->bind_param("ssssssi", $title, $content, $genre, $type, $imagePath, $activeUntil, $maxParticipants);
 
     if ($stmt->execute()) {
         header("Location: admin_dashboard.php");
@@ -99,6 +114,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <div class="form-group">
                 <label for="image">Upload Image:</label>
                 <input type="file" class="form-control-file" id="image" name="image">
+            </div>
+            <div class="form-group">
+                <label for="active_until">Active Until (Optional):</label>
+                <input type="datetime-local" id="active_until" name="active_until" class="form-control" 
+                       value="<?php echo isset($row['active_until']) ? date('Y-m-d\TH:i', strtotime($row['active_until'])) : ''; ?>">
             </div>
             <button type="submit" class="btn btn-primary">Add Announcement</button>
         </form>

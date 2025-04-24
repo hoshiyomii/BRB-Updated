@@ -38,17 +38,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $construction_address = $_POST['construction_address'];
         $date_of_request = date('Y-m-d'); // Automatically set to the current date
         $homeowner_name = $user['first_name'] . ' ' . $user['last_name']; // Default to requester's name
-        $homeowner_contact = $_POST['homeowner_contact'];
         $contractor_name = $_POST['contractor_name'];
         $contractor_contact = $_POST['contractor_contact'];
         $activity_nature = $_POST['activity_nature'];
 
-        $stmt = $conn->prepare("INSERT INTO repair_and_construction (user_id, construction_address, date_of_request, homeowner_name, homeowner_contact, contractor_name, contractor_contact, activity_nature) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("isssssss", $user_id, $construction_address, $date_of_request, $homeowner_name, $homeowner_contact, $contractor_name, $contractor_contact, $activity_nature);
+        $stmt = $conn->prepare("INSERT INTO repair_and_construction (user_id, construction_address, date_of_request, homeowner_name, contractor_name, contractor_contact, activity_nature) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("issssss", $user_id, $construction_address, $date_of_request, $homeowner_name, $contractor_name, $contractor_contact, $activity_nature);
         $stmt->execute();
-        $stmt->close();
 
-        echo "<script>alert('Request submitted successfully!'); window.location.href = 'index.php';</script>";
+        // Generate the control number before closing the statement
+        $control_number = "RC-" . str_pad($stmt->insert_id, 3, "0", STR_PAD_LEFT);
+
+        $stmt->close(); // Close the statement after accessing insert_id
+
+        // Return a JSON response
+        echo json_encode(['success' => true, 'control_number' => $control_number]);
         exit();
     }
 
@@ -66,9 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare("INSERT INTO work_permit_utilities (user_id, date_of_request, date_of_work, contact_no, address, service_provider, other_service_provider, utility_type, other_utility_type, nature_of_work) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("isssssssss", $user_id, $date_of_request, $date_of_work, $contact_no, $address, $service_provider, $other_service_provider, $utility_type, $other_utility_type, $nature_of_work);
         $stmt->execute();
+
+        $control_number = "WPU-" . str_pad($stmt->insert_id, 3, "0", STR_PAD_LEFT);
         $stmt->close();
 
-        echo "<script>alert('Request submitted successfully!'); window.location.href = 'index.php';</script>";
+        echo json_encode(['success' => true, 'control_number' => $control_number]);
         exit();
     }
 
@@ -81,9 +87,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare("INSERT INTO certificate_of_residency (user_id, resident_since, date, id_image) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("isss", $user_id, $resident_since, $date, $id_image);
         $stmt->execute();
+
+        $control_number = "CR-" . str_pad($stmt->insert_id, 3, "0", STR_PAD_LEFT);
         $stmt->close();
 
-        echo "<script>alert('Request submitted successfully!'); window.location.href = 'index.php';</script>";
+        echo json_encode(['success' => true, 'control_number' => $control_number]);
         exit();
     }
 
@@ -94,9 +102,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare("INSERT INTO certificate_of_indigency (user_id, occupancy, income) VALUES (?, ?, ?)");
         $stmt->bind_param("iss", $user_id, $occupancy, $income);
         $stmt->execute();
+
+        $control_number = "CI-" . str_pad($stmt->insert_id, 3, "0", STR_PAD_LEFT);
         $stmt->close();
 
-        echo "<script>alert('Request submitted successfully!'); window.location.href = 'index.php';</script>";
+        echo json_encode(['success' => true, 'control_number' => $control_number]);
         exit();
     }
 
@@ -112,9 +122,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare("INSERT INTO new_business_permit (user_id, owner, location, business_name, nature_of_business, business_type, co_owner, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("isssssss", $user_id, $owner, $location, $business_name, $nature_of_business, $business_type, $co_owner, $date);
         $stmt->execute();
+        $control_number = "NBP-" . str_pad($stmt->insert_id, 3, "0", STR_PAD_LEFT);
         $stmt->close();
-    
-        echo "<script>alert('Request submitted successfully!'); window.location.href = 'index.php';</script>";
+
+        echo json_encode(['success' => true, 'control_number' => $control_number]);
         exit();
     }
 
@@ -127,9 +138,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare("INSERT INTO clearance_major_construction (user_id, schedule, contractor, construction_address, infrastructures) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("issss", $user_id, $schedule, $contractor, $construction_address, $infrastructures);
         $stmt->execute();
+        $control_number = "CMC-" . str_pad($stmt->insert_id, 3, "0", STR_PAD_LEFT);
         $stmt->close();
 
-        echo "<script>alert('Request submitted successfully!'); window.location.href = 'index.php';</script>";
+        echo json_encode(['success' => true, 'control_number' => $control_number]);
         exit();
     }
 
@@ -204,10 +216,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="form-group">
                     <label for="homeowner_name">Name of Homeowner</label>
                     <input type="text" class="form-control" id="homeowner_name" name="homeowner_name" value="<?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="homeowner_contact">Contact Number of Homeowner</label>
-                    <input type="text" class="form-control" id="homeowner_contact" name="homeowner_contact" required>
                 </div>
                 <div class="form-group">
                     <label for="contractor_name">Name of Contractor</label>
@@ -383,6 +391,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="date">Date</label>
                     <input type="date" class="form-control" id="date" name="date" value="<?php echo date('Y-m-d'); ?>" readonly>
                 </div>
+
                 <script>
                     document.getElementById('business_type').addEventListener('change', function() {
                         const coOwnerGroup = document.getElementById('co_owner_group');
@@ -419,5 +428,102 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
         <a href="index.php" class="btn btn-secondary mt-3">Back</a>
     </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Your Request</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Please review the details of your request below:</p>
+                    <ul id="requestDetails" class="list-unstyled">
+                        <!-- Details will be dynamically populated here -->
+                    </ul>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="confirmCheckbox">
+                        <label class="form-check-label" for="confirmCheckbox">
+                            I understand and wish to proceed. I acknowledge that this request cannot be undone and my personal information will be recorded permanently.
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmSubmitBtn" disabled>Submit Request</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Request Submitted Successfully</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Your request has been successfully received. Please wait for a response from a barangay official or employee.</p>
+                    <p><strong>Control Number:</strong> <span id="controlNumber"></span></p>
+                    <a href="dashboard.php" class="btn btn-primary">Go to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form');
+        const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        const confirmCheckbox = document.getElementById('confirmCheckbox');
+        const confirmSubmitBtn = document.getElementById('confirmSubmitBtn');
+        const requestDetails = document.getElementById('requestDetails');
+        const controlNumber = document.getElementById('controlNumber');
+
+        confirmCheckbox.addEventListener('change', function () {
+            confirmSubmitBtn.disabled = !this.checked;
+        });
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            requestDetails.innerHTML = `
+                <li><strong>Name:</strong> ${document.getElementById('name').value}</li>
+                <li><strong>Email:</strong> ${document.getElementById('email').value}</li>
+                <li><strong>Address:</strong> ${document.getElementById('address').value}</li>
+                <li><strong>Document Type:</strong> <?php echo htmlspecialchars($document_title); ?></li>
+            `;
+
+            confirmationModal.show();
+        });
+
+        confirmSubmitBtn.addEventListener('click', function () {
+            confirmationModal.hide();
+
+            const formData = new FormData(form);
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    controlNumber.textContent = data.control_number;
+                    successModal.show();
+                } else {
+                    alert('An error occurred while submitting your request. Please try again.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

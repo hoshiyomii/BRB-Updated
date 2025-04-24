@@ -84,6 +84,10 @@ $result = $conn->query($sql);
                 <a href="about.php" class="nav-item nav-link">About</a>
                 <a href="service.php" class="nav-item nav-link active">Service</a>
                 <a href="contact.php" class="nav-item nav-link">Contact</a>
+                
+                    <?php if (isset($_SESSION["username"])): ?>
+                        <a href="dashboard.php" class="nav-item nav-link">Dashboard</a>
+                    <?php endif; ?>
                     <?php if (isset($_SESSION["username"])): ?>
                         <!-- <p>Hello, <?php echo htmlspecialchars($_SESSION["username"]); ?>!</p> -->
                         <a href="logout.php" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Log-Out<i class="fa fa-arrow-right ms-3"></i></a>
@@ -166,16 +170,6 @@ $result = $conn->query($sql);
                         <h4 class="mb-2" style="font-size: 18px;">Certificate of Indigency</h4>
                         <p class="mb-3" style="font-size: 14px;">Providing certificates for individuals who are unable to afford basic necessities.</p>
                         <a class="view-popup" href="view_document.php?type=certificate_of_indigency" style="font-size: 16px; padding: 12px 25px; background-color: #007bff; color: white; border-radius: 30px; font-weight: bold; text-decoration: none;">View</a>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="service-item bg-light rounded h-100 p-4">
-                        <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-3" style="width: 50px; height: 50px;">
-                            <i class="fa fa-x-ray text-primary fs-5"></i>
-                        </div>
-                        <h4 class="mb-2" style="font-size: 18px;">Business Clearance</h4>
-                        <p class="mb-3" style="font-size: 14px;">Issuing clearances for businesses to operate legally and meet local requirements.</p>
-                        <a class="view-popup" href="view_document.php?type=business_clearance" style="font-size: 16px; padding: 12px 25px; background-color: #007bff; color: white; border-radius: 30px; font-weight: bold; text-decoration: none;">View</a>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6">

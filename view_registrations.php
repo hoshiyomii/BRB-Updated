@@ -14,9 +14,13 @@ $events_result = $conn->query("SELECT id, title FROM announcements WHERE type = 
 $selected_event_id = isset($_GET['event_id']) ? $_GET['event_id'] : '';
 
 // Fetch registrations with event titles, filtered by selected event if any
-$sql = "SELECT registrations.*, announcements.title AS event_title 
+$sql = "SELECT CONCAT(users.first_name, ' ', users.last_name) AS name, 
+               users.email, 
+               announcements.title AS event_title, 
+               registrations.registered_at 
         FROM registrations 
-        JOIN announcements ON registrations.announcement_id = announcements.id";
+        JOIN announcements ON registrations.announcement_id = announcements.id
+        JOIN users ON registrations.user_id = users.id";
 if ($selected_event_id) {
     $sql .= " WHERE announcements.id = " . $conn->real_escape_string($selected_event_id);
 }
@@ -69,7 +73,6 @@ if (!$result) {
         <table class="table table-bordered table-striped mt-3">
             <thead class="thead-dark">
                 <tr>
-                    <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Event</th>
@@ -79,7 +82,6 @@ if (!$result) {
             <tbody>
                 <?php while ($row = $result->fetch_assoc()): ?>
                     <tr>
-                        <td><?php echo $row['id']; ?></td>
                         <td><?php echo htmlspecialchars($row['name']); ?></td>
                         <td><?php echo htmlspecialchars($row['email']); ?></td>
                         <td><?php echo htmlspecialchars($row['event_title']); ?></td>

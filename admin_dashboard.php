@@ -60,7 +60,17 @@ if (!$result) {
                             <p class="card-text"><strong>Registered Participants:</strong> <?php echo $row['registered_participants']; ?></p>
                         <?php endif; ?>
 
+                        <p class="card-text"><strong>Active Until:</strong> 
+                            <?php echo $row['active_until'] ? date("F j, Y, g:i a", strtotime($row['active_until'])) : 'No expiration'; ?>
+                        </p>
+
+                        <!-- Display Status -->
+                        <p class="card-text"><strong>Status:</strong> 
+                            <?php echo $row['is_active'] ? '<span class="text-success">Visible to Public</span>' : '<span class="text-danger">Archived</span>'; ?>
+                        </p>
+
                         <button class="btn btn-secondary" onclick="location.href='edit_announcement.php?id=<?php echo $row['id']; ?>'">Edit</button>
+                        <button class="btn btn-info" onclick="showFullImage('<?php echo htmlspecialchars($row['image_path'] ?? 'uploads/default.jpg'); ?>')">Show Full Image</button>
                         <button class="btn btn-danger" onclick="deleteAnnouncement(<?php echo $row['id']; ?>)">Delete</button>
                     </div>
                 </div>
@@ -72,5 +82,11 @@ if (!$result) {
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="admin.js"></script>
+    <script>
+    function showFullImage(imagePath) {
+        // Open the full-size image in a new tab
+        window.open(imagePath, '_blank');
+    }
+    </script>
 </body>
 </html>

@@ -1,29 +1,40 @@
 document.addEventListener("DOMContentLoaded", function () {
     const registerForm = document.getElementById("registerForm");
+    let errorMessage = document.getElementById("errorMsg");
+
+    // Retry mechanism to ensure the element is found
+    if (!errorMessage) {
+        console.error("Error message element not found on initial load. Retrying...");
+        setTimeout(() => {
+            errorMessage = document.getElementById("errorMsg");
+            console.log("Retrying to find errorMsg:", errorMessage);
+        }, 100); // Retry after 100ms
+    }
+
+    if (!registerForm) {
+        console.error("Register form not found!");
+        return;
+    }
 
     registerForm.addEventListener("submit", function (event) {
         const phoneNumber = document.getElementById("phone_number");
-        const houseNumber = document.getElementById("house_number");
-        const errorMessage = document.getElementById("errorMessage");
-
-        // Regular expression to allow only numbers
         const numericPattern = /^[0-9]+$/;
 
         // Validate Phone Number
         if (!numericPattern.test(phoneNumber.value)) {
             event.preventDefault(); // Prevent form submission
-            errorMessage.textContent = "Phone Number must contain only numbers.";
+            if (errorMessage) {
+                errorMessage.textContent = "Phone Number must contain only numbers.";
+            } else {
+                console.error("Error message element is still null!");
+            }
             return;
         }
 
-        // Validate House Number
-        if (!numericPattern.test(houseNumber.value)) {
-            event.preventDefault(); // Prevent form submission
-            errorMessage.textContent = "House Number must contain only numbers.";
-            return;
+        // Clear error message if valid
+        if (errorMessage) {
+            errorMessage.textContent = "";
         }
-
-        errorMessage.textContent = ""; // Clear error message if valid
     });
 });
 

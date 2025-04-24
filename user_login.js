@@ -1,15 +1,37 @@
 document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById("loginForm");
+    let errorLogin = document.getElementById("errorMsg"); // Updated to match the ID in user_login.php
+
+    // Retry mechanism to ensure the element is found
+    if (!errorLogin) {
+        console.error("Error message element not found on initial load. Retrying...");
+        setTimeout(() => {
+            errorLogin = document.getElementById("errorMsg");
+            if (!errorLogin) {
+                console.error("Error message element still not found after retry.");
+            } else {
+                console.log("Retrying to find errorMsg:", errorLogin);
+            }
+        }, 500); // Retry after 500ms
+    }
+
+    if (!loginForm) {
+        console.error("Login form not found!");
+        return;
+    }
 
     loginForm.addEventListener("submit", function (event) {
         event.preventDefault(); // Prevent default form submission
 
         const username = document.getElementById("username").value.trim();
         const password = document.getElementById("password").value.trim();
-        const errorLogin = document.getElementById("errorLogin");
 
         if (!username || !password) {
-            errorLogin.textContent = "Username and password are required.";
+            if (errorLogin) {
+                errorLogin.textContent = "Username and password are required.";
+            } else {
+                console.error("Error message element is still null!");
+            }
             return;
         }
 
@@ -26,7 +48,11 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.trim() === "success") {
                 window.location.href = "index.php"; // Redirect to homepage after login
             } else {
-                errorLogin.textContent = "Invalid credentials.";
+                if (errorLogin) {
+                    errorLogin.textContent = "Invalid credentials.";
+                } else {
+                    console.error("Error message element is still null!");
+                }
             }
         })
         .catch(error => {

@@ -2,18 +2,20 @@
 session_start();
 include 'db.php';
 
+// Archive announcements where the current date exceeds active_until
+$updateQuery = "UPDATE announcements 
+                SET is_active = 0 
+                WHERE is_active = 1 AND active_until IS NOT NULL AND active_until < NOW()";
+$conn->query($updateQuery);
+
 // Fetch announcements with image, genre, and created_at support
 $genreFilter = isset($_GET['genre']) ? $_GET['genre'] : '';
-$sql = "SELECT id, title, content, genre, image_path, created_at FROM announcements";
-if (!empty($genreFilter)) {
-    $sql .= " WHERE genre = ?";
-}
-$sql .= " ORDER BY created_at DESC";
+$sql = "SELECT id, title, content, genre, image_path, created_at, active_until 
+        FROM announcements 
+        WHERE is_active = 1 
+        ORDER BY created_at DESC";
 
 $stmt = $conn->prepare($sql);
-if (!empty($genreFilter)) {
-    $stmt->bind_param("s", $genreFilter);
-}
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
@@ -183,14 +185,18 @@ $result = $stmt->get_result();
                 <a href="about.php" class="nav-item nav-link">About</a>
                 <a href="service.php" class="nav-item nav-link">Service</a>
                 <a href="contact.php" class="nav-item nav-link">Contact</a>
-                    <?php if (isset($_SESSION["username"])): ?>
-                        <!-- <p>Hello, <?php echo htmlspecialchars($_SESSION["username"]); ?>!</p> -->
-                        <a href="logout.php" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Log-Out<i class="fa fa-arrow-right ms-3"></i></a>
-                    <?php else: ?>
-                        <a href="user_login.php" class="nav-item nav-link">Login</a>
-                        <!-- <a href="register_user.php"><button>Register</button></a> -->
-                        <a href="register_user.php" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Register<i class="fa fa-arrow-right ms-3"></i></a>
-                    <?php endif; ?>
+                
+                <?php if (isset($_SESSION["username"])): ?>
+                    <a href="dashboard.php" class="nav-item nav-link">Dashboard</a>
+                <?php endif; ?>
+                <?php if (isset($_SESSION["username"])): ?>
+                    <!-- <p>Hello, <?php echo htmlspecialchars($_SESSION["username"]); ?>!</p> -->
+                    <a href="logout.php" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Log-Out<i class="fa fa-arrow-right ms-3"></i></a>
+                <?php else: ?>
+                    <a href="user_login.php" class="nav-item nav-link">Login</a>
+                    <!-- <a href="register_user.php"><button>Register</button></a> -->
+                    <a href="register_user.php" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Register<i class="fa fa-arrow-right ms-3"></i></a>
+                <?php endif; ?>
                 
                 <!-- <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Log In</a>
