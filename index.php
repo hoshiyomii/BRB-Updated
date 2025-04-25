@@ -12,10 +12,23 @@ $conn->query($updateQuery);
 $genreFilter = isset($_GET['genre']) ? $_GET['genre'] : '';
 $sql = "SELECT id, title, content, genre, image_path, created_at, active_until 
         FROM announcements 
-        WHERE is_active = 1 
-        ORDER BY created_at DESC";
+        WHERE is_active = 1";
+
+// Add a condition for genre filtering if a genre is selected
+if (!empty($genreFilter)) {
+    $sql .= " AND genre = ?";
+}
+
+// Append the ORDER BY clause
+$sql .= " ORDER BY created_at DESC";
 
 $stmt = $conn->prepare($sql);
+
+// Bind the genre parameter if a filter is applied
+if (!empty($genreFilter)) {
+    $stmt->bind_param("s", $genreFilter);
+}
+
 $stmt->execute();
 $result = $stmt->get_result();
 ?>

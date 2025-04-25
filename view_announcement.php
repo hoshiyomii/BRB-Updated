@@ -150,11 +150,39 @@ if (!$announcement) {
                     <p><strong>Registered Participants:</strong> <span id="count"><?php echo $announcement['registered_participants']; ?></span></p>
                     
                     <?php if ($announcement['registered_participants'] < $announcement['max_participants']): ?>
-                        <button id="preRegisterBtn" class="btn btn-primary" data-id="<?php echo $announcement['id']; ?>">Pre-Register</button>
-                    <?php else: ?>
-                        <p><strong>Registration Full</strong></p>
-                    <?php endif; ?>
+    <button id="preRegisterBtn" 
+            class="btn btn-primary" 
+            data-id="<?php echo $announcement['id']; ?>" 
+            data-name="<?php echo htmlspecialchars($announcement['title']); ?>" 
+            data-active-until="<?php echo htmlspecialchars($announcement['active_until']); ?>">
+        Pre-Register
+    </button>
+<?php else: ?>
+    <p><strong>Registration Full</strong></p>
+<?php endif; ?>
                 <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="preRegisterModal" tabindex="-1" aria-labelledby="preRegisterModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="preRegisterModalLabel">Confirm Pre-registration</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to continue with this pre-registration?</p>
+                    <p><strong>Event Name:</strong> <span id="eventName"></span></p>
+                    <p><strong>Active Until:</strong> <span id="eventActiveUntil"></span></p>
+                    <p id="preRegisterMessage" class="mt-3"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmPreRegisterBtn">Confirm</button>
+                </div>
             </div>
         </div>
     </div>
