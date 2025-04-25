@@ -15,10 +15,10 @@ if ($type === 'repair_and_construction') {
                 rc.id, 
                 u.last_name, 
                 u.first_name, 
-                rc.homeowner_contact, 
                 rc.contractor_name,
                 rc.construction_address, 
-                rc.contractor_contact, 
+                rc.contractor_contact,
+                u.phone_number, 
                 rc.activity_nature, 
                 rc.created_at 
             FROM repair_and_construction rc
@@ -33,7 +33,7 @@ if ($type === 'repair_and_construction') {
         // Replace placeholders with actual data
         $template->setValue('last_name', $row['last_name']);
         $template->setValue('first_name', $row['first_name']);
-        $template->setValue('homeowner_contact', $row['homeowner_contact']);
+        $template->setValue('phone_number', $row['phone_number']);
         $template->setValue('contractor_name', $row['contractor_name']);
         $template->setValue('contractor_contact', $row['contractor_contact']);
         $template->setValue('construction_address', htmlspecialchars($row['construction_address'], ENT_QUOTES, 'UTF-8')); 

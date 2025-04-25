@@ -184,6 +184,114 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($document_title); ?> Request Form</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            background-color: #f4f6f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        
+
+        .login-container {
+    background-color: white;
+    border-radius: 4px; /* Reduced border-radius for smaller border edges */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced box-shadow for a smaller border effect */
+    width: 100%;
+    max-width: 500px; /* You can adjust the width as needed */
+    padding: 10px; /* Reduced padding to make the container smaller */
+
+    
+
+        }
+        
+        label {
+    font-weight: bold;
+    font-size: 15px;
+    color: #333; /* Darker color for better visibility */
+}
+     
+
+
+        .form-group {
+            margin-bottom: 10px; /* Reduced margin for more compactness */
+        }
+
+        .form-control {
+            height: 40px;
+            font-size: 14px;
+            padding: 10px;
+        }
+
+        .form-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #1877f2;
+            border-color: #1877f2;
+            border-radius: 5px;
+        }
+
+        .btn-primary:hover {
+            background-color: #1565c0;
+            border-color: #1565c0;
+        }
+
+        .link-back {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .link-back a {
+            text-decoration: none;
+            color: #1877f2;
+            font-size: 14px;
+        }
+
+        .link-back a:hover {
+            text-decoration: underline;
+        }
+
+        /* Styling for the horizontal fields */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            min-width: 220px; /* Ensures the input fields stay on the same row in larger screens */
+        }
+
+        .form-row .form-group:last-child {
+            margin-right: 0;
+        }
+
+        /* For smaller screens */
+        @media (max-width: 768px) {
+            .login-container {
+                width: 90%;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
