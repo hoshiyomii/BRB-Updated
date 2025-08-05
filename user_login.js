@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 window.location.href = "index.php"; // Redirect to homepage after login
             } else {
                 if (errorLogin) {
-                    errorLogin.textContent = "Invalid credentials.";
+                    errorLogin.textContent = data.trim(); // Show the actual error from PHP
                 } else {
                     console.error("Error message element is still null!");
                 }

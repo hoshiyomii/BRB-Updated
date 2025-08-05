@@ -1,0 +1,20 @@
+/* Style for "Admin" gradient text */
+.navbar-brand h1 span:last-child {
+    background: linear-gradient(90deg, #f5d76e, #f7c46a); /* Light gold gradient */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Adjust logout button to match index_header.php */
+.navbar .btn-primary {
+    background-color: #007bff; /* Match the primary color */
+    border-color: #007bff;
+    padding: 0.5rem 1.5rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.navbar .btn-primary:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+    border-color: #0056b3;
+}

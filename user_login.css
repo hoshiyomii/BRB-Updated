@@ -1,0 +1,60 @@
+/* Use the same hero-landing background as index.php */
+.hero-landing {
+    background: url('img/about-2.png') center center/cover no-repeat;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+.hero-landing::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(29, 29, 29, 0.7), #1f458bb3); /* blue tint */
+    z-index: 1;
+    pointer-events: none;
+}
+.hero-landing > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* Blurred background image */
+.login-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: url('img/about-2.png') center center/cover no-repeat;
+    filter: blur(8px) brightness(0.7);
+    pointer-events: none;
+}
+
+/* Centered login card */
+.login-center-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+}
+
+.login-card {
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow: 0 6px 32px rgba(10,30,60,0.10);
+    border: 2px solid #356afd; /* Blue border for pop */
+    padding: 2.5rem 2rem;
+    max-width: 520px;
+    width: 100%;
+    margin: 2.5rem auto;
+}
+
+.input-dark {
+    background: #e9ecef !important;
+    color: #222 !important;
+    border: 1px solid #bfc4ca !important;
+}
+.input-dark::placeholder {
+    color: #666 !important;
+    opacity: 1;
+}

@@ -1,0 +1,144 @@
+/* General Styles */
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+.container-fluid.hero-landing {
+    position: relative;
+    min-height: 100vh;
+    background-color: #ffffff;
+    padding: 20px;
+}
+
+/* Navbar Styling */
+.navbar {
+    background: linear-gradient(90deg, #0a1e3c, #1f458b, #0a1e3c);
+    background-size: 200% 200%;
+    animation: navbar-gradient-move 6s ease-in-out infinite;
+    color: #fff;
+    padding: 10px 20px;
+    border-bottom: 4px solid #1f458b;
+    box-shadow: 0 2px 8px rgba(10, 30, 60, 0.04);
+}
+
+.navbar a {
+    color: #ffffff;
+    text-decoration: none;
+    margin-right: 15px;
+}
+
+.navbar a:hover {
+    color: #ffc107;
+}
+
+.navbar-brand h1 span:last-child {
+    background: linear-gradient(90deg, #f5d76e, #d49830, #ffdc6b);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-shift 6s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Guidelines Box */
+.guidelines-box {
+    background: #ffffff;
+    border-radius: 1.5rem;
+    border: 2px solid #122e7c;
+    box-shadow: 0 6px 32px rgba(10, 30, 60, 0.10);
+    padding: 2.5rem 2rem;
+    margin: 2.5rem auto;
+    max-width: 420px;
+    width: 100%;
+    color: #122e7c;
+}
+
+.guidelines-box h3 {
+    color: #122e7c;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Remove bullets from the guideline list */
+.guideline-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.guideline-list li {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #122e7c;
+    display: flex;
+    align-items: center;
+}
+
+.guideline-list i {
+    color: #122e7c;
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+/* Form Styling */
+.register-card {
+    background: #ffffff;
+    border-radius: 1.5rem;
+    box-shadow: 0 6px 32px rgba(10, 30, 60, 0.10);
+    border: 2px solid #122e7c;
+    padding: 2.5rem 2rem;
+    max-width: 520px;
+    width: 100%;
+    margin: 2.5rem auto;
+}
+
+.register-card h2 {
+    color: #122e7c;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.input-dark {
+    background: #e9ecef !important;
+    color: #222 !important;
+    border: 1px solid #bfc4ca !important;
+    border-radius: 0.5rem;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.input-dark::placeholder {
+    color: #666 !important;
+    opacity: 1;
+}
+
+.input-dark:focus {
+    border-color: #122e7c !important;
+    box-shadow: 0 0 5px rgba(18, 46, 124, 0.5);
+    outline: none;
+}
+
+.btn-primary {
+    background-color: #122e7c;
+    border-color: #122e7c;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.btn-primary:hover {
+    background-color: #0a1e3c;
+    border-color: #0a1e3c;
+}

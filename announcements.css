@@ -1,0 +1,94 @@
+/* Modal Header */
+.modal-header {
+    background-color: #1f458b; /* Match the theme color */
+    color: white;
+}
+
+/* Modal Body Layout */
+.modal-body {
+    display: flex;
+    gap: 20px;
+}
+
+.modal-image-container img {
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+/* Modal Details */
+.modal-details {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+
+.modal-title {
+    font-size: 24px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.modal-details p {
+    margin-bottom: 10px;
+}
+
+/* Genre Badge */
+.genre-badge {
+    background-color: #1f458b; /* Match the modal genre badge */
+    color: white;
+    font-size: 14px;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+/* Feedback Alerts */
+.alert {
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+/* Pre-Register Button */
+#preRegisterBtn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#preRegisterBtn:hover {
+    background-color: #0056b3;
+}
+
+/* Pagination */
+.pagination .page-item.active .page-link {
+    background-color: #1f458b;
+    border-color: #1f458b;
+    color: white;
+}
+
+.pagination .page-link {
+    color: #1f458b;
+}
+
+.pagination .page-link:hover {
+    background-color: #1f458b;
+    color: white;
+}
+
+/* Clickable Announcement Cards */
+.announcement-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.announcement-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border-color: #1f458b; /* Match the theme color */
+}

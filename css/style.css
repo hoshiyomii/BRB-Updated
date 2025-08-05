@@ -542,3 +542,7 @@
 .footer .copyright a:hover {
     color: var(--primary);
 }
+
+.custom-footer-bg {
+    background-color: #09223b !important; /* Replace with your desired color */
+}

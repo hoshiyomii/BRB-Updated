@@ -1,0 +1,43 @@
+/* Hero Landing Section */
+.hero-landing {
+    position: relative;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, rgba(133, 166, 255, 0.568), rgba(53, 106, 253, 0.247)), url('img/about-2.png');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Form Box Styling */
+.register-card {
+    background-color: #ffffff;
+    border-radius: 1.5rem;
+    box-shadow: 0 6px 32px rgba(10, 30, 60, 0.1);
+    padding: 2.5rem 2rem;
+}
+
+/* Guidelines Box Styling */
+.guidelines-box {
+    background-color: #f9f9f9;
+    border-radius: 1.5rem;
+    box-shadow: 0 6px 32px rgba(10, 30, 60, 0.1);
+    padding: 2.5rem 2rem;
+}
+
+/* Guideline List */
+.guideline-list {
+    padding: 0;
+    list-style: none;
+}
+
+.guideline-list li {
+    margin-bottom: 10px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.guideline-list li i {
+    font-size: 1.5rem;
+    color: #356afd;
+    margin-right: 10px;
+}

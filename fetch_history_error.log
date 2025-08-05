@@ -1,0 +1,20 @@
+[29-May-2025 16:39:24 Europe/Berlin] PHP Warning:  Undefined variable $conn in D:\XAMPP\htdocs\Barangay\fetch_history.php on line 28
+[29-May-2025 16:39:24 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in D:\XAMPP\htdocs\Barangay\fetch_history.php:28
+Stack trace:
+#0 {main}
+  thrown in D:\XAMPP\htdocs\Barangay\fetch_history.php on line 28
+[29-May-2025 16:47:11 Europe/Berlin] PHP Warning:  Undefined variable $conn in D:\XAMPP\htdocs\Barangay\fetch_history.php on line 28
+[29-May-2025 16:47:11 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in D:\XAMPP\htdocs\Barangay\fetch_history.php:28
+Stack trace:
+#0 {main}
+  thrown in D:\XAMPP\htdocs\Barangay\fetch_history.php on line 28
+[29-May-2025 16:49:48 Europe/Berlin] PHP Warning:  Undefined variable $conn in D:\XAMPP\htdocs\Barangay\fetch_history.php on line 28
+[29-May-2025 16:49:48 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in D:\XAMPP\htdocs\Barangay\fetch_history.php:28
+Stack trace:
+#0 {main}
+  thrown in D:\XAMPP\htdocs\Barangay\fetch_history.php on line 28
+[29-May-2025 17:18:10 Europe/Berlin] PHP Warning:  Undefined variable $conn in D:\XAMPP\htdocs\Barangay\fetch_history.php on line 28
+[29-May-2025 17:18:10 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in D:\XAMPP\htdocs\Barangay\fetch_history.php:28
+Stack trace:
+#0 {main}
+  thrown in D:\XAMPP\htdocs\Barangay\fetch_history.php on line 28
