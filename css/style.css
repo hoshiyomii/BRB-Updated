@@ -91,7 +91,7 @@
 .navbar .navbar-nav .nav-link {
     margin-right: 30px;
     padding: 25px 0;
-    color: #FFFFFF;
+    color: var(--dark);
     font-size: 15px;
     font-weight: 500;
     text-transform: uppercase;
@@ -545,4 +545,158 @@
 
 .custom-footer-bg {
     background-color: #09223b !important; /* Replace with your desired color */
+}
+
+/*** Mobile Navbar Fixes ***/
+/* Ensure the navbar toggler is properly visible and functional */
+.navbar-toggler {
+    border: 1px solid var(--primary);
+    background-color: transparent;
+    padding: 8px 10px;
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.25rem rgba(4, 99, 250, 0.25);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%284, 99, 250, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Mobile navbar styles */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background-color: white !important;
+        border-top: 1px solid #dee2e6;
+        margin-top: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding: 0 !important;
+    }
+    
+    .navbar .navbar-nav {
+        background-color: white !important;
+        border-top: 1px solid #EEEEEE;
+        margin-top: 0 !important;
+        width: 100% !important;
+        display: block !important;
+    }
+    
+    .navbar .navbar-nav .nav-link {
+        color: var(--dark) !important;
+        margin-right: 0 !important;
+        padding: 15px 20px !important;
+        border-bottom: 1px solid #f8f9fa;
+        text-align: left;
+        display: block !important;
+        width: 100% !important;
+        font-size: 16px !important;
+    }
+    
+    .navbar .navbar-nav .nav-link:hover {
+        background-color: #f8f9fa !important;
+        color: var(--primary) !important;
+    }
+    
+    .navbar .navbar-nav .nav-item {
+        width: 100% !important;
+        display: block !important;
+    }
+    
+    /* Mobile button styles */
+    .navbar .btn-primary {
+        margin: 10px 20px !important;
+        width: calc(100% - 40px) !important;
+        text-align: center !important;
+        padding: 12px 0 !important;
+        display: block !important;
+    }
+    
+    .d-block.d-lg-none {
+        padding: 0 20px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    /* Ensure proper spacing for mobile navbar brand */
+    .navbar-brand {
+        padding-right: 15px;
+    }
+    
+    .navbar-brand h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    .navbar-brand img {
+        height: 35px !important;
+    }
+    
+    /* Fix collapsed menu display */
+    .navbar-collapse.collapse:not(.show) {
+        display: none !important;
+    }
+    
+    .navbar-collapse.collapse.show {
+        display: block !important;
+    }
+}
+
+/* Ensure smooth transitions for navbar collapse */
+.navbar-collapse {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Fix for navbar background on mobile */
+@media (max-width: 991.98px) {
+    .navbar {
+        padding: 10px 15px;
+    }
+    
+    .navbar.bg-white {
+        background-color: white !important;
+    }
+}
+
+/* Additional mobile navbar visibility fixes */
+@media (max-width: 991.98px) {
+    .navbar-collapse.show {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+    
+    .navbar-collapse.show .navbar-nav {
+        display: flex !important;
+        flex-direction: column !important;
+        visibility: visible !important;
+    }
+    
+    .navbar-collapse.show .nav-item {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    .navbar-collapse.show .nav-link {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        color: var(--dark) !important;
+        text-decoration: none !important;
+    }
+    
+    .navbar-collapse.show .d-block.d-lg-none {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Force navbar items to be visible */
+    .navbar-nav .nav-item,
+    .navbar-nav .nav-link {
+        opacity: 1 !important;
+        visibility: visible !important;
+        color: var(--dark) !important;
+    }
 }
