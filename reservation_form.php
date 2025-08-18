@@ -45,9 +45,13 @@ $user = $user_query->fetch_assoc();
                             <div class="form-group">
                                 <label for="venue_type">Venue Type</label>
                                 <select class="form-control" id="venue_type" name="venue_type" required>
+                                    <option value="" disabled selected>Select Venue Type</option>
                                     <option value="Court A">Court A (Basketball / Volleyball Court)</option>
                                     <option value="Court B">Court B (Badminton Court)</option>
                                 </select>
+                            </div>
+                            <div class="form-group" id="courtImageContainer" style="text-align:center;">
+                                <img id="courtImage" src="img/logo-brb.png" alt="Select Venue Type" style="width:100%;max-width:400px;height:300px;object-fit:cover;display:block;margin:auto;">
                             </div>
                             <div class="form-group">
                                 <label for="start_time">Start Time</label>
@@ -168,11 +172,22 @@ $user = $user_query->fetch_assoc();
         const feedbackMessage = document.getElementById('feedbackMessage');
         const receiptList = document.getElementById('receiptList');
         const venueTypeInput = document.getElementById('venue_type');
-        const confirmReservationButton = document.getElementById('confirmReservationButton');
-        const agreeGuidelinesCheckbox = document.getElementById('agreeGuidelines');
-        const submitReservationButton = document.getElementById('submitReservationButton');
-        const successModalElement = document.getElementById('successModal');
-        const successModal = new bootstrap.Modal(successModalElement);
+        const courtImage = document.getElementById('courtImage');
+
+        venueTypeInput.addEventListener('change', () => {
+            // Update court image based on selected venue type
+            if (venueTypeInput.value === '') {
+                courtImage.src = 'img/logo.png';
+                courtImage.alt = 'Select Venue Type';
+            } else if (venueTypeInput.value === 'Court A') {
+                courtImage.src = 'img/Court.jpg';
+                courtImage.alt = 'Court A';
+            } else if (venueTypeInput.value === 'Court B') {
+                courtImage.src = 'img/Court B.jpg';
+                courtImage.alt = 'Court B';
+            }
+            calculateTotal(); // Keep your existing logic
+        });
 
         // Hide Security and Caretaker options initially
         securityOptionContainer.style.display = 'none';
