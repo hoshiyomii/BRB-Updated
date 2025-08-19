@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt2->execute();
 
         // Send verification email using Gmail SMTP
-        $verify_link = "https://mediumspringgreen-ram-627895.hostingersite.com/verify.php?token=$token";
+        $verify_link = "http://localhost/barangay/verify.php?token=$token";
         $subject = "Verify your email address";
         $message = "Hello $first_name,<br><br>Please click the link below to verify your email address:<br><a href='$verify_link'>$verify_link</a><br><br>If you did not register, please ignore this email.";
 
