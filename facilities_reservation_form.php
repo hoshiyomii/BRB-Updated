@@ -12,6 +12,15 @@ include 'db.php';
 $username = $_SESSION['username'];
 $user_query = $conn->query("SELECT * FROM users WHERE username = '$username'");
 $user = $user_query->fetch_assoc();
+
+// Fetch facility limits
+$facility_limits = [];
+$limits_query = $conn->query("SELECT facility_name, max_quantity FROM facility_limits");
+if ($limits_query) {
+    while ($row = $limits_query->fetch_assoc()) {
+        $facility_limits[$row['facility_name']] = $row['max_quantity'];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -151,20 +160,20 @@ $user = $user_query->fetch_assoc();
                                 <label class="form-check-label" for="projector">Projector With Screen</label>
                             </div>
                             <div class="form-group mt-3">
-                                <label for="lifetime_table">Life-time Table</label>
-                                <input type="number" class="form-control" id="lifetime_table" name="lifetime_table" min="0" value="0">
+                                <label for="lifetime_table">Life-time Table (Available: <?php echo isset($facility_limits['Life-time Table']) ? $facility_limits['Life-time Table'] : 'N/A'; ?>)</label>
+                                <input type="number" class="form-control" id="lifetime_table" name="lifetime_table" min="0" value="0" max="<?php echo isset($facility_limits['Life-time Table']) ? $facility_limits['Life-time Table'] : ''; ?>">
                             </div>
                             <div class="form-group mt-3">
-                                <label for="lifetime_chair">Life-time Chair</label>
-                                <input type="number" class="form-control" id="lifetime_chair" name="lifetime_chair" min="0" value="0">
+                                <label for="lifetime_chair">Life-time Chair (Available: <?php echo isset($facility_limits['Life-time Chair']) ? $facility_limits['Life-time Chair'] : 'N/A'; ?>)</label>
+                                <input type="number" class="form-control" id="lifetime_chair" name="lifetime_chair" min="0" value="0" max="<?php echo isset($facility_limits['Life-time Chair']) ? $facility_limits['Life-time Chair'] : ''; ?>">
                             </div>
                             <div class="form-group mt-3">
-                                <label for="long_table">Long Table</label>
-                                <input type="number" class="form-control" id="long_table" name="long_table" min="0" value="0">
+                                <label for="long_table">Long Table (Available: <?php echo isset($facility_limits['Long Table']) ? $facility_limits['Long Table'] : 'N/A'; ?>)</label>
+                                <input type="number" class="form-control" id="long_table" name="long_table" min="0" value="0" max="<?php echo isset($facility_limits['Long Table']) ? $facility_limits['Long Table'] : ''; ?>">
                             </div>
                             <div class="form-group mt-3">
-                                <label for="monoblock_chair">Monoblock Chair (10 Php each)</label>
-                                <input type="number" class="form-control" id="monoblock_chair" name="monoblock_chair" min="0" value="0">
+                                <label for="monoblock_chair">Monoblock Chair (Available: <?php echo isset($facility_limits['Monoblock Chair']) ? $facility_limits['Monoblock Chair'] : 'N/A'; ?>)</label>
+                                <input type="number" class="form-control" id="monoblock_chair" name="monoblock_chair" min="0" value="0" max="<?php echo isset($facility_limits['Monoblock Chair']) ? $facility_limits['Monoblock Chair'] : ''; ?>">
                             </div>
                             <div class="form-check mt-3">
                                 <input type="checkbox" class="form-check-input" id="group_over_50" name="group_over_50">

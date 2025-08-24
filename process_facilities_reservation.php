@@ -30,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $monoblock_chair = isset($_POST['monoblock_chair']) ? (int)$_POST['monoblock_chair'] : 0;
     $group_over_50 = isset($_POST['group_over_50']) ? 1 : 0;
 
+
     // Calculate total hours
     $start = new DateTime($start_time);
     $end = new DateTime($end_time);
@@ -43,6 +44,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($hours < 1) {
         echo json_encode(['success' => false, 'message' => 'Reservations must be at least 1 hour for all facilities.']);
+        exit();
+    }
+
+    // Fetch facility limits from the database
+    $limits = [];
+    $limits_query = $conn->query("SELECT facility_name, max_quantity FROM facility_limits");
+    if ($limits_query) {
+        while ($row = $limits_query->fetch_assoc()) {
+            $limits[$row['facility_name']] = (int)$row['max_quantity'];
+        }
+    }
+
+    // Validate requested quantities against limits
+    $facility_errors = [];
+    if (isset($limits['Life-time Table']) && $lifetime_table > $limits['Life-time Table']) {
+        $facility_errors[] = 'Life-time Table (max: ' . $limits['Life-time Table'] . ')';
+    }
+    if (isset($limits['Life-time Chair']) && $lifetime_chair > $limits['Life-time Chair']) {
+        $facility_errors[] = 'Life-time Chair (max: ' . $limits['Life-time Chair'] . ')';
+    }
+    if (isset($limits['Long Table']) && $long_table > $limits['Long Table']) {
+        $facility_errors[] = 'Long Table (max: ' . $limits['Long Table'] . ')';
+    }
+    if (isset($limits['Monoblock Chair']) && $monoblock_chair > $limits['Monoblock Chair']) {
+        $facility_errors[] = 'Monoblock Chair (max: ' . $limits['Monoblock Chair'] . ')';
+    }
+    if (!empty($facility_errors)) {
+        echo json_encode(['success' => false, 'message' => 'You cannot reserve more than the available quantity for: ' . implode(', ', $facility_errors)]);
         exit();
     }
 

@@ -11,6 +11,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a href="user_list.php" class="nav-item nav-link text-white">Resident List</a>
             <a href="admin_dashboard.php" class="nav-item nav-link text-white">Announcements</a>
             <a href="view_registrations.php" class="nav-item nav-link text-white">Registrations</a>
             <a href="view_document_requests.php" class="nav-item nav-link text-white">Document Requests</a>
