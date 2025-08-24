@@ -1,0 +1,99 @@
+# References to "Barangay" Folder in Codebase
+This file lists all code lines that reference the "Barangay" folder name across the project.
+
+## PHP Include Files
+
+### includes/index_head.php (lines 28, 31, 32)
+```php
+<link href="/Barangay/css/bootstrap.min.css" rel="stylesheet">
+<link href="/Barangay/index.css" rel="stylesheet">
+<link href="/Barangay/css/style.css" rel="stylesheet">
+```
+
+### includes/head.php (lines 28, 31, 32)
+```php
+<link href="/Barangay/css/bootstrap.min.css" rel="stylesheet">
+<link href="/Barangay/index.css" rel="stylesheet">
+<link href="/Barangay/css/style.css" rel="stylesheet">
+```
+
+### includes/admin_head.php (lines 28, 31, 32)
+```php
+<link href="/Barangay/css/bootstrap.min.css" rel="stylesheet">
+<link href="/Barangay/index.css" rel="stylesheet">
+<link href="/Barangay/css/style.css" rel="stylesheet">
+```
+
+## Email/Verification Links
+
+### process_register_user.php (line 46)
+```php
+$verify_link = "http://localhost/barangay/verify.php?token=$token";
+```
+
+### resend_verification.php (line 43)
+```php
+$verify_link = "http://localhost/Barangay/verify.php?token=$verify_token";
+```
+
+## Composer Configuration
+
+### composer.json (line 5)
+```json
+"Hoshiyomi\\Barangay\\": "src/"
+```
+
+### vendor/composer/autoload_psr4.php (line 21)
+```php
+'Hoshiyomi\\Barangay\\' => array($baseDir . '/src'),
+```
+
+### vendor/composer/autoload_static.php (lines 36, 103)
+```php
+'Hoshiyomi\\Barangay\\' => 19,
+```
+```php
+'Hoshiyomi\\Barangay\\' => 
+```
+
+### vendor/composer/installed.php (lines 3, 49)
+```php
+'name' => 'hoshiyomi/barangay',
+```
+```php
+'hoshiyomi/barangay' => array(
+```
+
+## Other References
+
+### export_registrations.php (line 2) - Comment
+```php
+// filepath: d:\XAMPP\htdocs\Barangay\export_registrations.php
+```
+
+### fetch_history_error.log (multiple lines)
+```
+[29-May-2025 16:39:24 Europe/Berlin] PHP Warning:  Undefined variable $conn in D:\XAMPP\htdocs\Barangay\fetch_history.php on line 28
+[29-May-2025 16:39:24 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in D:\XAMPP\htdocs\Barangay\fetch_history.php:28
+  thrown in D:\XAMPP\htdocs\Barangay\fetch_history.php on line 28
+```
+
+## Database References
+
+### barangay_website.sql
+```sql
+-- Database: `barangay_website`
+-- Table structure for table `barangay_officials`
+CREATE TABLE `barangay_officials` (
+-- Indexes for table `barangay_officials`
+```
+
+## Notes for Folder Renaming
+If you plan to rename the "Barangay" folder, these references will need to be updated to point to the new folder name. The most critical areas to update are:
+
+1. All resource URLs in the include files
+2. Verification links for email functionality
+3. Composer namespace configurations
+4. Database references (table/database names) if necessary
+
+Be sure to test thoroughly after making any changes, especially the email verification functionality and resource loading.

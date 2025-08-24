@@ -18,7 +18,89 @@ $user = $user_query->fetch_assoc();
 <html lang="en">
 <?php include 'includes/index_head.php'; ?>
 <link href="reservation_form.css" rel="stylesheet">
+<style>
+    /* Success modal scrolling fix */
+    .modal-dialog {
+        max-height: 90vh;
+    }
+    
+    .modal-content {
+        max-height: 90vh;
+    }
+    
+    .modal-body {
+        max-height: calc(90vh - 120px); /* subtract header and footer height */
+        overflow-y: auto;
+    }
+    
+    /* Hidden print container */
+    #printContainer {
+        display: none;
+    }
+    
+    @page {
+        margin: 0;
+        size: auto;
+    }
+    
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        
+        #printContainer, #printContainer * {
+            display: block !important;
+            visibility: visible !important;
+        }
+        
+        #printContainer {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 9999;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        /* Style for receipt items in print view */
+        #printContainer .receipt-item {
+            display: flex !important;
+            justify-content: space-between !important;
+            margin-bottom: 2px !important;
+        }
+        
+        #printContainer .receipt-item-label,
+        #printContainer .receipt-item-value {
+            display: inline-block !important;
+        }
+        
+        #printContainer .receipt-header {
+            margin-bottom: 20px !important;
+        }
+        
+        #printContainer .receipt-section {
+            margin-bottom: 10px !important;
+        }
+        
+        #printContainer .receipt-total {
+            font-weight: bold !important;
+            margin-top: 5px !important;
+            border-top: 1px solid #ddd !important;
+            padding-top: 5px !important;
+        }
+        
+        /* Hide modal elements during print */
+        .modal, .modal-dialog, .modal-content, .modal-body {
+            display: none;
+        }
+    }
+</style>
 <body>
+<!-- Print Container -->
+<div id="printContainer"></div>
 <?php include 'includes/index_header.php'; ?>
 
 <div class="container-fluid hero-landing p-0">
@@ -37,17 +119,12 @@ $user = $user_query->fetch_assoc();
                             <div class="form-group">
                                 <label for="facility_type">Facility Type</label>
                                 <select class="form-control" id="facility_type" name="facility_type" required>
-                                    <option value="" disabled selected>Select Facility</option>
                                     <option value="Multi Purpose Hall">Multi Purpose Hall (Bulwagan)</option>
                                     <option value="Community Center">Community Center</option>
                                     <option value="Session Hall">Session Hall</option>
                                     <option value="Conference Room">Conference Room</option>
                                     <option value="Small Meeting Room">Small Meeting Room</option>
-                                    <option value="Playground">Playground</option>
                                 </select>
-                            </div>
-                            <div class="form-group" id="courtImageContainer" style="text-align:center;">
-                                <img id="courtImage" src="img/logo-brb.png" alt="Select Facility" style="width:100%;max-width:400px;height:300px;object-fit:cover;display:block;margin:auto;">
                             </div>
                             <div class="form-check mt-3">
                                 <input type="checkbox" class="form-check-input" id="with_aircon" name="with_aircon">
@@ -75,11 +152,11 @@ $user = $user_query->fetch_assoc();
                             </div>
                             <div class="form-group mt-3">
                                 <label for="lifetime_table">Life-time Table</label>
-                                <input type="number" class="form-control" id="lifetime_table" name="lifetime_table" min="0" max="26" value="0">
+                                <input type="number" class="form-control" id="lifetime_table" name="lifetime_table" min="0" value="0">
                             </div>
                             <div class="form-group mt-3">
                                 <label for="lifetime_chair">Life-time Chair</label>
-                                <input type="number" class="form-control" id="lifetime_chair" name="lifetime_chair" min="0" max="28" value="0">
+                                <input type="number" class="form-control" id="lifetime_chair" name="lifetime_chair" min="0" value="0">
                             </div>
                             <div class="form-group mt-3">
                                 <label for="long_table">Long Table</label>
@@ -87,7 +164,7 @@ $user = $user_query->fetch_assoc();
                             </div>
                             <div class="form-group mt-3">
                                 <label for="monoblock_chair">Monoblock Chair (10 Php each)</label>
-                                <input type="number" class="form-control" id="monoblock_chair" name="monoblock_chair" min="0" max="20" value="0">
+                                <input type="number" class="form-control" id="monoblock_chair" name="monoblock_chair" min="0" value="0">
                             </div>
                             <div class="form-check mt-3">
                                 <input type="checkbox" class="form-check-input" id="group_over_50" name="group_over_50">
@@ -107,20 +184,6 @@ $user = $user_query->fetch_assoc();
                         <ul id="receiptList" class="receipt-list">
                             <!-- Receipt items will be dynamically updated here -->
                         </ul>
-                        <button class="btn btn-secondary mt-3" id="printReceiptButton" type="button">Print Receipt</button>
-                        <div id="printableReceipt" style="display:none;">
-                            <h2 style="text-align:center;">Reservation Receipt</h2>
-                            <hr>
-                            <p><strong>Name:</strong> <span id="receiptName"></span></p>
-                            <p><strong>Facility:</strong> <span id="receiptFacility"></span></p>
-                            <p><strong>Date:</strong> <span id="receiptDate"></span></p>
-                            <p><strong>Start Time:</strong> <span id="receiptStart"></span></p>
-                            <p><strong>End Time:</strong> <span id="receiptEnd"></span></p>
-                            <p><strong>Equipment/Options:</strong> <span id="receiptEquipment"></span></p>
-                            <h4>Breakdown</h4>
-                            <ul id="receiptBreakdown"></ul>
-                            <h3>Total: <span id="receiptTotal"></span> Php</h3>
-                        </div>
                         <h4 class="mt-3 text-center">Rates</h4>
                         <ul class="rates-list">
                             <li><strong>Multi Purpose Hall:</strong> 5000 Php (with aircon), 3500 Php (without aircon) for the first 4 hours</li>
@@ -190,9 +253,37 @@ $user = $user_query->fetch_assoc();
                 <p>Your reservation has been successfully submitted!</p>
                 <p><strong>Control Number:</strong> <span id="controlNumber"></span></p>
                 <p>Please proceed to the barangay hall to complete your payment and signature.</p>
-                <a id="downloadPdfReceipt" href="#" class="btn btn-success mt-2" target="_blank" style="display:none;">Download PDF Receipt</a>
+                
+                <!-- Printable Receipt Section -->
+                <div id="printableReceipt" class="mt-4 p-3 border rounded">
+                    <div class="text-center mb-3">
+                        <h4>Barangay Blue Ridge B</h4>
+                        <h5>Facilities Reservation Receipt</h5>
+                        <p class="mb-1">Date: <span id="currentDate"></span></p>
+                        <p>Name: <?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></p>
+                        <hr>
+                    </div>
+                    
+                    <div>
+                        <p><strong>Facility Type:</strong> <span id="receiptFacilityType"></span></p>
+                        <p><strong>Date:</strong> <span id="receiptDate"></span></p>
+                        <p><strong>Time:</strong> <span id="receiptTime"></span></p>
+                        <p><strong>Control Number:</strong> <span id="receiptControlNumber"></span></p>
+                    </div>
+                    
+                    <div id="receiptDetails" class="mt-3">
+                        <!-- Receipt details will be populated dynamically -->
+                    </div>
+                    
+                    <div class="mt-3">
+                        <p class="font-italic">This is not an official receipt. Please proceed to the barangay hall to complete your payment.</p>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" id="printButton">
+                    <i class="fas fa-print"></i> Print Receipt
+                </button>
                 <button type="button" class="btn btn-primary" id="redirectToDashboard">Go to Dashboard</button>
             </div>
         </div>
@@ -237,31 +328,6 @@ $user = $user_query->fetch_assoc();
                 rooftopOptionCheckbox.parentElement.style.display = 'none';
                 rooftopOptionCheckbox.checked = false;
             }
-
-            // Change image based on facility type
-            let imgSrc = 'img/logo.png'; // Default image
-            switch (facilityTypeInput.value) {
-                case 'Multi Purpose Hall':
-                    imgSrc = 'img/Multi purpose hall.jpg';
-                    break;
-                case 'Community Center':
-                    imgSrc = 'img/logo-brb.png';
-                    break;
-                case 'Session Hall':
-                    imgSrc = 'img/Multi purpose hall.jpg';
-                    break;
-                case 'Conference Room':
-                    imgSrc = 'img/logo-brb.png.';
-                    break;
-                case 'Small Meeting Room':
-                    imgSrc = 'img/logo-brb.png';
-                    break;
-                case 'Playground':
-                    imgSrc = 'img/Playground.jpg';
-                    break;
-                // Add more cases as needed
-            }
-            document.getElementById('courtImage').src = imgSrc;
 
             calculateTotal(); // Recalculate total when facility type changes
         });
@@ -311,29 +377,7 @@ $user = $user_query->fetch_assoc();
             feedbackMessage.textContent = '';
             receiptList.innerHTML = ''; // Clear receipt list
 
-            // Also clear printable receipt
-            document.getElementById('receiptBreakdown').innerHTML = '';
-            document.getElementById('receiptEquipment').textContent = '';
-            document.getElementById('receiptTotal').textContent = '';
-
-
             // Validate fields
-            // Enforce limits for life-time table, chair, and monoblock chair
-            if (parseInt(lifetimeTableInput.value) > 26) {
-                feedbackMessage.textContent = 'Maximum available Life-time Tables is 26.';
-                feedbackMessage.style.display = 'block';
-                return;
-            }
-            if (parseInt(lifetimeChairInput.value) > 28) {
-                feedbackMessage.textContent = 'Maximum available Life-time Chairs is 28.';
-                feedbackMessage.style.display = 'block';
-                return;
-            }
-            if (parseInt(monoblockChairInput.value) > 20) {
-                feedbackMessage.textContent = 'Maximum available Monoblock Chairs is 20.';
-                feedbackMessage.style.display = 'block';
-                return;
-            }
             if (!startTimeInput.value || !endTimeInput.value) {
                 feedbackMessage.textContent = 'Start Time and End Time cannot be blank.';
                 feedbackMessage.style.display = 'block';
@@ -363,26 +407,6 @@ $user = $user_query->fetch_assoc();
                 return;
             }
 
-            // Fill printable receipt details
-            document.getElementById('receiptName').textContent = document.getElementById('name').value;
-            document.getElementById('receiptFacility').textContent = facilityTypeInput.value;
-            document.getElementById('receiptDate').textContent = startTimeInput.value ? startTimeInput.value.split('T')[0] : '';
-            document.getElementById('receiptStart').textContent = startTimeInput.value ? startTimeInput.value.split('T')[1] : '';
-            document.getElementById('receiptEnd').textContent = endTimeInput.value ? endTimeInput.value.split('T')[1] : '';
-
-            // Equipment/Options summary
-            let equipment = [];
-            if (withAirconCheckbox.checked) equipment.push('With Aircon');
-            if (rooftopOptionCheckbox.checked) equipment.push('Rooftop Option');
-            if (soundSystemCheckbox.checked) equipment.push('Sound System');
-            if (projectorCheckbox.checked) equipment.push('Projector With Screen');
-            if (groupOver50Checkbox.checked) equipment.push('Group Over 50 Guests');
-            if (parseInt(lifetimeTableInput.value) > 0) equipment.push(lifetimeTableInput.value + ' Life-time Table');
-            if (parseInt(lifetimeChairInput.value) > 0) equipment.push(lifetimeChairInput.value + ' Life-time Chair');
-            if (parseInt(longTableInput.value) > 0) equipment.push(longTableInput.value + ' Long Table');
-            if (parseInt(monoblockChairInput.value) > 0) equipment.push(monoblockChairInput.value + ' Monoblock Chair');
-            document.getElementById('receiptEquipment').textContent = equipment.length ? equipment.join(', ') : 'None';
-
             const hours = Math.ceil((endTime - startTime) / (1000 * 60 * 60)); // Calculate total hours
             let totalCost = 0;
 
@@ -411,10 +435,8 @@ $user = $user_query->fetch_assoc();
 
                 // Update receipt breakdown
                 receiptList.innerHTML += `<li>Base Cost (First 4 hours): ${baseCost} Php</li>`;
-                document.getElementById('receiptBreakdown').innerHTML += `<li>Base Cost (First 4 hours): ${baseCost} Php</li>`;
                 if (extraHours > 0) {
                     receiptList.innerHTML += `<li>Extra Hours (${extraHours} hours): ${extraHours * extraHourCost} Php</li>`;
-                    document.getElementById('receiptBreakdown').innerHTML += `<li>Extra Hours (${extraHours} hours): ${extraHours * extraHourCost} Php</li>`;
                 }
 
                 // Add mandatory charges
@@ -425,81 +447,65 @@ $user = $user_query->fetch_assoc();
                 totalCost += 100; // Sound system setup operator
 
                 receiptList.innerHTML += `<li>Cash Bond: 1000 Php</li>`;
-                document.getElementById('receiptBreakdown').innerHTML += `<li>Cash Bond: 1000 Php</li>`;
                 receiptList.innerHTML += `<li>Security/Parking Assistance: 250 Php</li>`;
-                document.getElementById('receiptBreakdown').innerHTML += `<li>Security/Parking Assistance: 250 Php</li>`;
                 if (groupOver50Checkbox.checked) {
                     receiptList.innerHTML += `<li>Group Over 50 Guests: 250 Php</li>`;
-                    document.getElementById('receiptBreakdown').innerHTML += `<li>Group Over 50 Guests: 250 Php</li>`;
                 }
                 receiptList.innerHTML += `<li>Caretaker/Cleaning Post Event: 250 Php</li>`;
-                document.getElementById('receiptBreakdown').innerHTML += `<li>Caretaker/Cleaning Post Event: 250 Php</li>`;
                 receiptList.innerHTML += `<li>Sound System Setup Operator: 100 Php</li>`;
-                document.getElementById('receiptBreakdown').innerHTML += `<li>Sound System Setup Operator: 100 Php</li>`;
 
                 // Add Rooftop Option cost if selected
                 if (rooftopOptionCheckbox.checked) {
                     const rooftopCost = hours * 600; // 600 Php/hour
                     totalCost += rooftopCost;
                     receiptList.innerHTML += `<li>Rooftop Option (${hours} hours): ${rooftopCost} Php</li>`;
-                    document.getElementById('receiptBreakdown').innerHTML += `<li>Rooftop Option (${hours} hours): ${rooftopCost} Php</li>`;
                 }
             } else if (facilityTypeInput.value === 'Session Hall') {
                 // Session Hall logic
                 totalCost = hours * 600; // 600 Php/hour
                 receiptList.innerHTML += `<li>Session Hall (${hours} hours): ${totalCost} Php</li>`;
-                document.getElementById('receiptBreakdown').innerHTML += `<li>Session Hall (${hours} hours): ${totalCost} Php</li>`;
             } else if (facilityTypeInput.value === 'Conference Room') {
                 // Conference Room logic
                 totalCost = hours * 400; // 400 Php/hour
                 receiptList.innerHTML += `<li>Conference Room (${hours} hours): ${totalCost} Php</li>`;
-                document.getElementById('receiptBreakdown').innerHTML += `<li>Conference Room (${hours} hours): ${totalCost} Php</li>`;
             } else if (facilityTypeInput.value === 'Small Meeting Room') {
                 // Small Meeting Room logic
                 totalCost = hours * 200; // 200 Php/hour
                 receiptList.innerHTML += `<li>Small Meeting Room (${hours} hours): ${totalCost} Php</li>`;
-                document.getElementById('receiptBreakdown').innerHTML += `<li>Small Meeting Room (${hours} hours): ${totalCost} Php</li>`;
             }
 
             // Add additional costs
             if (soundSystemCheckbox.checked) {
                 totalCost += 1000;
                 receiptList.innerHTML += `<li>Sound System: 1000 Php</li>`;
-                document.getElementById('receiptBreakdown').innerHTML += `<li>Sound System: 1000 Php</li>`;
             }
             if (projectorCheckbox.checked) {
                 totalCost += 1500;
                 receiptList.innerHTML += `<li>Projector With Screen: 1500 Php</li>`;
-                document.getElementById('receiptBreakdown').innerHTML += `<li>Projector With Screen: 1500 Php</li>`;
             }
             const lifetimeTableCost = lifetimeTableInput.value * 150;
             if (lifetimeTableInput.value > 0) {
                 totalCost += lifetimeTableCost;
                 receiptList.innerHTML += `<li>Life-time Table (${lifetimeTableInput.value}): ${lifetimeTableCost} Php</li>`;
-                document.getElementById('receiptBreakdown').innerHTML += `<li>Life-time Table (${lifetimeTableInput.value}): ${lifetimeTableCost} Php</li>`;
             }
             const lifetimeChairCost = lifetimeChairInput.value * 50;
             if (lifetimeChairInput.value > 0) {
                 totalCost += lifetimeChairCost;
                 receiptList.innerHTML += `<li>Life-time Chair (${lifetimeChairInput.value}): ${lifetimeChairCost} Php</li>`;
-                document.getElementById('receiptBreakdown').innerHTML += `<li>Life-time Chair (${lifetimeChairInput.value}): ${lifetimeChairCost} Php</li>`;
             }
             const longTableCost = longTableInput.value * 200;
             if (longTableInput.value > 0) {
                 totalCost += longTableCost;
                 receiptList.innerHTML += `<li>Long Table (${longTableInput.value}): ${longTableCost} Php</li>`;
-                document.getElementById('receiptBreakdown').innerHTML += `<li>Long Table (${longTableInput.value}): ${longTableCost} Php</li>`;
             }
             const monoblockChairCost = monoblockChairInput.value * 10;
             if (monoblockChairInput.value > 0) {
                 totalCost += monoblockChairCost;
                 receiptList.innerHTML += `<li>Monoblock Chair (${monoblockChairInput.value}): ${monoblockChairCost} Php</li>`;
-                document.getElementById('receiptBreakdown').innerHTML += `<li>Monoblock Chair (${monoblockChairInput.value}): ${monoblockChairCost} Php</li>`;
             }
 
             // Display total cost
             receiptList.innerHTML += `<li><strong>Total Cost: ${totalCost} Php</strong></li>`;
-            document.getElementById('receiptTotal').textContent = totalCost;
         }
 
         // Recalculate total cost on input changes
@@ -536,6 +542,14 @@ $user = $user_query->fetch_assoc();
 
         // Handle reservation confirmation
         confirmReservationButton.addEventListener('click', () => {
+            // Make sure the total is calculated and receipt is up to date
+            calculateTotal();
+            
+            // Store current form values in session storage for receipt
+            sessionStorage.setItem('facilityReservationStartTime', startTimeInput.value);
+            sessionStorage.setItem('facilityReservationEndTime', endTimeInput.value);
+            sessionStorage.setItem('facilityReservationType', facilityTypeInput.options[facilityTypeInput.selectedIndex].text);
+            
             const formData = new FormData(document.getElementById('facilitiesReservationForm'));
 
             fetch('process_facilities_reservation.php', {
@@ -551,11 +565,10 @@ $user = $user_query->fetch_assoc();
 
                         // Show success modal with the reservation ID
                         document.getElementById('controlNumber').textContent = data.reservation_id; // Set the control number
-                        // Set the download link for the PDF receipt
-                        const downloadBtn = document.getElementById('downloadPdfReceipt');
-                        downloadBtn.href = 'download_facility_receipt.php?id=' + encodeURIComponent(data.reservation_id);
-                        downloadBtn.style.display = 'inline-block';
                         successModal.show();
+                        
+                        // Note: We'll clear the form after the modal is closed
+                        // We don't reset here to ensure data is available for the receipt
                     } else {
                         feedbackMessage.textContent = data.message;
                         feedbackMessage.style.display = 'block';
@@ -572,15 +585,309 @@ $user = $user_query->fetch_assoc();
         document.getElementById('redirectToDashboard').addEventListener('click', () => {
             window.location.href = 'dashboard.php';
         });
-
-        // Print receipt functionality
-        document.getElementById('printReceiptButton').addEventListener('click', function() {
-            const printContents = document.getElementById('printableReceipt').innerHTML;
-            const originalContents = document.body.innerHTML;
-            document.body.innerHTML = printContents;
+        
+        // Print functionality
+        document.getElementById('printButton').addEventListener('click', () => {
+            // Get the print container
+            const printContainer = document.getElementById('printContainer');
+            
+            // Clear it
+            printContainer.innerHTML = '';
+            
+            // Create receipt header
+            const receiptHeader = document.createElement('div');
+            receiptHeader.classList.add('receipt-header', 'text-center');
+            
+            const headerTitle = document.createElement('h4');
+            headerTitle.textContent = 'Barangay Blue Ridge B';
+            headerTitle.style.marginBottom = '5px';
+            
+            const headerSubtitle = document.createElement('h5');
+            headerSubtitle.textContent = 'Facilities Reservation Receipt';
+            headerSubtitle.style.marginBottom = '10px';
+            
+            const headerInfo = document.createElement('div');
+            headerInfo.style.display = 'flex';
+            headerInfo.style.justifyContent = 'space-between';
+            
+            const leftInfo = document.createElement('div');
+            leftInfo.style.textAlign = 'left';
+            
+            const currentDate = document.createElement('p');
+            currentDate.style.margin = '2px 0';
+            currentDate.innerHTML = '<strong>Date:</strong> ' + document.getElementById('currentDate').textContent;
+            
+            const userName = document.createElement('p');
+            userName.style.margin = '2px 0';
+            userName.innerHTML = '<strong>Name:</strong> <?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>';
+            
+            leftInfo.appendChild(currentDate);
+            leftInfo.appendChild(userName);
+            
+            const rightInfo = document.createElement('div');
+            rightInfo.style.textAlign = 'right';
+            
+            const controlNum = document.createElement('p');
+            controlNum.style.margin = '2px 0';
+            controlNum.innerHTML = '<strong>Control Number:</strong> ' + document.getElementById('receiptControlNumber').textContent;
+            
+            rightInfo.appendChild(controlNum);
+            
+            headerInfo.appendChild(leftInfo);
+            headerInfo.appendChild(rightInfo);
+            
+            const hr = document.createElement('hr');
+            hr.style.margin = '10px 0';
+            
+            receiptHeader.appendChild(headerTitle);
+            receiptHeader.appendChild(headerSubtitle);
+            receiptHeader.appendChild(headerInfo);
+            receiptHeader.appendChild(hr);
+            
+            // Create receipt details section
+            const receiptDetails = document.createElement('div');
+            receiptDetails.classList.add('receipt-section');
+            
+            // Facility type
+            const facilityItem = document.createElement('div');
+            facilityItem.classList.add('receipt-item');
+            facilityItem.innerHTML = '<span class="receipt-item-label"><strong>Facility Type:</strong></span>' + 
+                                    '<span class="receipt-item-value">' + document.getElementById('receiptFacilityType').textContent + '</span>';
+            
+            // Date
+            const dateItem = document.createElement('div');
+            dateItem.classList.add('receipt-item');
+            dateItem.innerHTML = '<span class="receipt-item-label"><strong>Date:</strong></span>' + 
+                                '<span class="receipt-item-value">' + document.getElementById('receiptDate').textContent + '</span>';
+            
+            // Time
+            const timeItem = document.createElement('div');
+            timeItem.classList.add('receipt-item');
+            timeItem.innerHTML = '<span class="receipt-item-label"><strong>Time:</strong></span>' + 
+                                '<span class="receipt-item-value">' + document.getElementById('receiptTime').textContent + '</span>';
+            
+            receiptDetails.appendChild(facilityItem);
+            receiptDetails.appendChild(dateItem);
+            receiptDetails.appendChild(timeItem);
+            
+            // Create costs breakdown section
+            const costsSection = document.createElement('div');
+            costsSection.classList.add('receipt-section');
+            costsSection.style.marginTop = '15px';
+            
+            const costsSectionTitle = document.createElement('h5');
+            costsSectionTitle.textContent = 'Cost Breakdown';
+            costsSectionTitle.style.marginBottom = '10px';
+            
+            costsSection.appendChild(costsSectionTitle);
+            
+            // Get receipt items
+            const receiptItems = document.getElementById('receiptDetails').querySelectorAll('ul li');
+            
+            // Parse and add receipt items
+            let isTotal = false;
+            receiptItems.forEach(item => {
+                const itemText = item.textContent.trim();
+                
+                // Check if this is a total line
+                isTotal = itemText.includes('Total');
+                
+                // Create item container
+                const itemContainer = document.createElement('div');
+                itemContainer.classList.add('receipt-item');
+                
+                if (isTotal) {
+                    itemContainer.classList.add('receipt-total');
+                }
+                
+                // Split by colon if it has one
+                if (itemText.includes(':')) {
+                    const parts = itemText.split(':');
+                    const label = parts[0].trim();
+                    const value = parts[1].trim();
+                    
+                    // Make sure we have the colon in the label
+                    itemContainer.innerHTML = '<span class="receipt-item-label">' + label + ':</span>' + 
+                                            '<span class="receipt-item-value">' + value + '</span>';
+                } else {
+                    // For items without a colon, try to intelligently split between label and value
+                    const match = itemText.match(/^(.*?)(\d+\s*Php\s*)$/);
+                    if (match) {
+                        const label = match[1].trim();
+                        const value = match[2].trim();
+                        itemContainer.innerHTML = '<span class="receipt-item-label">' + label + ':</span>' + 
+                                                '<span class="receipt-item-value">' + value + '</span>';
+                    } else {
+                        itemContainer.textContent = itemText;
+                    }
+                }
+                
+                costsSection.appendChild(itemContainer);
+            });
+            
+            // Create footer
+            const footer = document.createElement('div');
+            footer.classList.add('receipt-section');
+            footer.style.marginTop = '20px';
+            footer.style.fontSize = '12px';
+            footer.style.fontStyle = 'italic';
+            footer.textContent = 'This is not an official receipt. Please proceed to the barangay hall to complete your payment.';
+            
+            // Append all sections to print container
+            printContainer.appendChild(receiptHeader);
+            printContainer.appendChild(receiptDetails);
+            printContainer.appendChild(costsSection);
+            printContainer.appendChild(footer);
+            
+            // Print with specific settings
+            const printOptions = {
+                printBackground: true,
+                headerTemplate: ' ',
+                footerTemplate: ' '
+            };
+            
             window.print();
-            document.body.innerHTML = originalContents;
-            window.location.reload();
+        });
+        
+        // Populate the receipt when the success modal shows
+        successModalElement.addEventListener('shown.bs.modal', (event) => {
+            // Set current date on receipt
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('currentDate').textContent = formattedDate;
+            
+            // Copy control number to receipt
+            const controlNumber = document.getElementById('controlNumber').textContent;
+            document.getElementById('receiptControlNumber').textContent = controlNumber;
+            
+            // Get stored facility type
+            const facilityTypeText = sessionStorage.getItem('facilityReservationType');
+            document.getElementById('receiptFacilityType').textContent = facilityTypeText;
+            
+            // Get stored reservation date and time
+            const startTimeValue = sessionStorage.getItem('facilityReservationStartTime');
+            const endTimeValue = sessionStorage.getItem('facilityReservationEndTime');
+            
+            if (startTimeValue && endTimeValue) {
+                const startTime = new Date(startTimeValue);
+                const endTime = new Date(endTimeValue);
+                
+                // Format date
+                const reservationDate = startTime.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                document.getElementById('receiptDate').textContent = reservationDate;
+                
+                // Format time
+                const formatTimeStr = (date) => {
+                    let hours = date.getHours();
+                    const ampm = hours >= 12 ? 'PM' : 'AM';
+                    hours = hours % 12;
+                    hours = hours ? hours : 12; // the hour '0' should be '12'
+                    const minutes = date.getMinutes().toString().padStart(2, '0');
+                    return `${hours}:${minutes} ${ampm}`;
+                };
+                
+                const timeRange = `${formatTimeStr(startTime)} - ${formatTimeStr(endTime)}`;
+                document.getElementById('receiptTime').textContent = timeRange;
+            } else {
+                // Fallback if values aren't available
+                document.getElementById('receiptDate').textContent = "Not available";
+                document.getElementById('receiptTime').textContent = "Not available";
+            }
+            
+            // Copy receipt details directly from the form receipt list
+            const receiptDetails = document.getElementById('receiptDetails');
+            receiptDetails.innerHTML = '';
+            
+            // Create details list
+            const detailsList = document.createElement('ul');
+            detailsList.classList.add('list-unstyled');
+            
+            // Copy existing receipt items from the form's receipt list
+            const existingReceiptItems = document.getElementById('receiptList').getElementsByTagName('li');
+            
+            // Convert HTMLCollection to Array to use forEach
+            Array.from(existingReceiptItems).forEach(item => {
+                const itemText = item.textContent.trim();
+                
+                // Check if this is a total line
+                const isTotal = itemText.includes('Total Cost:');
+                
+                // Split by colon if it has one
+                if (itemText.includes(':')) {
+                    const parts = itemText.split(':');
+                    const label = parts[0].trim();
+                    const value = parts[1].trim();
+                    
+                    // Create a receipt item with the same content
+                    addReceiptItem(detailsList, 
+                                  isTotal ? 'Total' : label,
+                                  value,
+                                  isTotal);
+                } else {
+                    // Just add the item as is
+                    const item = document.createElement('li');
+                    item.textContent = itemText;
+                    detailsList.appendChild(item);
+                }
+            });
+            
+            receiptDetails.appendChild(detailsList);
+        });
+        
+        // Helper function to add items to receipt
+        function addReceiptItem(list, label, value, isBold = false) {
+            const item = document.createElement('li');
+            const row = document.createElement('div');
+            row.classList.add('d-flex', 'justify-content-between');
+            
+            const labelSpan = document.createElement('span');
+            labelSpan.textContent = label;
+            
+            const valueSpan = document.createElement('span');
+            valueSpan.textContent = value;
+            
+            if (isBold) {
+                labelSpan.style.fontWeight = 'bold';
+                valueSpan.style.fontWeight = 'bold';
+            }
+            
+            row.appendChild(labelSpan);
+            row.appendChild(valueSpan);
+            item.appendChild(row);
+            list.appendChild(item);
+        }
+        
+        // Redirect to the dashboard when the success modal is closed
+        successModalElement.addEventListener('hidden.bs.modal', () => {
+            // Clear form fields
+            document.getElementById('facilitiesReservationForm').reset();
+            
+            // Reset displays and states
+            if (facilityTypeInput.value !== 'Multi Purpose Hall' && facilityTypeInput.value !== 'Community Center') {
+                withAirconCheckbox.parentElement.style.display = 'none';
+            }
+            
+            if (facilityTypeInput.value !== 'Community Center') {
+                rooftopOptionCheckbox.parentElement.style.display = 'none';
+            }
+            
+            confirmReservationButton.disabled = true;
+            
+            // Clear session storage
+            sessionStorage.removeItem('facilityReservationStartTime');
+            sessionStorage.removeItem('facilityReservationEndTime');
+            sessionStorage.removeItem('facilityReservationType');
+            
+            // Redirect to dashboard
+            window.location.href = 'dashboard.php';
         });
     });
 </script>

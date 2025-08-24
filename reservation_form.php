@@ -18,7 +18,89 @@ $user = $user_query->fetch_assoc();
 <html lang="en">
 <?php include 'includes/index_head.php'; ?>
 <link href="reservation_form.css" rel="stylesheet">
+<style>
+    /* Success modal scrolling fix */
+    .modal-dialog {
+        max-height: 90vh;
+    }
+    
+    .modal-content {
+        max-height: 90vh;
+    }
+    
+    .modal-body {
+        max-height: calc(90vh - 120px); /* subtract header and footer height */
+        overflow-y: auto;
+    }
+    
+    /* Hidden print container */
+    #printContainer {
+        display: none;
+    }
+    
+    @page {
+        margin: 0;
+        size: auto;
+    }
+    
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        
+        #printContainer, #printContainer * {
+            display: block !important;
+            visibility: visible !important;
+        }
+        
+        #printContainer {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 9999;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        /* Style for receipt items in print view */
+        #printContainer .receipt-item {
+            display: flex !important;
+            justify-content: space-between !important;
+            margin-bottom: 2px !important;
+        }
+        
+        #printContainer .receipt-item-label,
+        #printContainer .receipt-item-value {
+            display: inline-block !important;
+        }
+        
+        #printContainer .receipt-header {
+            margin-bottom: 20px !important;
+        }
+        
+        #printContainer .receipt-section {
+            margin-bottom: 10px !important;
+        }
+        
+        #printContainer .receipt-total {
+            font-weight: bold !important;
+            margin-top: 5px !important;
+            border-top: 1px solid #ddd !important;
+            padding-top: 5px !important;
+        }
+        
+        /* Hide modal elements during print */
+        .modal, .modal-dialog, .modal-content, .modal-body {
+            display: none;
+        }
+    }
+</style>
 <body>
+<!-- Print Container -->
+<div id="printContainer"></div>
 <?php include 'includes/index_header.php'; ?>
 
 <div class="container-fluid hero-landing p-0">
@@ -45,13 +127,9 @@ $user = $user_query->fetch_assoc();
                             <div class="form-group">
                                 <label for="venue_type">Venue Type</label>
                                 <select class="form-control" id="venue_type" name="venue_type" required>
-                                    <option value="" disabled selected>Select Venue Type</option>
                                     <option value="Court A">Court A (Basketball / Volleyball Court)</option>
                                     <option value="Court B">Court B (Badminton Court)</option>
                                 </select>
-                            </div>
-                            <div class="form-group" id="courtImageContainer" style="text-align:center;">
-                                <img id="courtImage" src="img/logo-brb.png" alt="Select Venue Type" style="width:100%;max-width:400px;height:300px;object-fit:cover;display:block;margin:auto;">
                             </div>
                             <div class="form-group">
                                 <label for="start_time">Start Time</label>
@@ -151,8 +229,37 @@ $user = $user_query->fetch_assoc();
                 <p>Your reservation has been successfully submitted!</p>
                 <p><strong>Control Number:</strong> <span id="controlNumber"></span></p>
                 <p>Please proceed to the barangay hall to complete your payment and signature.</p>
+                
+                <!-- Printable Receipt Section -->
+                <div id="printableReceipt" class="mt-4 p-3 border rounded">
+                    <div class="text-center mb-3">
+                        <h4>Barangay Blue Ridge B</h4>
+                        <h5>Sports Venue Reservation Receipt</h5>
+                        <p class="mb-1">Date: <span id="currentDate"></span></p>
+                        <p>Name: <?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></p>
+                        <hr>
+                    </div>
+                    
+                    <div>
+                        <p><strong>Venue Type:</strong> <span id="receiptVenueType"></span></p>
+                        <p><strong>Date:</strong> <span id="receiptDate"></span></p>
+                        <p><strong>Time:</strong> <span id="receiptTime"></span></p>
+                        <p><strong>Control Number:</strong> <span id="receiptControlNumber"></span></p>
+                    </div>
+                    
+                    <div id="receiptDetails" class="mt-3">
+                        <!-- Receipt details will be populated dynamically -->
+                    </div>
+                    
+                    <div class="mt-3">
+                        <p class="font-italic">This is not an official receipt. Please proceed to the barangay hall to complete your payment.</p>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" id="printButton">
+                    <i class="fas fa-print"></i> Print Receipt
+                </button>
                 <button type="button" class="btn btn-primary" id="redirectToDashboard">Go to Dashboard</button>
             </div>
         </div>
@@ -172,22 +279,11 @@ $user = $user_query->fetch_assoc();
         const feedbackMessage = document.getElementById('feedbackMessage');
         const receiptList = document.getElementById('receiptList');
         const venueTypeInput = document.getElementById('venue_type');
-        const courtImage = document.getElementById('courtImage');
-
-        venueTypeInput.addEventListener('change', () => {
-            // Update court image based on selected venue type
-            if (venueTypeInput.value === '') {
-                courtImage.src = 'img/logo.png';
-                courtImage.alt = 'Select Venue Type';
-            } else if (venueTypeInput.value === 'Court A') {
-                courtImage.src = 'img/Court.jpg';
-                courtImage.alt = 'Court A';
-            } else if (venueTypeInput.value === 'Court B') {
-                courtImage.src = 'img/Court B.jpg';
-                courtImage.alt = 'Court B';
-            }
-            calculateTotal(); // Keep your existing logic
-        });
+        const confirmReservationButton = document.getElementById('confirmReservationButton');
+        const agreeGuidelinesCheckbox = document.getElementById('agreeGuidelines');
+        const submitReservationButton = document.getElementById('submitReservationButton');
+        const successModalElement = document.getElementById('successModal');
+        const successModal = new bootstrap.Modal(successModalElement);
 
         // Hide Security and Caretaker options initially
         securityOptionContainer.style.display = 'none';
@@ -318,7 +414,7 @@ $user = $user_query->fetch_assoc();
                 const rate = venueTypeInput.value === 'Court A' ? 100 : 200;
                 totalCost = rate * hours;
 
-                // Update receipt breakdown
+                // Update receipt breakdown with proper spacing around the colon
                 receiptList.innerHTML += `<li>Rate (${rate} Php/hour): ${rate * hours} Php</li>`;
             }
 
@@ -353,11 +449,31 @@ $user = $user_query->fetch_assoc();
 
         // Redirect to the dashboard when the success modal is closed
         successModalElement.addEventListener('hidden.bs.modal', () => {
-            window.location.href = 'dashboard.php'; // Replace with the desired redirect URL
+            // Clear form fields
+            reservationForm.reset();
+            securityOptionContainer.style.display = 'none';
+            caretakerOptionContainer.style.display = 'none';
+            confirmReservationButton.disabled = true;
+            
+            // Clear session storage
+            sessionStorage.removeItem('reservationStartTime');
+            sessionStorage.removeItem('reservationEndTime');
+            sessionStorage.removeItem('reservationVenueType');
+            
+            // Redirect to dashboard
+            window.location.href = 'dashboard.php';
         });
 
         // Handle reservation confirmation
         confirmReservationButton.addEventListener('click', () => {
+            // Make sure the total is calculated and receipt is up to date
+            calculateTotal();
+            
+            // Store current form values in session storage for receipt
+            sessionStorage.setItem('reservationStartTime', startTimeInput.value);
+            sessionStorage.setItem('reservationEndTime', endTimeInput.value);
+            sessionStorage.setItem('reservationVenueType', venueTypeInput.options[venueTypeInput.selectedIndex].text);
+            
             // Gather form data
             const formData = new FormData(reservationForm);
 
@@ -380,11 +496,8 @@ $user = $user_query->fetch_assoc();
                         document.getElementById('controlNumber').textContent = reservationId; // Set the control number
                         successModal.show();
 
-                        // Clear form fields
-                        reservationForm.reset();
-                        securityOptionContainer.style.display = 'none';
-                        caretakerOptionContainer.style.display = 'none';
-                        confirmReservationButton.disabled = true;
+                        // Note: We'll clear the form after the modal is closed
+                        // We don't reset here to ensure data is available for the receipt
                     } else {
                         alert('Failed to submit reservation: ' + data.message);
                     }
@@ -399,6 +512,285 @@ $user = $user_query->fetch_assoc();
         document.getElementById('redirectToDashboard').addEventListener('click', () => {
             window.location.href = 'dashboard.php';
         });
+        
+        // Print functionality
+        document.getElementById('printButton').addEventListener('click', () => {
+            // Get the print container
+            const printContainer = document.getElementById('printContainer');
+            
+            // Clear it
+            printContainer.innerHTML = '';
+            
+            // Create receipt header
+            const receiptHeader = document.createElement('div');
+            receiptHeader.classList.add('receipt-header', 'text-center');
+            
+            const headerTitle = document.createElement('h4');
+            headerTitle.textContent = 'Barangay Blue Ridge B';
+            headerTitle.style.marginBottom = '5px';
+            
+            const headerSubtitle = document.createElement('h5');
+            headerSubtitle.textContent = 'Sports Venue Reservation Receipt';
+            headerSubtitle.style.marginBottom = '10px';
+            
+            const headerInfo = document.createElement('div');
+            headerInfo.style.display = 'flex';
+            headerInfo.style.justifyContent = 'space-between';
+            
+            const leftInfo = document.createElement('div');
+            leftInfo.style.textAlign = 'left';
+            
+            const currentDate = document.createElement('p');
+            currentDate.style.margin = '2px 0';
+            currentDate.innerHTML = '<strong>Date:</strong> ' + document.getElementById('currentDate').textContent;
+            
+            const userName = document.createElement('p');
+            userName.style.margin = '2px 0';
+            userName.innerHTML = '<strong>Name:</strong> <?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>';
+            
+            leftInfo.appendChild(currentDate);
+            leftInfo.appendChild(userName);
+            
+            const rightInfo = document.createElement('div');
+            rightInfo.style.textAlign = 'right';
+            
+            const controlNum = document.createElement('p');
+            controlNum.style.margin = '2px 0';
+            controlNum.innerHTML = '<strong>Control Number:</strong> ' + document.getElementById('receiptControlNumber').textContent;
+            
+            rightInfo.appendChild(controlNum);
+            
+            headerInfo.appendChild(leftInfo);
+            headerInfo.appendChild(rightInfo);
+            
+            const hr = document.createElement('hr');
+            hr.style.margin = '10px 0';
+            
+            receiptHeader.appendChild(headerTitle);
+            receiptHeader.appendChild(headerSubtitle);
+            receiptHeader.appendChild(headerInfo);
+            receiptHeader.appendChild(hr);
+            
+            // Create receipt details section
+            const receiptDetails = document.createElement('div');
+            receiptDetails.classList.add('receipt-section');
+            
+            // Venue type
+            const venueItem = document.createElement('div');
+            venueItem.classList.add('receipt-item');
+            venueItem.innerHTML = '<span class="receipt-item-label"><strong>Venue Type:</strong></span>' + 
+                                '<span class="receipt-item-value">' + document.getElementById('receiptVenueType').textContent + '</span>';
+            
+            // Date
+            const dateItem = document.createElement('div');
+            dateItem.classList.add('receipt-item');
+            dateItem.innerHTML = '<span class="receipt-item-label"><strong>Date:</strong></span>' + 
+                                '<span class="receipt-item-value">' + document.getElementById('receiptDate').textContent + '</span>';
+            
+            // Time
+            const timeItem = document.createElement('div');
+            timeItem.classList.add('receipt-item');
+            timeItem.innerHTML = '<span class="receipt-item-label"><strong>Time:</strong></span>' + 
+                                '<span class="receipt-item-value">' + document.getElementById('receiptTime').textContent + '</span>';
+            
+            receiptDetails.appendChild(venueItem);
+            receiptDetails.appendChild(dateItem);
+            receiptDetails.appendChild(timeItem);
+            
+            // Create costs breakdown section
+            const costsSection = document.createElement('div');
+            costsSection.classList.add('receipt-section');
+            costsSection.style.marginTop = '15px';
+            
+            const costsSectionTitle = document.createElement('h5');
+            costsSectionTitle.textContent = 'Cost Breakdown';
+            costsSectionTitle.style.marginBottom = '10px';
+            
+            costsSection.appendChild(costsSectionTitle);
+            
+            // Get receipt items
+            const receiptItems = document.getElementById('receiptDetails').querySelectorAll('ul li');
+            
+            // Parse and add receipt items
+            let isTotal = false;
+            receiptItems.forEach(item => {
+                const itemText = item.textContent.trim();
+                
+                // Check if this is a total line
+                isTotal = itemText.includes('Total');
+                
+                // Create item container
+                const itemContainer = document.createElement('div');
+                itemContainer.classList.add('receipt-item');
+                
+                if (isTotal) {
+                    itemContainer.classList.add('receipt-total');
+                }
+                
+                // Split by colon if it has one
+                if (itemText.includes(':')) {
+                    const parts = itemText.split(':');
+                    const label = parts[0].trim();
+                    const value = parts[1].trim();
+                    
+                    // Make sure we have the colon in the label
+                    itemContainer.innerHTML = '<span class="receipt-item-label">' + label + ':</span>' + 
+                                            '<span class="receipt-item-value">' + value + '</span>';
+                } else {
+                    // For items without a colon, try to intelligently split between label and value
+                    const match = itemText.match(/^(.*?)(\d+\s*Php\s*)$/);
+                    if (match) {
+                        const label = match[1].trim();
+                        const value = match[2].trim();
+                        itemContainer.innerHTML = '<span class="receipt-item-label">' + label + ':</span>' + 
+                                                '<span class="receipt-item-value">' + value + '</span>';
+                    } else {
+                        itemContainer.textContent = itemText;
+                    }
+                }
+                
+                costsSection.appendChild(itemContainer);
+            });
+            
+            // Create footer
+            const footer = document.createElement('div');
+            footer.classList.add('receipt-section');
+            footer.style.marginTop = '20px';
+            footer.style.fontSize = '12px';
+            footer.style.fontStyle = 'italic';
+            footer.textContent = 'This is not an official receipt. Please proceed to the barangay hall to complete your payment.';
+            
+            // Append all sections to print container
+            printContainer.appendChild(receiptHeader);
+            printContainer.appendChild(receiptDetails);
+            printContainer.appendChild(costsSection);
+            printContainer.appendChild(footer);
+            
+            // Print with specific settings
+            const printOptions = {
+                printBackground: true,
+                headerTemplate: ' ',
+                footerTemplate: ' '
+            };
+            
+            window.print();
+        });
+        
+        // Populate the receipt when the success modal shows
+        successModalElement.addEventListener('shown.bs.modal', (event) => {
+            // Set current date on receipt
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('currentDate').textContent = formattedDate;
+            
+            // Copy control number to receipt
+            const controlNumber = document.getElementById('controlNumber').textContent;
+            document.getElementById('receiptControlNumber').textContent = controlNumber;
+            
+            // Get stored venue type
+            const venueTypeText = sessionStorage.getItem('reservationVenueType');
+            document.getElementById('receiptVenueType').textContent = venueTypeText;
+            
+            // Get stored reservation date and time
+            const startTimeValue = sessionStorage.getItem('reservationStartTime');
+            const endTimeValue = sessionStorage.getItem('reservationEndTime');
+            
+            if (startTimeValue && endTimeValue) {
+                const startTime = new Date(startTimeValue);
+                const endTime = new Date(endTimeValue);
+                
+                // Format date
+                const reservationDate = startTime.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                document.getElementById('receiptDate').textContent = reservationDate;
+                
+                // Format time
+                const formatTimeStr = (date) => {
+                    let hours = date.getHours();
+                    const ampm = hours >= 12 ? 'PM' : 'AM';
+                    hours = hours % 12;
+                    hours = hours ? hours : 12; // the hour '0' should be '12'
+                    const minutes = date.getMinutes().toString().padStart(2, '0');
+                    return `${hours}:${minutes} ${ampm}`;
+                };
+                
+                const timeRange = `${formatTimeStr(startTime)} - ${formatTimeStr(endTime)}`;
+                document.getElementById('receiptTime').textContent = timeRange;
+            } else {
+                // Fallback if values aren't available
+                document.getElementById('receiptDate').textContent = "Not available";
+                document.getElementById('receiptTime').textContent = "Not available";
+            }
+            
+            // Copy receipt details directly from the form receipt list
+            const receiptDetails = document.getElementById('receiptDetails');
+            receiptDetails.innerHTML = '';
+            
+            // Create details list
+            const detailsList = document.createElement('ul');
+            detailsList.classList.add('list-unstyled');
+            
+            // Copy existing receipt items from the form's receipt list
+            const existingReceiptItems = document.getElementById('receiptList').getElementsByTagName('li');
+            
+            // Convert HTMLCollection to Array to use forEach
+            Array.from(existingReceiptItems).forEach(item => {
+                const itemText = item.textContent.trim();
+                
+                // Check if this is a total line
+                const isTotal = itemText.includes('Total Cost:');
+                
+                // Split by colon if it has one
+                if (itemText.includes(':')) {
+                    const parts = itemText.split(':');
+                    const label = parts[0].trim();
+                    const value = parts[1].trim();
+                    
+                    // Create a receipt item with the same content
+                    addReceiptItem(detailsList, 
+                                  isTotal ? 'Total' : label,
+                                  value,
+                                  isTotal);
+                } else {
+                    // Just add the item as is
+                    const item = document.createElement('li');
+                    item.textContent = itemText;
+                    detailsList.appendChild(item);
+                }
+            });
+            
+            receiptDetails.appendChild(detailsList);
+        });
+        
+        // Helper function to add items to receipt
+        function addReceiptItem(list, label, value, isBold = false) {
+            const item = document.createElement('li');
+            const row = document.createElement('div');
+            row.classList.add('d-flex', 'justify-content-between');
+            
+            const labelSpan = document.createElement('span');
+            labelSpan.textContent = label;
+            
+            const valueSpan = document.createElement('span');
+            valueSpan.textContent = value;
+            
+            if (isBold) {
+                labelSpan.style.fontWeight = 'bold';
+                valueSpan.style.fontWeight = 'bold';
+            }
+            
+            row.appendChild(labelSpan);
+            row.appendChild(valueSpan);
+            item.appendChild(row);
+            list.appendChild(item);
+        }
     });
 </script>
 <!-- Bootstrap Bundle with Popper -->

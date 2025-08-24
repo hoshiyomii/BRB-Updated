@@ -36,107 +36,158 @@ $result = $stmt->get_result();
 <!DOCTYPE html>
 <html lang="en">
 <?php include 'includes/index_head.php'; ?>
-<link href= "index.css" rel="stylesheet">
+<link href="index.css" rel="stylesheet">
+<link href="about-section.css" rel="stylesheet">
 
 <body>
     <?php include 'includes/index_header.php'; ?>
-
-<div class="snap-container">
+    
+    <!-- Main content container -->
+    <div class="main-container">
 
     <!-- Hero Section -->
-    <div class="snap-section" id="hero">
-        <div class="container-fluid hero-landing p-0" style="position:relative;">
-            <div class="row g-0 align-items-center min-vh-60">
-                <div class="col-lg-7 p-5 wow fadeInLeft" data-wow-delay="0.1s" style="margin-top:70px;">
-                    <h1 class="display-3 fw-bold text-white mb-3">Welcome to Barangay Blue Ridge B</h1>
-                    <p class="lead text-light mb-4">
-                        Blue Ridge B is a welcoming neighborhood in Quezon City, Metro Manila. Part of the Blue Ridge subdivision, it offers a peaceful residential area with easy access to major roads, schools, and businesses. Known for its strong sense of community, Blue Ridge B is an ideal place to live, work, and enjoy a convenient lifestyle in the heart of the city.
-                    </p>
-                    <div class="hero-buttons mb-4">
-                        <?php if (!isset($_SESSION['user_id'])): ?>
-                            <a href="register_user.php" class="btn btn-primary btn-lg rounded-pill px-5 me-2 mb-3">Register Now</a> <!-- Added bottom margin -->
-                        <?php endif; ?>
-                        <a href="announcements.php" class="btn btn-outline-light btn-lg rounded-pill px-5 mb-3">View Announcements</a> <!-- Added bottom margin -->
-                    </div>
-                    <div class="d-flex flex-wrap gap-3 mt-3">
-                        <span class="badge bg-success fs-6"><i class="fa fa-users me-2"></i>Safe Community</span>
-                        <span class="badge bg-info text-dark fs-6"><i class="fa fa-cogs me-2"></i>Active Services</span>
-                        <span class="badge bg-warning text-dark fs-6"><i class="fa fa-smile me-2"></i>Friendly Staff</span>
+    <div class="content-section" id="hero">
+        <div class="hero-container">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <div class="hero-text-wrapper">
+                    <div class="hero-text">
+                        <h1>The <span class="highlight">community</span> you've been looking for.</h1>
+                        <p class="hero-subtitle">A society built to accommodate for everyone and their needs.</p>
+                        <p class="hero-description">
+                            Blue Ridge B is a welcoming neighborhood in Quezon City, Metro Manila. Part of the Blue Ridge subdivision, it offers a peaceful residential area with easy access to major roads, schools, and businesses.
+                        </p>
+                        <div class="hero-buttons">
+                            <?php if (!isset($_SESSION['user_id'])): ?>
+                                <a href="register_user.php" class="hero-btn primary">Register Now</a>
+                            <?php endif; ?>
+                            <a href="service.php" class="hero-btn secondary">Services</a>
+                        </div>
+                        <div class="hero-features">
+                            <span class="hero-feature"><i class="fa fa-users"></i>Safe Community</span>
+                            <span class="hero-feature"><i class="fa fa-cogs"></i>Active Services</span>
+                            <span class="hero-feature"><i class="fa fa-smile"></i>Friendly Staff</span>
+                        </div>
+                        <div class="community-info">
+                            <p>Join over 1,700+ residents that is part of our ever-growing community</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="scroll-down-indicator position-absolute bottom-0 start-50 translate-middle-x mb-3">
-                <a href="#announcements" style="text-decoration:none;">
-                    <i class="fa fa-chevron-down fa-2x text-white animate__animated animate__bounce animate__infinite"></i>
+            <div class="scroll-indicator">
+                <a href="#announcements">
+                    <i class="fa fa-chevron-down animate__animated animate__bounce animate__infinite"></i>
                 </a>
             </div>
         </div>
-
     </div>
 
-    <div class="snap-section" id="announcements">
-        <h1 class="text-center mb-5">Recent Announcements</h1>
-        <div class="announcements-carousel-wrapper mx-auto">
-            <div id="announcementsCarousel" class="carousel slide carousel-fade">
-              <div class="carousel-inner">
-                <?php
-                $count = 0;
-                // Reset result pointer if needed
-                $result->data_seek(0);
-                while ($row = $result->fetch_assoc()):
-                    if ($count >= 7) break;
-                    $active = ($count === 0) ? 'active' : '';
-                    $bg = !empty($row['image_path']) ? "background-image: url('".htmlspecialchars($row['image_path'])."');" : "background-color: #1f458b;";
-                ?>
-                  <div class="carousel-item <?php echo $active; ?>">
-                    <div class="announcement-slide d-flex align-items-center" style="<?php echo $bg; ?>">
-                      <div class="announcement-overlay"></div>
-                      <div class="announcement-info-hero">
-                        <span class="badge bg-primary mb-2"><?php echo htmlspecialchars($row['genre']); ?></span>
-                        <h2 class="mb-2"><?php echo htmlspecialchars($row['title']); ?></h2>
-                        <p class="mb-3"><?php echo htmlspecialchars(substr($row['content'], 0, 120)) . '...'; ?></p>
-                      </div>
+    <div class="content-section" id="announcements">
+        <div class="announcements-container">
+            <h1 class="announcements-heading">ANNOUNCEMENTS</h1>
+            
+            <div class="announcements-layout">
+                <!-- Left Side - Dynamic Announcement Text -->
+                <div class="announcement-text">
+                    <?php
+                    // Reset result pointer and get the first announcement for text display
+                    $result->data_seek(0);
+                    $featuredAnnouncement = $result->fetch_assoc();
+                    if ($featuredAnnouncement): 
+                    ?>
+                    <h2 class="announcement-title"><?php echo htmlspecialchars($featuredAnnouncement['title']); ?></h2>
+                    
+                    <div class="announcement-tags">
+                        <?php if(!empty($featuredAnnouncement['genre'])): ?>
+                            <span class="announcement-tag"><?php echo htmlspecialchars($featuredAnnouncement['genre']); ?></span>
+                        <?php endif; ?>
+                        <?php 
+                        // Display creation date as a tag
+                        if(!empty($featuredAnnouncement['created_at'])): 
+                            $date = new DateTime($featuredAnnouncement['created_at']);
+                        ?>
+                            <span class="announcement-tag"><?php echo $date->format('M d, Y'); ?></span>
+                        <?php endif; ?>
                     </div>
-                  </div>
-                <?php
-                    $count++;
-                endwhile;
-                ?>
-              </div>
-              <button class="carousel-control-prev" type="button" data-bs-target="#announcementsCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-                <span class="visually-hidden">Previous</span>
-              </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#announcementsCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-                <span class="visually-hidden">Next</span>
-              </button>
+                    
+                    <p class="announcement-body">
+                        <?php echo nl2br(htmlspecialchars($featuredAnnouncement['content'])); ?>
+                    </p>
+                    
+                    <a href="announcements.php" class="view-all-btn">VIEW ALL</a>
+                    <?php else: ?>
+                    <h2 class="announcement-title">No Announcements</h2>
+                    <p class="announcement-body">There are no active announcements at this time.</p>
+                    <?php endif; ?>
+                </div>
+                
+                <!-- Right Side - Image Carousel -->
+                <div class="carousel-container">
+                    <div class="announcement-carousel">
+                        <?php
+                        // Reset result pointer for carousel
+                        $result->data_seek(0);
+                        $count = 0;
+                        
+                        while ($row = $result->fetch_assoc()):
+                            if ($count >= 7) break; // Limit to 7 announcements
+                            $active = ($count === 0) ? 'active' : '';
+                            $bg = !empty($row['image_path']) ? htmlspecialchars($row['image_path']) : 'img/placeholder-image.jpg';
+                        ?>
+                        <div class="carousel-slide <?php echo $active; ?>" data-index="<?php echo $count; ?>" 
+                             data-title="<?php echo htmlspecialchars($row['title']); ?>"
+                             data-content="<?php echo htmlspecialchars($row['content']); ?>"
+                             data-genre="<?php echo htmlspecialchars($row['genre']); ?>"
+                             data-date="<?php echo htmlspecialchars($row['created_at']); ?>">
+                            <img src="<?php echo $bg; ?>" alt="<?php echo htmlspecialchars($row['title']); ?>">
+                        </div>
+                        <?php
+                            $count++;
+                        endwhile;
+                        ?>
+                    </div>
+                    
+                    <div class="carousel-navigation">
+                        <button type="button" class="carousel-prev" aria-label="Previous slide"><i class="fa fa-chevron-left"></i></button>
+                        <div class="carousel-dots">
+                            <?php for($i = 0; $i < $count; $i++): ?>
+                            <button type="button" class="carousel-dot <?php echo $i === 0 ? 'active' : ''; ?>" 
+                                    data-index="<?php echo $i; ?>"
+                                    aria-label="Go to slide <?php echo $i + 1; ?>"></button>
+                            <?php endfor; ?>
+                        </div>
+                        <button type="button" class="carousel-next" aria-label="Next slide"><i class="fa fa-chevron-right"></i></button>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="text-center mt-4">
-            <a href="announcements.php" class="btn btn-primary btn-lg px-5">View All Announcements</a>
         </div>
     </div>
     
         <!-- About Start -->
-    <div class="snap-section " id="about">
-        <div class="container-xxl py-5">
-            <div class="container">
-                <div class="row g-5">
-                    <div class="col-lg-6 " data-wow-delay="0.1s">
-                        <div class="d-flex flex-column">
-                            <img class="img-fluid rounded w-75 align-self-end" src="img/about-1.png" alt="">
-                            <img class="img-fluid rounded w-50 bg-white pt-3 pe-3" src="img/about-2.png" alt="" style="margin-top: -25%;">
-                        </div>
+    <div class="content-section" id="about">
+        <div class="about-container">
+            <div class="about-overlay"></div>
+            <div class="about-content">
+                <div class="about-text-wrapper">
+                    <div class="about-heading">
+                        <span class="about-badge">About Us</span>
+                        <h2>Know About Us!</h2>
                     </div>
-                    <div class="col-lg-6 " data-wow-delay="0.5s">
-                        <p class="d-inline-block border rounded-pill py-1 px-4">About Us</p>
-                        <h1 class="mb-4"> Know About Us!</h1>
+                    <div class="about-description">
                         <p>Blue Ridge B is a welcoming neighborhood in Quezon City, Metro Manila. Part of the Blue Ridge subdivision, it offers a peaceful residential area with easy access to major roads, schools, and businesses. Known for its strong sense of community, Blue Ridge B is an ideal place to live, work, and enjoy a convenient lifestyle in the heart of the city.</p>
-                        <p><i class="far fa-check-circle text-primary me-3"></i>Quality health care</p>
-                        <p><i class="far fa-check-circle text-primary me-3"></i>Quality Services</p>
-                        <a class="btn btn-primary rounded-pill py-3 px-5 mt-3" href="about.php">Read More</a>
+                        <ul class="about-features">
+                            <li><i class="far fa-check-circle"></i>Quality health care</li>
+                            <li><i class="far fa-check-circle"></i>Quality Services</li>
+                            <li><i class="far fa-check-circle"></i>Strong Community</li>
+                            <li><i class="far fa-check-circle"></i>Prime Location</li>
+                        </ul>
+                        <a class="about-btn" href="about.php">Read More</a>
+                    </div>
+                </div>
+                <div class="about-image-wrapper">
+                    <div class="about-image-container">
+                        <img class="about-image-main" src="img/about-1.png" alt="Blue Ridge B Community">
+                        <img class="about-image-secondary" src="img/about-2.png" alt="Community Services">
                     </div>
                 </div>
             </div>
@@ -145,7 +196,7 @@ $result = $stmt->get_result();
     <!-- About End -->
 
         <!-- Service Start -->
-    <div class="snap-section" id="services">
+    <div class="content-section" id="services">
         <div class="container-xxl py-5">
             <div class="container">
                 <!-- Documents Section -->
@@ -255,7 +306,7 @@ $result = $stmt->get_result();
         </div>
     </div>
 
-    <div class="snap-section wow fadeIn" id="footer-section">
+    <div class="content-section wow fadeIn" id="footer-section">
         <?php include 'includes/footer.php'; ?>
     </div>
 
@@ -266,8 +317,30 @@ $result = $stmt->get_result();
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="lib/wow/wow.min.js"></script>
-
-<script>
+    <script src="announcement-carousel.js"></script>
+    
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    const headerOffset = 80;
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                    });
+                }
+            });
+        });
+    </script><script>
     new WOW().init();
 </script>
 
@@ -284,12 +357,33 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </script>
 
 <script>
-document.addEventListener('keydown', function(e) {
-    if (e.key === "ArrowLeft") {
-        document.querySelector('#announcementsCarousel .carousel-control-prev')?.click();
-    } else if (e.key === "ArrowRight") {
-        document.querySelector('#announcementsCarousel .carousel-control-next')?.click();
+// Direct event binding for carousel buttons when document is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    const nextBtn = document.querySelector('.carousel-next');
+    const prevBtn = document.querySelector('.carousel-prev');
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function() {
+            console.log('Next button clicked from inline script');
+        });
     }
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', function() {
+            console.log('Prev button clicked from inline script');
+        });
+    }
+    
+    // Direct keyboard controls
+    document.addEventListener('keydown', function(e) {
+        if (e.key === "ArrowLeft") {
+            console.log("Left arrow pressed");
+            document.querySelector('.carousel-prev')?.click();
+        } else if (e.key === "ArrowRight") {
+            console.log("Right arrow pressed");
+            document.querySelector('.carousel-next')?.click();
+        }
+    });
 });
 </script>
 

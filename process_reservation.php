@@ -57,11 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt->execute()) {
         $reservation_id = $stmt->insert_id; // Get the inserted reservation ID
         $control_number = 'RSV-' . str_pad($reservation_id, 3, '0', STR_PAD_LEFT); // Add prefix and pad with zeros
-        echo json_encode([
-            'success' => true,
-            'reservation_id' => $reservation_id, // Numeric ID for internal use
-            'control_number' => $control_number // Formatted for display
-        ]);
+        echo json_encode(['success' => true, 'reservation_id' => $control_number]); // Return the formatted control number
     } else {
         echo json_encode(['success' => false, 'message' => 'Failed to save reservation.']);
     }

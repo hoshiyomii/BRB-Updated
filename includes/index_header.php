@@ -5,7 +5,7 @@
 <!-- Navbar Start -->
 <nav class="navbar navbar-expand-lg navbar-light sticky-top p-0 wow fadeIn navbar-index" data-wow-delay="0.1s">
     <a href="index.php" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-        <img src="img/logo-brb.png" alt="BRB Logo" style="height:48px; width:auto; margin-right:12px;">
+        <img src="img/new_logo.png" alt="BRB Logo" style="height:48px; width:auto; margin-right:12px;">
         <h1 class="m-0 text-primary">Blue Ridge B</h1>
     </a>
     <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">

@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light sticky-top p-0 bg-primary text-white">
     <a href="admin_dashboard.php" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-        <img src="img/logo-brb.png" alt="BRB Logo" style="height:48px; width:auto; margin-right:12px;">
+        <img src="img/new_logo.png" alt="BRB Logo" style="height:48px; width:auto; margin-right:12px;">
         <h1 class="m-0">
             <span style="color: white;">Blue Ridge B</span>
             <span>Admin</span>
@@ -14,7 +14,6 @@
             <a href="admin_dashboard.php" class="nav-item nav-link text-white">Announcements</a>
             <a href="view_registrations.php" class="nav-item nav-link text-white">Registrations</a>
             <a href="view_document_requests.php" class="nav-item nav-link text-white">Document Requests</a>
-            <a href="user_list.php" class="nav-item nav-link text-white">User Accounts</a>
 
             <!-- Dropdown for Reservations -->
             <div class="nav-item dropdown">

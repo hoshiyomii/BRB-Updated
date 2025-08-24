@@ -82,7 +82,10 @@ $totalPages = ceil($totalReservations / $limit);
                         <th>Facility Type</th>
                         <th>Start and End Time</th>
                         <th>Status</th>
+<<<<<<< HEAD
                         <th>Action</th>
+=======
+>>>>>>> upstream/master
                     </tr>
                 </thead>
                 <tbody>
@@ -127,13 +130,17 @@ $totalPages = ceil($totalReservations / $limit);
                                     }
                                 ?>
                             </td>
+<<<<<<< HEAD
                             <td>
                                 <button class="btn btn-primary btn-sm edit-reservation-btn" data-toggle="modal" data-target="#editReservationModal" data-id="<?php echo $row['id']; ?>">Edit</button>
                             </td>
+=======
+>>>>>>> upstream/master
                         </tr>
                     <?php endwhile; ?>
                 </tbody>
             </table>
+<<<<<<< HEAD
             <!-- Edit Reservation Modal -->
             <div class="modal fade" id="editReservationModal" tabindex="-1" role="dialog" aria-labelledby="editReservationModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -173,6 +180,8 @@ $totalPages = ceil($totalReservations / $limit);
                     </div>
                 </div>
             </div>
+=======
+>>>>>>> upstream/master
 
             <!-- Pagination Controls -->
             <nav>
@@ -218,6 +227,7 @@ $totalPages = ceil($totalReservations / $limit);
                     <p id="modalTimeRejected" style="display: none;"><i class="fa fa-clock"></i> <strong>Time Rejected:</strong> <span></span></p>
                 </div>
                 <div class="modal-footer" id="modalFooter">
+<<<<<<< HEAD
                     <button type="button" class="btn btn-primary" id="editDetailsBtn">Edit</button>
                     <button type="button" class="btn btn-success" onclick="openApproveModal()">Approve</button>
                     <button type="button" class="btn btn-danger" onclick="openRejectModal()">Reject</button>
@@ -346,6 +356,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+=======
+                    <button type="button" class="btn btn-success" onclick="openApproveModal()">Approve</button>
+                    <button type="button" class="btn btn-danger" onclick="openRejectModal()">Reject</button>
+                </div>
+>>>>>>> upstream/master
             </div>
         </div>
     </div>
