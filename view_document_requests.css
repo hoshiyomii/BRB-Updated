@@ -1,0 +1,189 @@
+/* General container styling */
+.container {
+    margin: 10px auto; /* Reduce top and bottom margin */
+    max-width: 85%; /* Increase the width of the container */
+}
+
+/* Filters styling */
+.d-flex {
+    display: flex;
+    gap: 1rem;
+}
+
+#document_type, #statusFilter {
+    max-width: 300px;
+}
+
+/* Table styling */
+.table {
+    font-size: 0.9rem;
+}
+
+.table thead th {
+    background-color: #0b488a; /* Custom header color */
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+
+.table tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+.table tbody tr.status-approved {
+    background-color: #d4edda; /* Light Green for Approved */
+}
+
+.table tbody tr.status-rejected {
+    background-color: #f8d7da; /* Light Red for Rejected */
+}
+
+.table tbody tr.status-pending {
+    background-color: #fff3cd; /* Light Yellow for Pending */
+}
+
+/* Status styling */
+.status-approved {
+    color: #28a745; /* Green for approved */
+    font-weight: bold;
+}
+
+.status-rejected {
+    color: #dc3545; /* Red for rejected */
+    font-weight: bold;
+}
+
+.status-pending {
+    color: #ffc107; /* Yellow for pending */
+    font-weight: bold;
+}
+
+/* Button styling */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.action-buttons {
+    display: none; /* Hide the buttons initially */
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+/* Badge styling for statuses */
+.badge-success {
+    background-color: #28a745; /* Green for Approved */
+    color: #fff; /* White text */
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 0.25rem;
+}
+
+.badge-danger {
+    background-color: #dc3545; /* Red for Rejected */
+    color: #fff; /* White text */
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 0.25rem;
+}
+
+.badge-warning {
+    background-color: #ffc107; /* Yellow for Pending */
+    color: #212529; /* Dark text */
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 0.25rem;
+}
+
+.badge-secondary {
+    background-color: #6c757d; /* Gray for Default */
+    color: #fff; /* White text */
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 0.25rem;
+}
+
+/* Modal header styling */
+.modal-header.bg-primary {
+    background-color: #0b488a !important; /* Blue header */
+    color: #fff !important; /* White text */
+}
+
+/* Ensure modal title uses white text */
+.modal-header.bg-primary .modal-title {
+    color: #fff !important; /* Force white text */
+}
+
+/* Ensure the row is clickable */
+.clickable-row {
+    cursor: pointer; /* Change cursor to pointer */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover effect for rows */
+.clickable-row:hover {
+    background-color: #f1f1f1; /* Light gray background on hover */
+    transform: scale(1.02); /* Slightly enlarge the row */
+}
+
+/* Show action buttons when the row is clicked */
+.clickable-row.active + .action-buttons {
+    display: flex; /* Show the buttons */
+}
+
+/* Minimize the action buttons column by default */
+td:last-child {
+    width: 1px; /* Make the column very small initially */
+    overflow: hidden; /* Hide overflow content */
+    transition: width 0.3s ease; /* Smoothly expand the column */
+}
+
+/* Expand the action buttons column when active */
+.clickable-row.active + td:last-child {
+    width: auto; /* Expand the column */
+}
+
+#modalActions {
+    display: flex;
+    gap: 0.5rem; /* Add spacing between buttons */
+    flex-wrap: wrap; /* Allow wrapping if buttons overflow */
+    justify-content: center; /* Center the buttons */
+}
+
+#modalActions button,
+#modalActions a {
+    flex: 1 1 auto; /* Make buttons flexible and aligned */
+    margin: 0.25rem; /* Add a small margin around buttons */
+    text-align: center; /* Center-align button text */
+    padding: 0.5rem 1rem; /* Adjust padding for compactness */
+    font-size: 0.85rem; /* Slightly smaller font size */
+}
+
+.navbar {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.status-picked-up {
+    color: #5bc0de !important; /* Light blue color */
+    font-weight: bold;
+}

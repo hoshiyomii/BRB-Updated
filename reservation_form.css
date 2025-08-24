@@ -1,0 +1,49 @@
+.register-card {
+    background-color: #f8f9fa; /* Light background */
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px;
+}
+
+.guidelines-box {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.guideline-list {
+    list-style: none; /* Remove bullet points */
+    padding: 0;
+}
+
+.guideline-list li {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.receipt-box {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.receipt-list {
+    list-style: none; /* Remove bullet points */
+    padding: 0; /* Remove default padding */
+}
+
+.receipt-list li {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.rates-list li {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.modal-footer button {
+    font-size: 16px;
+}

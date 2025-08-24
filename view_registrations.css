@@ -1,0 +1,44 @@
+/* Ensure the table occupies the full width of the container */
+.table {
+    width: 100%;
+    table-layout: fixed; /* Fix column widths */
+}
+
+/* Adjust column widths */
+.table th:nth-child(1), .table td:nth-child(1) { /* Name column */
+    width: 30%;
+}
+.table th:nth-child(2), .table td:nth-child(2) { /* Email column */
+    width: 30%;
+}
+.table th:nth-child(3), .table td:nth-child(3) { /* Contact Number column */
+    width: 15%;
+}
+.table th:nth-child(4), .table td:nth-child(4) { /* Date Registered column */
+    width: 25%;
+}
+
+/* Change the table header background color to a darker blue */
+.table thead.thead-dark {
+    background-color: #003366; /* Darker blue */
+    color: white;
+}
+
+/* Make the filter dropdown smaller */
+#event_id {
+    width: 300px; /* Adjust the width of the dropdown */
+    display: inline-block;
+}
+
+/* Align the Export to Excel button to the right */
+.export-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.navbar-brand {
+    margin: 0; /* Remove any extra margin */
+    padding: 0; /* Ensure consistent padding */
+    white-space: nowrap; /* Prevent text wrapping */
+}

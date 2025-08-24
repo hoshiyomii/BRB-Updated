@@ -1,0 +1,4 @@
+/* Minimum height for dashboard area */
+.content-wrapper {
+    min-height: 70vh;
+}

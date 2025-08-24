@@ -1,0 +1,95 @@
+.guideline-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 2rem 0;
+}
+
+.guideline-list li {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1.2rem;
+        font-size: 1.08rem;
+        color: #222; /* Changed to #222 for dark text */
+}
+
+.guideline-list i {
+        font-size: 1.5rem;
+        color: #356afd; /* Changed to #356afd for blue icons */
+        margin-right: 1rem;
+        flex-shrink: 0;
+}
+
+.register-card {
+        background: #fff; /* Changed to white background */
+        border-radius: 1.5rem;
+        box-shadow: 0 6px 32px rgba(10,30,60,0.10);
+        border: 2px solid #356afd; /* Blue border for pop */
+        padding: 2.5rem 2rem;
+        max-width: 520px;
+        width: 100%;
+        margin: 2.5rem auto; /* Add vertical margin for spacing from navbar and bottom */
+}
+
+.input-dark {
+    background: #e9ecef !important;
+    color: #222 !important;
+    border: 1px solid #bfc4ca !important;
+}
+.input-dark::placeholder {
+    color: #666 !important;
+    opacity: 1;
+}
+.guideline-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.guideline-list li {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.2rem;
+    font-size: 1.08rem;
+    color: #222; /* Changed to #222 for dark text */
+}
+.guideline-list i {
+    font-size: 1.5rem;
+    color: #356afd; /* Changed to #356afd for blue icons */
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+.register-card {
+    background: #fff; /* Changed to white background */
+    border-radius: 1.5rem;
+    box-shadow: 0 6px 32px rgba(10,30,60,0.10);
+    border: 2px solid #356afd; /* Blue border for pop */
+    padding: 2.5rem 2rem;
+    max-width: 520px;
+    width: 100%;
+    margin: 2.5rem auto; /* Add vertical margin for spacing from navbar and bottom */
+}
+
+.guidelines-box {
+    background: #ffffff; /* dark semi-transparent */
+    border-radius: 1.5rem;
+    border: 2px solid #356afd; /* Blue border for pop */
+    box-shadow: 0 6px 32px rgba(10,30,60,0.10);
+    padding: 2.5rem 2rem;
+    margin: 2.5rem auto;
+    max-width: 420px;
+    width: 100%;
+    color: #fff; /* white text for clarity */
+}
+
+.guidelines-box h3 {
+    color: #356afd; /* Changed to #356afd for blue text */
+    letter-spacing: 1px;
+}
+
+@media (max-width: 991px) {
+    .register-card,
+    .guidelines-box {
+        margin: 1.5rem auto;
+        max-width: 100%;
+    }
+}
+

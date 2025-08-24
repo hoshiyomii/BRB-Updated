@@ -1,0 +1,505 @@
+.hero-landing {
+    background: 
+        url('img/about-2.png') center center/cover no-repeat;
+    min-height: 92vh;
+    position: relative;
+    overflow: hidden;
+}
+
+html, body {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+}
+
+.hero-landing::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(29, 29, 29, 0.7), #1f458bb3); /* blue tint */
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Make sure your content is above the overlay */
+.hero-landing > * {
+    position: relative;
+    z-index: 2;
+}
+
+.owl-carousel-item img {
+    max-height: 350px;
+    object-fit: cover;
+}
+
+.snap-section {
+    visibility: visible !important;
+}
+
+/* Snap scrolling container */
+.snap-container {
+    height: 92vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.snap-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+/* Each section snaps to viewport */
+.snap-section {
+    scroll-snap-align: start;
+    min-height: 85vh; /* Subtract navbar height */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Footer snap section */
+#footer-section {
+    min-height: 20vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Navbar (standard, not overlay) */
+/* Animated gradient navbar */
+.navbar {
+    position: static;
+    width: 100%;
+    z-index: 1000;
+    background: linear-gradient(90deg, #0a1e3c, #1f458b, #0a1e3c);
+    background-size: 200% 200%;
+    animation: navbar-gradient-move 6s ease-in-out infinite;
+    color: #fff;
+    border-bottom: 4px solid #1f458b;
+    box-shadow: 0 2px 8px rgba(10,30,60,0.04);
+}
+
+@keyframes navbar-gradient-move {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.snap-section#announcements {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Optional: center content horizontally */
+}
+
+
+.announcements-section {
+    background: #0a1e3c;
+    color: #fff; /* Optional: makes text white for contrast */
+}
+
+/* Make navbar links white */
+.navbar,
+.navbar .navbar-nav .nav-link,
+.navbar .navbar-brand,
+.navbar .navbar-nav .nav-link.active,
+.navbar .navbar-nav .nav-link.show {
+    color: #fff !important;
+}
+
+.navbar .navbar-nav .nav-link:hover,
+.navbar .navbar-nav .nav-link:focus {
+    color: #5991e6 !important; /* or any light blue for hover */
+}
+
+.navbar .btn,
+.navbar .btn i {
+    color: #fff;
+}
+
+
+.snap-section#announcements .btn {
+    font-size: 0.92rem;
+    padding: 0.3rem 1rem;
+}
+
+/* Billboard-style carousel */
+.announcements-carousel-wrapper {
+    width: 75vw;         /* Was 50vw */
+    max-width: 1200px;   /* Was 700px */
+    min-width: 320px;
+    margin: 0 auto;
+    position: relative;
+    border: 4px solid #0a1e3c;   /* Dark blue outline */
+    border-radius: 1.7rem;        /* Match or slightly exceed .announcement-slide */
+    box-shadow: 0 6px 32px rgba(10,30,60,0.10); /* Optional: subtle shadow */
+    padding: 0;                   /* No extra padding unless you want spacing inside */
+}
+
+#announcementsCarousel,
+#announcementsCarousel .carousel-inner,
+#announcementsCarousel .carousel-item,
+.announcement-slide {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.announcement-slide {
+    position: relative;
+    min-height: 420px;   /* Was 340px */
+    height: 520px;       /* Was 400px */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(10,30,60,0.10);
+    transition: none;
+}
+
+.announcement-content {
+    position: relative;
+    z-index: 2;
+    max-width: 90%;
+    background: rgba(10,30,60,0.25);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin: 0 auto;
+}
+
+#announcementsCarousel .carousel-control-prev,
+#announcementsCarousel .carousel-control-next {
+    width: 80px; /* keep your preferred width */
+    height: 100%; /* occupy the full height of the carousel */
+    top: 0;
+    bottom: 0;
+    transform: none;
+    opacity: 1;
+    background: rgba(10,30,60,0.18);
+    border-radius: 1.7rem; /* match .announcements-carousel-wrapper */
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    position: absolute;
+}
+
+#announcementsCarousel .carousel-control-prev {
+    left: 0;
+    border-top-left-radius: 1.7rem;
+    border-bottom-left-radius: 1.7rem;
+}
+
+#announcementsCarousel .carousel-control-next {
+    right: 0;
+    border-top-right-radius: 1.7rem;
+    border-bottom-right-radius: 1.7rem;
+}
+
+/* Arrow icon styling */
+#announcementsCarousel .carousel-control-prev-icon,
+#announcementsCarousel .carousel-control-next-icon {
+    background-color: transparent !important;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    filter: invert(1) grayscale(1) brightness(2);
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+#announcements .d-flex {
+    gap: 2rem;
+}
+.announcement-info-side {
+    max-width: 400px;
+    color: #0a1e3c;
+}
+
+.announcement-info-hero {
+    position: relative;
+    z-index: 2;
+    color: #fff;
+    text-align: left;
+    padding: 2rem 3rem;
+    text-shadow: 0 2px 8px rgba(10,30,60,0.7);
+    width: 100%;
+    max-width: 70%;
+}
+
+
+.announcement-info-hero h2,
+.announcement-info-hero p,
+.announcement-info-hero .badge {
+    color: #fff;
+    /* Dark blue outline using multiple text-shadows */
+    text-shadow:
+        -1px -1px 0 #0a1e3c,
+         1px -1px 0 #0a1e3c,
+        -1px  1px 0 #0a1e3c,
+         1px  1px 0 #0a1e3c,
+         0px  2px 4px rgba(10,30,60,0.7); /* Optional: soft shadow for extra contrast */
+}
+
+.carousel-fade .carousel-inner {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    min-height: 420px; /* Match your .announcement-slide */
+}
+
+.carousel-fade .carousel-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.7s ease;
+    display: block;
+    z-index: 1;
+    height: 100%;
+}
+
+.carousel-fade .carousel-item.active,
+.carousel-fade .carousel-item-next.carousel-item-start,
+.carousel-fade .carousel-item-prev.carousel-item-end {
+    opacity: 1;
+    z-index: 2;
+    position: absolute;
+    height: 100%;
+}
+
+.carousel-fade .carousel-item.active {
+    position: relative;
+    height: 100%;
+}
+
+/* Custom overlay for blur and blue-black darkness */
+.custom-modal-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 1050;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px) saturate(160%);
+    display: none;
+    transition: opacity 0.3s;
+}
+/* Show the overlay when the modal is open */
+.modal.show ~ .custom-modal-bg,
+.custom-modal-bg.active {
+    display: block;
+}
+.modal-outline {
+    border: 2px solid #356afd;
+}
+
+/* Style for "Admin" gradient text */
+.navbar-brand h1 span:last-child {
+    background: linear-gradient(90deg, #f5d76e, #d49830, #ffdc6b); /* Gradient colors */
+    background-size: 200% 200%; /* Allow for animation */
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-shift 6s ease-in-out infinite; /* Animation */
+}
+
+/* Keyframes for the gradient animation */
+@keyframes gradient-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.navbar .btn-primary {
+    background-color: #007bff; /* Match the primary color */
+    border-color: #007bff;
+    padding: 0.5rem 1.5rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.navbar .btn-primary:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+    border-color: #0056b3;
+}
+
+/* Announcement Grid Styling */
+#announcementsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 1.5rem; /* Spacing between grid items */
+}
+
+.card {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 350px; /* Set a consistent height for all cards */
+    display: flex;
+    flex-direction: column;
+    position: relative; /* For genre badge positioning */
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+    height: 150px; /* Consistent height for images */
+    object-fit: cover; /* Ensure images fit within the set height */
+    width: 100%;
+}
+
+.card-body {
+    flex: 1; /* Allow content to stretch evenly */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-footer {
+    background-color: #f8f9fa; /* Light gray footer */
+    border-top: 1px solid #e9ecef;
+    text-align: center;
+}
+
+.card-header {
+    padding: 0.75rem 1rem;
+    background-color: #0b488a !important; /* Light background */
+    border-bottom: 1px solid #3c5369; /* Subtle border */
+    font-weight: 600;
+}
+
+/* Announcement Title Styling */
+.card-header h5.card-title {
+    color: #fff; /* White text for the title */
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Dropdown Icon Styling */
+.card-header .dropdown-toggle {
+    background: none;
+    border: none;
+    color: #fff; /* White color for the icon */
+    font-size: 1.25rem; /* Adjust size */
+    padding: 0;
+    transition: color 0.3s ease;
+}
+
+.card-header .dropdown-toggle:hover {
+    color: #5991e6; /* Light blue hover effect */
+}
+
+/* Genre Badge Styling */
+.genre-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem; /* Compact padding */
+    font-size: 0.75rem; /* Smaller font size */
+    font-weight: 600;
+    color: #fff;
+    background-color: #007bff; /* Default blue */
+    border-radius: 1rem; /* Rounded badge */
+    text-transform: capitalize;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+
+@media (max-width: 900px) {
+    .announcement-info-hero {
+        padding: 1rem;
+        max-width: 100%;
+    }
+}
+
+/* Compact card styling */
+.card-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limit to 3 lines */
+    -webkit-box-orient: vertical;
+}
+
+/* Dropdown menu styling */
+.navbar .dropdown-menu {
+    background: #fff; /* Plain white background */
+    border: 2px solid #1f458b; /* Thicker blue border for distinction */
+    border-radius: 0; /* Remove rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for separation */
+    margin-top: 0.5rem; /* Add spacing between navbar and dropdown */
+    padding: 0; /* Remove default padding */
+    position: absolute; /* Ensure it drops down from the toggle */
+    left: 0; /* Align with the toggle */
+    right: 0; /* Stretch to the full width of the parent */
+    opacity: 0; /* Start hidden */
+    transform: translateY(0); /* Start at the same position */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth fade effect */
+}
+
+/* Show dropdown when open */
+.navbar .dropdown-menu.show {
+    opacity: 1; /* Fully visible */
+    transform: translateY(0); /* No movement */
+}
+
+/* Dropdown item styling */
+.navbar .dropdown-menu .dropdown-item {
+    color: #0a1e3c; /* Dark blue text */
+    padding: 0.75rem 1.5rem; /* Add padding for better spacing */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth hover effect */
+    border-bottom: 1px solid #1f458b; /* Divider between items */
+}
+
+/* Remove border for the last item */
+.navbar .dropdown-menu .dropdown-item:last-child {
+    border-bottom: none;
+}
+
+/* Hover effect for dropdown items */
+.navbar .dropdown-menu .dropdown-item:hover {
+    background-color: #1f458b; /* Blue hover effect */
+    color: #fff; /* White text on hover */
+}
+
+/* Dropdown menu arrow styling */
+.navbar .dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #1f458b; /* Match dropdown border color */
+    display: none; /* Hide the arrow */
+}
+
+/* Modal Header Styling */
+.modal-header {
+    background-color: transparent; /* No background color */
+    border: none; /* Remove border */
+    text-align: center;
+}
+
