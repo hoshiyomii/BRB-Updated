@@ -50,40 +50,120 @@ $totalPages = ceil($totalReservations / $limit);
 <html lang="en">
     <?php include 'includes/admin_head.php'; ?>
     <link href="view_document_requests.css" rel="stylesheet">
-    <link href= "admin_dashboard.css" rel="stylesheet">
+    <link href="admin_dashboard.css" rel="stylesheet">
+    <link href="modern_buttons.css" rel="stylesheet">
+    <link href="history_modal.css" rel="stylesheet">
+    <style>
+    /* Hidden print container */
+    #printContainer {
+        display: none;
+    }
+    
+    @page {
+        margin: 0;
+        size: auto;
+    }
+    
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        
+        #printContainer, #printContainer * {
+            display: block !important;
+            visibility: visible !important;
+        }
+        
+        #printContainer {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 9999;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        /* Style for receipt items in print view */
+        #printContainer .receipt-item {
+            display: flex !important;
+            justify-content: space-between !important;
+            margin-bottom: 2px !important;
+        }
+        
+        #printContainer .receipt-item-label,
+        #printContainer .receipt-item-value {
+            display: inline-block !important;
+        }
+        
+        #printContainer .receipt-header {
+            margin-bottom: 20px !important;
+            text-align: center !important;
+        }
+        
+        #printContainer .receipt-section {
+            margin-bottom: 10px !important;
+        }
+        
+        #printContainer .receipt-total {
+            font-weight: bold !important;
+            margin-top: 5px !important;
+            border-top: 1px solid #ddd !important;
+            padding-top: 5px !important;
+        }
+        
+        /* Hide modal elements during print */
+        .modal, .modal-dialog, .modal-content, .modal-body {
+            display: none;
+        }
+    }
+    </style>
 
 <body>
+    <!-- Print Container -->
+    <div id="printContainer"></div>
     <?php include 'includes/admin_navbar.php'; ?>
 
     <div class="container mt-5">
-        <h1>View Facilities Reservations</h1>
+        <div class="row">
+            <div class="col-12">
+                <div class="document-container">
+                    <div class="header-actions">
+                        <h2 class="header-title">View Facilities Reservations</h2>
+                        <a href="reservation_calendar.php" class="btn btn-primary">
+                            <i class="fas fa-calendar"></i> Calendar View
+                        </a>
+                    </div>
 
-        <!-- Filters -->
-        <div class="d-flex gap-3 mb-3">
-            <div class="form-group">
-                <label for="statusFilter">Filter by Status:</label>
-                <select id="statusFilter" class="form-control" onchange="filterReservations()">
-                    <option value="all" <?php if ($statusFilter === 'all') echo 'selected'; ?>>All</option>
-                    <option value="pending" <?php if ($statusFilter === 'pending') echo 'selected'; ?>>Pending</option>
-                    <option value="approved" <?php if ($statusFilter === 'approved') echo 'selected'; ?>>Approved</option>
-                    <option value="rejected" <?php if ($statusFilter === 'rejected') echo 'selected'; ?>>Rejected</option>
-                </select>
-            </div>
-        </div>
+                    <!-- Filters -->
+                    <div class="filter-container">
+                        <div class="d-flex align-items-center">
+                            <label for="statusFilter" class="filter-label me-2">Status:</label>
+                            <select id="statusFilter" class="form-select filter-select" onchange="filterReservations()">
+                                <option value="all" <?php if ($statusFilter === 'all') echo 'selected'; ?>>All</option>
+                                <option value="pending" <?php if ($statusFilter === 'pending') echo 'selected'; ?>>Pending</option>
+                                <option value="approved" <?php if ($statusFilter === 'approved') echo 'selected'; ?>>Approved</option>
+                                <option value="rejected" <?php if ($statusFilter === 'rejected') echo 'selected'; ?>>Rejected</option>
+                            </select>
+                        </div>
+                    </div>
 
-        <?php if ($result && $result->num_rows > 0): ?>
-            <table class="table table-bordered table-striped mt-3">
-                <thead>
-                    <tr>
-                        <th>Control No.</th>
-                        <th>Full Name</th>
-                        <th>Contact Number</th>
-                        <th>Total Cost</th>
-                        <th>Facility Type</th>
-                        <th>Start and End Time</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
+                    <?php if ($result && $result->num_rows > 0): ?>
+                        <div class="table-container">
+                            <table class="document-table">
+                                <thead>
+                                    <tr>
+                                        <th>Control No.</th>
+                                        <th>Full Name</th>
+                                        <th>Contact Number</th>
+                                        <th>Total Cost</th>
+                                        <th>Facility Type</th>
+                                        <th>Start and End Time</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
                 <tbody>
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <tr class="clickable-row" 
@@ -115,68 +195,211 @@ $totalPages = ceil($totalReservations / $limit);
                             <td><?php echo number_format($row['total_cost'], 2); ?> Php</td>
                             <td><?php echo $row['facility_type']; ?></td>
                             <td><?php echo date("F j, Y, g:i a", strtotime($row['start_time'])); ?> - <?php echo date("F j, Y, g:i a", strtotime($row['end_time'])); ?></td>
-                            <td class="status-<?php echo htmlspecialchars($row['status']); ?>">
-                                <?php 
-                                    if ($row['status'] === 'approved') {
-                                        echo '<span class="status-approved" style="color: green;">Approved</span>';
-                                    } elseif ($row['status'] === 'rejected') {
-                                        echo '<span class="status-rejected" style="color: red;">Rejected</span>';
-                                    } elseif ($row['status'] === 'pending') {
-                                        echo '<span class="status-pending" style="color: orange;">Pending</span>';
-                                    }
-                                ?>
+                            <td>
+                                <span class="status-badge status-<?php echo htmlspecialchars($row['status']); ?>">
+                                    <?php echo ucfirst($row['status']); ?>
+                                </span>
                             </td>
                         </tr>
                     <?php endwhile; ?>
                 </tbody>
-            </table>
+                            </table>
+                        </div>
 
-            <!-- Pagination Controls -->
-            <nav>
-                <ul class="pagination justify-content-center mt-4">
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <li class="page-item <?php echo $i === $page ? 'active' : ''; ?>">
-                            <a class="page-link" href="?status=<?php echo $statusFilter; ?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
-                        </li>
-                    <?php endfor; ?>
-                </ul>
-            </nav>
-        <?php else: ?>
-            <p>No reservations found for the selected status.</p>
-        <?php endif; ?>
+                        <!-- Pagination Controls -->
+                        <div class="pagination-container">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                        <li class="page-item <?php echo $i === $page ? 'active' : ''; ?>">
+                                            <a class="page-link" href="?status=<?php echo $statusFilter; ?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                                        </li>
+                                    <?php endfor; ?>
+                                </ul>
+                            </nav>
+                        </div>
+                    <?php else: ?>
+                        <div class="empty-state">
+                            <i class="fas fa-building empty-state-icon"></i>
+                            <p class="empty-state-text">No facility reservations found for the selected status.</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Reservation Details Modal -->
     <div class="modal fade" id="reservationDetailsModal" tabindex="-1" role="dialog" aria-labelledby="reservationDetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content modal-animation">
                 <div class="modal-header">
                     <h5 class="modal-title" id="reservationDetailsModalLabel">Reservation Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p><i class="fa fa-hashtag"></i> <strong>Control No.:</strong> <span id="modalControlNo"></span></p>
-                    <p><i class="fa fa-user"></i> <strong>Full Name:</strong> <span id="modalFullName"></span></p>
-                    <p><i class="fa fa-phone"></i> <strong>Contact Number:</strong> <span id="modalContactNumber"></span></p>
-                    <p><i class="fa fa-map-marker"></i> <strong>Facility Type:</strong> <span id="modalFacilityType"></span></p>
-                    <p><i class="fa fa-money" style="color: darkblue;"></i> <strong style="color: darkblue;">Total Cost:</strong> <span id="modalTotalCost" style="color: darkblue;"></span></p>
-                    <p><i class="fa fa-clock"></i> <strong>Start Time:</strong> <span id="modalStartTime"></span></p>
-                    <p><i class="fa fa-clock"></i> <strong>End Time:</strong> <span id="modalEndTime"></span></p>
-                    <p><i class="fa fa-plus"></i> <strong>Extras:</strong> <span id="modalExtras"></span></p>
-                    <p id="modalLifetimeTable" style="display: none;"><i class="fa fa-table"></i> <strong>Lifetime Table:</strong> <span></span></p>
-                    <p id="modalLifetimeChair" style="display: none;"><i class="fa fa-chair"></i> <strong>Lifetime Chair:</strong> <span></span></p>
-                    <p id="modalLongTable" style="display: none;"><i class="fa fa-table"></i> <strong>Long Table:</strong> <span></span></p>
-                    <p id="modalMonoblockChair" style="display: none;"><i class="fa fa-chair"></i> <strong>Monoblock Chair:</strong> <span></span></p>
-                    <p><i class="fa fa-info-circle"></i> <strong>Status:</strong> <span id="modalStatus"></span></p>
-                    <p id="modalApprovedBy" style="display: none;"><i class="fa fa-user-check"></i> <strong>Approved by:</strong> <span></span></p>
-                    <p id="modalTimeApproved" style="display: none;"><i class="fa fa-clock"></i> <strong>Time Approved:</strong> <span></span></p>
-                    <p id="modalRejectedBy" style="display: none;"><i class="fa fa-user-times"></i> <strong>Rejected by:</strong> <span></span></p>
-                    <p id="modalRejectionReason" style="display: none;"><i class="fa fa-comment"></i> <strong>Rejection Reason:</strong> <span></span></p>
-                    <p id="modalTimeRejected" style="display: none;"><i class="fa fa-clock"></i> <strong>Time Rejected:</strong> <span></span></p>
+                    <div class="detail-section">
+                        <div class="detail-row">
+                            <span class="detail-icon">
+                                <i class="fas fa-hashtag"></i>
+                            </span>
+                            <div class="detail-label">Control Number:</div>
+                            <div class="detail-value" id="modalControlNo"></div>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-icon">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <div class="detail-label">Full Name:</div>
+                            <div class="detail-value" id="modalFullName"></div>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-icon">
+                                <i class="fas fa-phone"></i>
+                            </span>
+                            <div class="detail-label">Contact Number:</div>
+                            <div class="detail-value" id="modalContactNumber"></div>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-icon">
+                                <i class="fas fa-building"></i>
+                            </span>
+                            <div class="detail-label">Facility Type:</div>
+                            <div class="detail-value" id="modalFacilityType"></div>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-icon">
+                                <i class="fas fa-money-bill-wave text-primary"></i>
+                            </span>
+                            <div class="detail-label text-primary">Total Cost:</div>
+                            <div class="detail-value text-primary fw-bold" id="modalTotalCost"></div>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-icon">
+                                <i class="fas fa-hourglass-start"></i>
+                            </span>
+                            <div class="detail-label">Start Time:</div>
+                            <div class="detail-value" id="modalStartTime"></div>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-icon">
+                                <i class="fas fa-hourglass-end"></i>
+                            </span>
+                            <div class="detail-label">End Time:</div>
+                            <div class="detail-value" id="modalEndTime"></div>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-icon">
+                                <i class="fas fa-plus-circle"></i>
+                            </span>
+                            <div class="detail-label">Extras:</div>
+                            <div class="detail-value" id="modalExtras"></div>
+                        </div>
+                        
+                        <!-- Additional items -->
+                        <div class="detail-row" id="modalLifetimeTable" style="display: none;">
+                            <span class="detail-icon">
+                                <i class="fas fa-table"></i>
+                            </span>
+                            <div class="detail-label">Lifetime Table:</div>
+                            <div class="detail-value"></div>
+                        </div>
+                        <div class="detail-row" id="modalLifetimeChair" style="display: none;">
+                            <span class="detail-icon">
+                                <i class="fas fa-chair"></i>
+                            </span>
+                            <div class="detail-label">Lifetime Chair:</div>
+                            <div class="detail-value"></div>
+                        </div>
+                        <div class="detail-row" id="modalLongTable" style="display: none;">
+                            <span class="detail-icon">
+                                <i class="fas fa-table"></i>
+                            </span>
+                            <div class="detail-label">Long Table:</div>
+                            <div class="detail-value"></div>
+                        </div>
+                        <div class="detail-row" id="modalMonoblockChair" style="display: none;">
+                            <span class="detail-icon">
+                                <i class="fas fa-chair"></i>
+                            </span>
+                            <div class="detail-label">Monoblock Chair:</div>
+                            <div class="detail-value"></div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                            <div class="detail-label">Status:</div>
+                            <div class="detail-value" id="modalStatus"></div>
+                        </div>
+                        
+                        <!-- Approved details -->
+                        <div class="detail-row" id="modalApprovedBy" style="display: none;">
+                            <span class="detail-icon">
+                                <i class="fas fa-user-check text-success"></i>
+                            </span>
+                            <div class="detail-label">Approved by:</div>
+                            <div class="detail-value approved-value"></div>
+                        </div>
+                        <div class="detail-row" id="modalTimeApproved" style="display: none;">
+                            <span class="detail-icon">
+                                <i class="fas fa-clock text-success"></i>
+                            </span>
+                            <div class="detail-label">Time Approved:</div>
+                            <div class="detail-value approved-value"></div>
+                        </div>
+
+                        <!-- Print receipt button (only shown for approved reservations) -->
+                        <div class="detail-row" id="printReceiptRow" style="display: none;">
+                            <div class="w-100 d-flex justify-content-center mt-3">
+                                <button type="button" class="action-btn btn-print" id="printFacilityButton">
+                                    <i class="fas fa-print me-2"></i> Print Receipt
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Rejected details -->
+                        <div class="detail-row" id="modalRejectedBy" style="display: none;">
+                            <span class="detail-icon">
+                                <i class="fas fa-user-times text-danger"></i>
+                            </span>
+                            <div class="detail-label">Rejected by:</div>
+                            <div class="detail-value rejected-value"></div>
+                        </div>
+                        <div class="detail-row" id="modalRejectionReason" style="display: none;">
+                            <span class="detail-icon">
+                                <i class="fas fa-comment-alt text-danger"></i>
+                            </span>
+                            <div class="detail-label">Rejection Reason:</div>
+                            <div class="detail-value rejected-value"></div>
+                        </div>
+                        <div class="detail-row" id="modalTimeRejected" style="display: none;">
+                            <span class="detail-icon">
+                                <i class="fas fa-clock text-danger"></i>
+                            </span>
+                            <div class="detail-label">Time Rejected:</div>
+                            <div class="detail-value rejected-value"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="actions-section">
+                        <h5><i class="fas fa-tools me-2"></i>Actions</h5>
+                        <p class="text-muted small">Select an action to perform on this facility reservation</p>
+                        <div id="modalActions" class="d-flex flex-wrap gap-2 mt-3">
+                            <button type="button" class="action-btn btn-approve" onclick="openApproveModal()">
+                                <i class="fas fa-check-circle me-2"></i> Approve Reservation
+                            </button>
+                            <button type="button" class="action-btn btn-reject" onclick="openRejectModal()">
+                                <i class="fas fa-times-circle me-2"></i> Reject Reservation
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer" id="modalFooter">
-                    <button type="button" class="btn btn-success" onclick="openApproveModal()">Approve</button>
-                    <button type="button" class="btn btn-danger" onclick="openRejectModal()">Reject</button>
+                <div class="modal-footer">
+                    <button type="button" class="action-btn btn-close-modal" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i> Close
+                    </button>
                 </div>
             </div>
         </div>
@@ -184,11 +407,11 @@ $totalPages = ceil($totalReservations / $limit);
 
     <!-- Approve Modal -->
     <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="approveModalLabel">Approve Reservation</h5>
-                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content modal-animation">
+                <div class="modal-header">
+                    <h5 class="modal-title text-success" id="approveModalLabel"><i class="fas fa-check-circle me-2"></i>Approve Reservation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="approveForm">
@@ -200,7 +423,11 @@ $totalPages = ceil($totalReservations / $limit);
                             </label>
                         </div>
                         <div id="approveFeedback" class="alert mt-3" style="display: none;"></div>
-                        <button type="submit" class="btn btn-success btn-block mt-3">Confirm Approval</button>
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="action-btn btn-approve">
+                                <i class="fas fa-check-circle me-2"></i> Confirm Approval
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -209,11 +436,11 @@ $totalPages = ceil($totalReservations / $limit);
 
     <!-- Reject Modal -->
     <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="rejectModalLabel">Reject Reservation</h5>
-                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content modal-animation">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="rejectModalLabel"><i class="fas fa-times-circle me-2"></i>Reject Reservation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="rejectForm">
@@ -223,7 +450,11 @@ $totalPages = ceil($totalReservations / $limit);
                             <textarea id="rejectionReason" name="rejection_reason" class="form-control" rows="3" required></textarea>
                         </div>
                         <div id="rejectFeedback" class="alert mt-3" style="display: none;"></div>
-                        <button type="submit" class="btn btn-danger btn-block mt-3">Confirm Rejection</button>
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="action-btn btn-reject">
+                                <i class="fas fa-times-circle me-2"></i> Confirm Rejection
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -343,12 +574,13 @@ $totalPages = ceil($totalReservations / $limit);
                     modalStatus.style.color = 'red';
                 }
 
-                // Show or hide buttons and labels based on status
-                const modalFooter = document.getElementById('modalFooter');
+                // Show or hide actions section and detail rows based on status
+                const actionsSection = document.querySelector('.actions-section');
+                
                 if (status === 'Pending') {
-                    modalFooter.style.display = 'flex';
+                    actionsSection.style.display = 'block';
                 } else {
-                    modalFooter.style.display = 'none';
+                    actionsSection.style.display = 'none';
                 }
 
                 const approvedBy = document.getElementById('modalApprovedBy');
@@ -358,26 +590,32 @@ $totalPages = ceil($totalReservations / $limit);
                 const timeRejected = document.getElementById('modalTimeRejected');
 
                 if (status === 'Approved') {
-                    approvedBy.style.display = 'block';
-                    approvedBy.querySelector('span').textContent = row.dataset.approvedBy || 'N/A';
+                    approvedBy.style.display = 'flex';
+                    approvedBy.querySelector('.approved-value').textContent = row.dataset.approvedBy || 'N/A';
 
-                    timeApproved.style.display = 'block';
-                    timeApproved.querySelector('span').textContent = row.dataset.timeApproved
+                    timeApproved.style.display = 'flex';
+                    timeApproved.querySelector('.approved-value').textContent = row.dataset.timeApproved
                         ? new Date(row.dataset.timeApproved).toLocaleString()
                         : 'N/A';
+                        
+                    // Show print receipt button for approved reservations
+                    document.getElementById('printReceiptRow').style.display = 'flex';
 
                     rejectedBy.style.display = 'none';
                     rejectionReason.style.display = 'none';
                     timeRejected.style.display = 'none';
                 } else if (status === 'Rejected') {
-                    rejectedBy.style.display = 'block';
-                    rejectedBy.querySelector('span').textContent = row.dataset.rejectedBy || 'N/A';
+                    rejectedBy.style.display = 'flex';
+                    rejectedBy.querySelector('.rejected-value').textContent = row.dataset.rejectedBy || 'N/A';
 
-                    rejectionReason.style.display = 'block';
-                    rejectionReason.querySelector('span').textContent = row.dataset.rejectionReason || 'N/A';
+                    rejectionReason.style.display = 'flex';
+                    rejectionReason.querySelector('.rejected-value').textContent = row.dataset.rejectionReason || 'N/A';
+                    
+                    // Hide print receipt button for rejected reservations
+                    document.getElementById('printReceiptRow').style.display = 'none';
 
-                    timeRejected.style.display = 'block';
-                    timeRejected.querySelector('span').textContent = row.dataset.timeRejected
+                    timeRejected.style.display = 'flex';
+                    timeRejected.querySelector('.rejected-value').textContent = row.dataset.timeRejected
                         ? new Date(row.dataset.timeRejected).toLocaleString()
                         : 'N/A';
 
@@ -389,6 +627,8 @@ $totalPages = ceil($totalReservations / $limit);
                     rejectedBy.style.display = 'none';
                     rejectionReason.style.display = 'none';
                     timeRejected.style.display = 'none';
+                    // Hide print receipt button for pending reservations
+                    document.getElementById('printReceiptRow').style.display = 'none';
                 }
 
                 // Show the modal using Bootstrap's native API
@@ -516,6 +756,149 @@ $totalPages = ceil($totalReservations / $limit);
                 rejectFeedback.style.display = 'block';
             });
         });
+        
+        // Print receipt functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('printFacilityButton').addEventListener('click', function() {
+                generateFacilityReceiptForPrinting();
+                window.print();
+            });
+        });
+        
+        function generateFacilityReceiptForPrinting() {
+            const printContainer = document.getElementById('printContainer');
+            printContainer.innerHTML = ''; // Clear previous content
+            
+            const receiptContent = document.createElement('div');
+            receiptContent.classList.add('receipt-content');
+            
+            // Add header
+            const header = document.createElement('div');
+            header.classList.add('receipt-header');
+            header.innerHTML = `
+                <h3>Barangay Reservation Receipt</h3>
+                <h4>Facilities Reservation</h4>
+                <p>Date: ${new Date().toLocaleDateString()}</p>
+            `;
+            receiptContent.appendChild(header);
+            
+            // Create reservation details section
+            const detailsSection = document.createElement('div');
+            detailsSection.classList.add('receipt-section');
+            detailsSection.innerHTML = '<h5>Reservation Details</h5>';
+            
+            // Add details items
+            const controlNo = document.getElementById('modalControlNo').textContent;
+            addReceiptItem(detailsSection, 'Control Number:', controlNo);
+            
+            const fullName = document.getElementById('modalFullName').textContent;
+            addReceiptItem(detailsSection, 'Full Name:', fullName);
+            
+            const contactNumber = document.getElementById('modalContactNumber').textContent;
+            addReceiptItem(detailsSection, 'Contact Number:', contactNumber);
+            
+            const facilityType = document.getElementById('modalFacilityType').textContent;
+            addReceiptItem(detailsSection, 'Facility Type:', facilityType);
+            
+            const startTime = document.getElementById('modalStartTime').textContent;
+            addReceiptItem(detailsSection, 'Start Time:', startTime);
+            
+            const endTime = document.getElementById('modalEndTime').textContent;
+            addReceiptItem(detailsSection, 'End Time:', endTime);
+            
+            // Add extras if available
+            const extras = document.getElementById('modalExtras').textContent;
+            if (extras && extras !== 'None') {
+                addReceiptItem(detailsSection, 'Additional Services:', extras);
+            }
+            
+            // Add additional items if available
+            const lifetimeTable = document.getElementById('modalLifetimeTable');
+            if (lifetimeTable.style.display !== 'none') {
+                const tableCount = lifetimeTable.querySelector('span').textContent;
+                addReceiptItem(detailsSection, 'Lifetime Tables:', tableCount);
+            }
+            
+            const lifetimeChair = document.getElementById('modalLifetimeChair');
+            if (lifetimeChair.style.display !== 'none') {
+                const chairCount = lifetimeChair.querySelector('span').textContent;
+                addReceiptItem(detailsSection, 'Lifetime Chairs:', chairCount);
+            }
+            
+            const longTable = document.getElementById('modalLongTable');
+            if (longTable.style.display !== 'none') {
+                const longTableCount = longTable.querySelector('span').textContent;
+                addReceiptItem(detailsSection, 'Long Tables:', longTableCount);
+            }
+            
+            const monoblockChair = document.getElementById('modalMonoblockChair');
+            if (monoblockChair && monoblockChair.style.display !== 'none') {
+                const monoblockCount = monoblockChair.querySelector('span').textContent;
+                addReceiptItem(detailsSection, 'Monoblock Chairs:', monoblockCount);
+            }
+            
+            // Add approval details
+            const approvedBy = document.querySelector('#modalApprovedBy .approved-value').textContent;
+            addReceiptItem(detailsSection, 'Approved By:', approvedBy);
+            
+            const timeApproved = document.querySelector('#modalTimeApproved .approved-value').textContent;
+            addReceiptItem(detailsSection, 'Time Approved:', timeApproved);
+            
+            // Add cost details
+            const totalCost = document.getElementById('modalTotalCost').textContent;
+            addReceiptItem(detailsSection, 'Total Cost:', totalCost, true);
+            
+            // Add official section
+            const officialSection = document.createElement('div');
+            officialSection.classList.add('receipt-section', 'mt-5');
+            officialSection.innerHTML = `
+                <div style="margin-top: 50px; text-align: center;">
+                    <div style="border-top: 1px solid #000; display: inline-block; width: 200px; margin-bottom: 5px;"></div>
+                    <p>Authorized Signature</p>
+                </div>
+            `;
+            
+            // Append all sections to receipt content
+            receiptContent.appendChild(detailsSection);
+            receiptContent.appendChild(officialSection);
+            
+            // Add footer
+            const footer = document.createElement('div');
+            footer.classList.add('receipt-footer', 'mt-5');
+            footer.innerHTML = `
+                <p style="text-align: center; font-size: 12px; margin-top: 20px;">
+                    This is an official receipt for facilities reservation.<br>
+                    Thank you for your reservation!
+                </p>
+            `;
+            receiptContent.appendChild(footer);
+            
+            // Add the content to the print container
+            printContainer.appendChild(receiptContent);
+        }
+        
+        function addReceiptItem(container, label, value, isBold = false) {
+            const item = document.createElement('div');
+            item.classList.add('receipt-item');
+            
+            const labelSpan = document.createElement('span');
+            labelSpan.classList.add('receipt-item-label');
+            labelSpan.textContent = label;
+            
+            const valueSpan = document.createElement('span');
+            valueSpan.classList.add('receipt-item-value');
+            valueSpan.textContent = value;
+            
+            if (isBold) {
+                labelSpan.style.fontWeight = 'bold';
+                valueSpan.style.fontWeight = 'bold';
+                item.classList.add('receipt-total');
+            }
+            
+            item.appendChild(labelSpan);
+            item.appendChild(valueSpan);
+            container.appendChild(item);
+        }
     </script>
 
     <!-- Bootstrap Bundle with Popper -->

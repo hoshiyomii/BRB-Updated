@@ -56,6 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <!DOCTYPE html>
 <html lang="en">
 <?php include 'includes/admin_head.php'; ?>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="edit_announcement.css">
 <body>
 <?php include 'includes/admin_navbar.php'; ?>

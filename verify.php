@@ -43,7 +43,7 @@ if (isset($_GET['token'])) {
                     <i class="fa <?php echo $icon; ?> fa-4x mb-4"></i>
                     <h2 class="text-center mb-4">Verification Status</h2>
                     <p class="lead"><?php echo htmlspecialchars($message); ?></p>
-                    <a href="login.php" class="btn btn-primary w-100 py-3 mt-4">To Log-in</a>
+                    <a href="user_login.php" class="btn btn-primary w-100 py-3 mt-4">To Log-in</a>
                 </div>
             </div>
         </div>

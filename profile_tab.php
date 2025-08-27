@@ -80,13 +80,32 @@
                 <label>Blood Type:</label>
                 <select class="form-control" name="blood_type" required>
                     <?php
-                    $blood_types = ["A+","A-","B+","B-","AB+","AB-","O+","O-"];
+                    $blood_types = ["A+","A-","B+","B-","AB+","AB-","O+","O-","Unknown"];
                     foreach ($blood_types as $bt) {
                         $selected = ($userData['blood_type'] == $bt) ? 'selected' : '';
                         echo "<option value=\"$bt\" $selected>$bt</option>";
                     }
                     ?>
                 </select>
+            </div>
+
+            <div class="col-12">
+                <label>Sector <span class="text-muted" style="font-weight:normal; font-size:90%;">(Select all that apply)</span></label>
+                <div class="row g-2">
+                    <?php
+                    $sector_options = ["Widow", "Solo Parent", "PWD", "LGBTQ", "Senior Citizen", "Student"];
+                    $user_sectors = isset($userData['sector']) ? explode(',', $userData['sector']) : [];
+                    foreach ($sector_options as $sector) {
+                        $checked = in_array($sector, $user_sectors) ? 'checked' : '';
+                        $id = 'sector_' . strtolower(str_replace(' ', '_', $sector));
+                        echo '<div class="col-6 col-md-4">';
+                        echo '<div class="form-check">';
+                        echo '<input class="form-check-input" type="checkbox" name="sector[]" id="' . $id . '" value="' . $sector . '" ' . $checked . '>';
+                        echo '<label class="form-check-label" for="' . $id . '">' . $sector . '</label>';
+                        echo '</div></div>';
+                    }
+                    ?>
+                </div>
             </div>
             <div class="col-12 col-sm-6">
                 <label>Lot, Block:</label>

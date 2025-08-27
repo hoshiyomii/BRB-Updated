@@ -1,65 +1,135 @@
-/* General container styling */
-.container {
-    margin: 10px auto; /* Reduce top and bottom margin */
-    max-width: 85%; /* Increase the width of the container */
+/* Document Requests List CSS */
+.document-container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    padding: 20px;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #333;
 }
 
 /* Filters styling */
-.d-flex {
+.filter-container {
     display: flex;
-    gap: 1rem;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
-#document_type, #statusFilter {
-    max-width: 300px;
+.filter-label {
+    font-weight: 500;
+    margin-bottom: 0;
+    white-space: nowrap;
 }
 
-/* Table styling */
-.table {
+.filter-select {
+    min-width: 200px;
+}
+
+/* Table container */
+/* Removed table-container class */
+
+/* Document table styles */
+.document-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
     font-size: 0.9rem;
 }
 
-.table thead th {
-    background-color: #0b488a; /* Custom header color */
-    color: white;
+.document-table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding: 12px 15px;
+    border-bottom: 2px solid #dee2e6;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    text-align: left;
+}
+
+.document-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: middle;
+}
+
+.document-table tr.clickable-row {
+    cursor: pointer;
+}
+
+/* Removed hover and active row styling */
+
+.document-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Removed status-based row background colors */
+
+/* Status badge styling */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    display: inline-block;
+    white-space: nowrap; /* Prevent text from wrapping */
+    min-width: 90px;
     text-align: center;
-    padding: 10px;
 }
 
-.table-striped tbody tr:nth-of-type(odd) {
-    background-color: #f9f9f9;
-}
-
-.table tbody tr {
-    transition: background-color 0.3s ease;
-}
-
-.table tbody tr.status-approved {
-    background-color: #d4edda; /* Light Green for Approved */
-}
-
-.table tbody tr.status-rejected {
-    background-color: #f8d7da; /* Light Red for Rejected */
-}
-
-.table tbody tr.status-pending {
-    background-color: #fff3cd; /* Light Yellow for Pending */
-}
-
-/* Status styling */
 .status-approved {
-    color: #28a745; /* Green for approved */
-    font-weight: bold;
+    background-color: #28a745;
+    color: white;
+    min-width: 90px;
+    text-align: center;
 }
 
 .status-rejected {
-    color: #dc3545; /* Red for rejected */
-    font-weight: bold;
+    background-color: #dc3545;
+    color: white;
+    min-width: 90px;
+    text-align: center;
 }
 
 .status-pending {
-    color: #ffc107; /* Yellow for pending */
-    font-weight: bold;
+    background-color: #ffc107;
+    color: #212529;
+    min-width: 90px;
+    text-align: center;
+}
+
+.status-picked_up {
+    background-color: #17a2b8;
+    color: white;
+    min-width: 90px;
+    text-align: center;
+}
+
+.status-picked_up {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    min-width: 90px; /* Ensure badge is wide enough for "Picked Up" */
+    text-align: center;
 }
 
 /* Button styling */
@@ -68,34 +138,195 @@
     font-size: 0.8rem;
 }
 
-.btn-primary {
+/* Action buttons styling moved to modern_buttons.css */
+.actions-section {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.actions-section h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+    position: relative;
+    display: inline-block;
+}
+
+.actions-section h5:after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, #4e73df, #36b9cc);
+    margin-top: 5px;
+    border-radius: 2px;
+}
+
+/* Modal animations and styling */
+.modal-animation {
+    animation: modalFadeIn 0.3s ease;
+}
+
+/* Document detail modal */
+.document-detail-modal {
+    animation: modalFadeIn 0.3s ease;
+}
+
+.document-detail-modal .modal-header {
+    background-color: #2196f3;
+    color: white;
+    border-radius: 5px 5px 0 0;
+    padding: 15px 20px;
+}
+
+.document-detail-modal .modal-body {
+    padding: 20px;
+}
+
+/* Modal button enhancements */
+.document-detail-modal .modal-footer .btn {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.document-detail-modal .modal-footer .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    border-radius: 5px 5px 0 0;
+}
+
+.modal-footer .btn {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.modal-footer .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Pagination styles */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination {
+    margin-bottom: 0;
+}
+
+.page-info {
+    margin-right: 15px;
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.page-item.active .page-link {
     background-color: #007bff;
     border-color: #007bff;
 }
 
-.btn-success {
-    background-color: #28a745;
-    border-color: #28a745;
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
 }
 
-.btn-danger {
-    background-color: #dc3545;
-    border-color: #dc3545;
+.empty-state-icon {
+    font-size: 3.5rem;
+    color: #dee2e6;
+    margin-bottom: 20px;
 }
 
-.action-buttons {
-    display: none; /* Hide the buttons initially */
-    gap: 0.5rem;
-    justify-content: flex-end;
+.empty-state-text {
+    font-size: 1.25rem;
+    color: #6c757d;
+    margin-bottom: 20px;
 }
 
-/* Badge styling for statuses */
-.badge-success {
-    background-color: #28a745; /* Green for Approved */
-    color: #fff; /* White text */
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-    border-radius: 0.25rem;
+/* Detail modal styles */
+.detail-section {
+    margin-bottom: 20px;
+    padding: 5px;
+}
+
+.detail-section h5 {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    color: #495057;
+    font-weight: 600;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 8px 0;
+}
+
+.detail-icon {
+    color: #495057;
+    width: 24px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #495057;
+    min-width: 150px;
+    margin-right: 10px;
+}
+
+.detail-value {
+    font-weight: 400;
+    flex-grow: 1;
+}
+
+.actions-section {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #dee2e6;
+}
+
+.actions-section h5 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    color: #495057;
+    font-weight: 600;
+}
+
+/* Make status badges in modals more prominent */
+.detail-value .badge {
+    font-size: 0.85rem;
+    padding: 0.35em 0.65em;
+    font-weight: 600;
+    min-width: 80px;
+    text-align: center;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+    .header-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .filter-container {
+        margin-top: 15px;
+        width: 100%;
+    }
 }
 
 .badge-danger {
@@ -136,14 +367,9 @@
 /* Ensure the row is clickable */
 .clickable-row {
     cursor: pointer; /* Change cursor to pointer */
-    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Hover effect for rows */
-.clickable-row:hover {
-    background-color: #f1f1f1; /* Light gray background on hover */
-    transform: scale(1.02); /* Slightly enlarge the row */
-}
+/* Removed hover effect for rows */
 
 /* Show action buttons when the row is clicked */
 .clickable-row.active + .action-buttons {
@@ -183,7 +409,7 @@ td:last-child {
     padding-bottom: 0;
 }
 
-.status-picked-up {
+.status-picked_up {
     color: #5bc0de !important; /* Light blue color */
     font-weight: bold;
 }

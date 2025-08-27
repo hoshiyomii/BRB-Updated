@@ -30,6 +30,7 @@
     <!-- Custom Stylesheets -->
     <link href="/Barangay/index.css" rel="stylesheet">
     <link href="/Barangay/css/style.css" rel="stylesheet">
+    <link href="/Barangay/css/mobile.css" rel="stylesheet">
 
     <!-- Owl Carousel CSS (if using local, remove CDN below) -->
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">

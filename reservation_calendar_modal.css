@@ -1,0 +1,116 @@
+/* reservation_calendar_modal.css - Styles for the reservation details modal in reservation_calendar.php */
+
+/* Modal header color for sports venue/facility */
+#reservationModal .modal-header.sports-venue {
+    background-color: #3050c0;
+    color: #fff;
+}
+#reservationModal .modal-header.facility {
+    background-color: #00994d;
+    color: #fff;
+}
+
+#reservationModal .modal-header {
+    background-color: #3050c0;
+    color: #fff;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+#reservationModal .modal-title {
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+#reservationModal .detail-section {
+    margin-top: 10px;
+}
+#reservationModal .detail-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    font-size: 1.08rem;
+    justify-content: space-between;
+}
+#reservationModal .detail-icon {
+    width: 28px;
+    text-align: center;
+    font-size: 1.2em;
+    margin-right: 8px;
+    color: #222;
+    flex-shrink: 0;
+}
+#reservationModal .detail-label {
+    min-width: 140px;
+    font-weight: 500;
+    color: #444;
+    margin-right: 8px;
+    flex: 1;
+    text-align: left;
+}
+#reservationModal .detail-value {
+    font-weight: 400;
+    color: #222;
+    word-break: break-word;
+    flex: 2;
+    text-align: right;
+}
+#reservationModal .detail-value.text-primary {
+    color: #2056d6;
+    font-weight: 700;
+}
+#reservationModal .detail-value.approved-value {
+    color: #00994d;
+    font-weight: 500;
+}
+#reservationModal .detail-value.rejected-value {
+    color: #d32f2f;
+    font-weight: 500;
+}
+#reservationModal .detail-row .fa-info-circle {
+    color: #2056d6;
+}
+#reservationModal .detail-row .fa-user-check {
+    color: #00994d;
+}
+#reservationModal .detail-row .fa-user-times,
+#reservationModal .detail-row .fa-comment-alt,
+#reservationModal .detail-row .fa-clock.text-danger {
+    color: #d32f2f;
+}
+#reservationModal .btn-print {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    color: #2056d6;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+#reservationModal .btn-print:hover {
+    background: #e3e8f0;
+}
+#reservationModal .modal-footer {
+    border-top: none;
+    padding-top: 0;
+}
+#reservationModal .btn-secondary {
+    background: #6c757d;
+    border: none;
+}
+#reservationModal .btn-secondary:hover {
+    background: #495057;
+}
+
+@media (max-width: 600px) {
+    #reservationModal .modal-dialog {
+        max-width: 98vw;
+        margin: 0.5rem auto;
+    }
+    #reservationModal .detail-label {
+        min-width: 90px;
+        font-size: 0.98rem;
+    }
+    #reservationModal .detail-row {
+        font-size: 0.98rem;
+    }
+}

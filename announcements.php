@@ -87,6 +87,7 @@ $totalPages = ceil($totalAnnouncements / $limit);
                     <?php if (!empty($row['image_path'])): ?>
                         <img src="<?php echo htmlspecialchars($row['image_path']); ?>" alt="Announcement Image" class="card-img-top announcement-image" style="height:150px; object-fit:cover;">
                     <?php endif; ?>
+
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
                         <p class="card-text"><?php echo htmlspecialchars(substr($row['content'], 0, 100)) . '...'; ?></p>
@@ -118,6 +119,7 @@ $totalPages = ceil($totalAnnouncements / $limit);
                             </p>
                         <?php endif; ?>
                     </div>
+                    
                 </a>
             </div>
         <?php endwhile; ?>

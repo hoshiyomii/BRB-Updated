@@ -30,7 +30,7 @@ if (!$result || $result->num_rows === 0) {
 $request = $result->fetch_assoc();
 ?>
 
-<div class="modal-header bg-primary text-white">
+<div class="modal-header">
     <h5 class="modal-title">Edit Repair and Construction Request</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>

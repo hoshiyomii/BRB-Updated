@@ -36,6 +36,8 @@ $birthdate      = $_POST['birthdate'];
 $gender         = $_POST['gender'];
 $street         = $_POST['street'];
 $blood_type     = $_POST['blood_type'];
+// Handle sector (array of checkboxes)
+$sector = isset($_POST['sector']) ? implode(',', $_POST['sector']) : NULL;
 $lot_block      = trim($_POST['lot_block']);
 $house_number   = trim($_POST['house_number']);
 $password       = $_POST['password'];
@@ -103,11 +105,11 @@ if (!empty($errors)) {
 
 // Update query (password only if provided)
 if (!empty($new_password)) {
-    $updateQuery = $conn->prepare("UPDATE users SET username=?, email=?, first_name=?, middle_name=?, last_name=?, phone_number=?, birthdate=?, gender=?, street=?, blood_type=?, lot_block=?, house_number=?, password=? WHERE id=?");
-    $updateQuery->bind_param("sssssssssssssi", $new_username, $email, $first_name, $middle_name, $last_name, $phone_number, $birthdate, $gender, $street, $blood_type, $lot_block, $house_number, $hashed_password, $userId);
+    $updateQuery = $conn->prepare("UPDATE users SET username=?, email=?, first_name=?, middle_name=?, last_name=?, phone_number=?, birthdate=?, gender=?, street=?, blood_type=?, sector=?, lot_block=?, house_number=?, password=? WHERE id=?");
+    $updateQuery->bind_param("ssssssssssssssi", $new_username, $email, $first_name, $middle_name, $last_name, $phone_number, $birthdate, $gender, $street, $blood_type, $sector, $lot_block, $house_number, $hashed_password, $userId);
 } else {
-    $updateQuery = $conn->prepare("UPDATE users SET username=?, email=?, first_name=?, middle_name=?, last_name=?, phone_number=?, birthdate=?, gender=?, street=?, blood_type=?, lot_block=?, house_number=? WHERE id=?");
-    $updateQuery->bind_param("ssssssssssssi", $new_username, $email, $first_name, $middle_name, $last_name, $phone_number, $birthdate, $gender, $street, $blood_type, $lot_block, $house_number, $userId);
+    $updateQuery = $conn->prepare("UPDATE users SET username=?, email=?, first_name=?, middle_name=?, last_name=?, phone_number=?, birthdate=?, gender=?, street=?, blood_type=?, sector=?, lot_block=?, house_number=? WHERE id=?");
+    $updateQuery->bind_param("sssssssssssssi", $new_username, $email, $first_name, $middle_name, $last_name, $phone_number, $birthdate, $gender, $street, $blood_type, $sector, $lot_block, $house_number, $userId);
 }
 
 

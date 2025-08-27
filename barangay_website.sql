@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 08, 2025 at 12:09 PM
+-- Generation Time: Aug 27, 2025 at 01:24 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -94,7 +94,29 @@ INSERT INTO `announcements` (`id`, `title`, `content`, `type`, `max_participants
 (56, 'Edited Announcement Testings', 'Amogus dfgdfdfgdfgdfg', 'event', 5, '2025-06-03 08:10:17', 2, 'uploads/default.jpg', 'Work and Employment', NULL, 1, '2025-06-25'),
 (59, 'Testing for fit', 'The Barangay Blue Ridge B is getting a new website for its visitors and residents! Said website contains access to announcements that can be viewed freely anytime and anywhere with internet access, request documents and Item/Facility reservations remotely, and contact the barangay through their phones and computers. The Barangay Blue Ridge B is getting a new website for its visitors and residents! Said website contains access to announcements that can be viewed freely anytime and anywhere with internet access, request documents and Item/Facility reservations remotely, and contact the barangay through their phones and computers.', 'event', 2424, '2025-06-04 11:15:29', 2, 'uploads/default.jpg', 'Work and Employment', NULL, 1, '2025-06-18'),
 (62, 'Testing for archive system client side', 'Testing the announcement module here ', 'view-only', NULL, '2025-06-04 11:27:29', 0, 'uploads/default.jpg', 'Work and Employment', '2025-06-04 19:29:00', 0, NULL),
-(63, 'weqtw90tu890', '23958923589diosfjiosdjfio woejrtiowe ioewklngjko s 89wut 89w hsfh s9ufhesu89 huw89h 789h sdu8fh wuh u89h78 hsiufh 8sgf8 7sgf78sfbwubf 8f 8ry78w huhyfbuysf8 8s7yf78 sfw4 2 235 235 sdfsf wt 2t 2t we3t wtew sdfds fs df wfqw2f', 'event', 5, '2025-06-04 11:35:18', 0, 'uploads/default.jpg', 'Work and Employment', NULL, 1, '2025-06-03');
+(63, 'weqtw90tu890', '23958923589diosfjiosdjfio woejrtiowe ioewklngjko s 89wut 89w hsfh s9ufhesu89 huw89h 789h sdu8fh wuh u89h78 hsiufh 8sgf8 7sgf78sfbwubf 8f 8ry78w huhyfbuysf8 8s7yf78 sfw4 2 235 235 sdfsf wt 2t 2t we3t wtew sdfds fs df wfqw2f', 'event', 5, '2025-06-04 11:35:18', 0, 'uploads/default.jpg', 'Work and Employment', NULL, 1, '2025-06-03'),
+(64, 'Testing after  UI changes', 'This is done after the UI changes of add and edit announcement 27/08/2025 d:', 'event', 234, '2025-08-27 04:21:14', 1, 'uploads/giphy (1).gif', 'Work and Employment', '2025-08-28 12:21:00', 1, '2025-08-28');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `audit_logs`
+--
+
+CREATE TABLE `audit_logs` (
+  `id` int(11) NOT NULL,
+  `action` varchar(64) NOT NULL,
+  `details` text DEFAULT NULL,
+  `performed_by` varchar(64) NOT NULL,
+  `timestamp` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `audit_logs`
+--
+
+INSERT INTO `audit_logs` (`id`, `action`, `details`, `performed_by`, `timestamp`) VALUES
+(1, 'EXPORT_RESIDENTS', 'Exported resident list', 'admin-golf', '2025-08-25 10:30:19');
 
 -- --------------------------------------------------------
 
@@ -300,7 +322,14 @@ INSERT INTO `facilities_reservations` (`id`, `user_id`, `facility_type`, `is_man
 (9, 24, 'Multi Purpose Hall', 1, 1, 0, '2025-06-13 19:00:00', '2025-06-13 23:00:00', 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 9760.00, '2025-06-07 12:40:09', 'pending', NULL, NULL, NULL, NULL, NULL),
 (10, 24, 'Community Center', 1, 1, 1, '2025-06-13 16:00:00', '2025-06-13 20:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8000.00, '2025-06-07 12:59:35', 'pending', NULL, NULL, NULL, NULL, NULL),
 (11, 24, 'Session Hall', 0, 0, 0, '2025-06-13 16:00:00', '2025-06-13 20:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2400.00, '2025-06-07 12:59:51', 'pending', NULL, NULL, NULL, NULL, NULL),
-(12, 24, 'Session Hall', 0, 0, 0, '2025-06-13 16:00:00', '2025-06-13 20:00:00', 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 2550.00, '2025-06-07 13:00:00', 'pending', NULL, NULL, NULL, NULL, NULL);
+(12, 24, 'Session Hall', 0, 0, 0, '2025-06-13 16:00:00', '2025-06-13 20:00:00', 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 2550.00, '2025-06-07 13:00:00', 'pending', NULL, NULL, NULL, NULL, NULL),
+(13, 24, 'Multi Purpose Hall', 1, 0, 0, '2025-08-29 18:00:00', '2025-08-29 22:00:00', 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6100.00, '2025-08-23 10:15:20', 'pending', NULL, NULL, NULL, NULL, NULL),
+(14, 24, 'Multi Purpose Hall', 1, 0, 0, '2025-08-29 18:00:00', '2025-08-29 22:00:00', 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 8260.00, '2025-08-23 10:18:42', 'pending', NULL, NULL, NULL, NULL, NULL),
+(15, 24, 'Multi Purpose Hall', 1, 0, 0, '2025-08-29 18:00:00', '2025-08-29 22:00:00', 0, 0, 52, 45, 72, 57, 0, 1, 0, 0, 30370.00, '2025-08-23 10:23:40', 'pending', NULL, NULL, NULL, NULL, NULL),
+(16, 24, 'Multi Purpose Hall', 1, 0, 0, '2025-08-29 18:00:00', '2025-08-29 22:00:00', 0, 0, 5, 5, 5, 5, 0, 1, 0, 0, 7400.00, '2025-08-23 10:29:29', 'pending', NULL, NULL, NULL, NULL, NULL),
+(17, 24, 'Multi Purpose Hall', 1, 1, 0, '2025-08-29 18:00:00', '2025-08-29 22:00:00', 1, 1, 3, 5, 256, 6, 0, 0, 0, 0, 61060.00, '2025-08-23 10:44:35', 'pending', NULL, NULL, NULL, NULL, NULL),
+(18, 24, 'Multi Purpose Hall', 1, 1, 0, '2025-09-02 16:00:00', '2025-09-02 20:00:00', 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7600.00, '2025-08-27 08:39:02', 'approved', 'admin-golf', NULL, '2025-08-27 10:39:30', NULL, NULL),
+(19, 24, 'Multi Purpose Hall', 1, 0, 0, '2025-09-02 16:00:00', '2025-09-02 20:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5100.00, '2025-08-27 08:44:27', 'rejected', NULL, 'asd', NULL, '2025-08-27 10:50:37', 'admin-golf');
 
 -- --------------------------------------------------------
 
@@ -342,7 +371,9 @@ INSERT INTO `history` (`id`, `document_id`, `document_type`, `action`, `admin_na
 (18, 17, 'repair_and_construction', 'Printed document (Count: 1)', 'Unknown Admin', '2025-06-08 12:00:55'),
 (19, 12, 'repair_and_construction', 'Printed document (Count: 3)', 'admin', '2025-06-08 12:01:24'),
 (20, 12, 'repair_and_construction', 'Printed document (Count: 4)', 'admin', '2025-06-08 12:01:29'),
-(21, 12, 'repair_and_construction', 'Printed document (Count: 5)', 'admin', '2025-06-08 12:01:35');
+(21, 12, 'repair_and_construction', 'Printed document (Count: 5)', 'admin', '2025-06-08 12:01:35'),
+(22, 17, 'repair_and_construction', 'Printed document (Count: 2)', 'admin-golf', '2025-08-20 17:14:57'),
+(23, 13, 'repair_and_construction', 'Printed document (Count: 1)', 'admin-golf', '2025-08-25 16:26:35');
 
 -- --------------------------------------------------------
 
@@ -403,7 +434,8 @@ INSERT INTO `registrations` (`id`, `announcement_id`, `user_id`, `name`, `email`
 (24, 56, 18, '', '', '2025-06-04 10:59:10'),
 (27, 59, 18, '', '', '2025-06-04 11:15:36'),
 (28, 59, 24, '', '', '2025-06-08 01:56:46'),
-(29, 56, 24, '', '', '2025-06-08 01:56:55');
+(29, 56, 24, '', '', '2025-06-08 01:56:55'),
+(30, 64, 26, '', '', '2025-08-27 09:51:32');
 
 -- --------------------------------------------------------
 
@@ -449,11 +481,11 @@ INSERT INTO `repair_and_construction` (`id`, `user_id`, `date_of_request`, `home
 (10, 2, '2025-04-24', 'Jane Doe', 'asdsdwe', '4124253235532', 'Minor Construction', 'Testing Street2324', '2025-04-24 16:40:17', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL),
 (11, 10, '2025-04-24', 'Test Case_3', 'Testing case contractor', '23505824', 'Repairs', 'Test_case address testing cons', '2025-04-24 16:46:17', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL),
 (12, 10, '2025-04-24', 'Test Case_3', 'Awooga asdads', '4124253235532', 'Minor Construction', 'Testing Street awoogaas asd', '2025-04-24 16:47:21', 'approved', 'admin', NULL, '2025-06-20 07:23:00', '2025-06-05 16:20:48', NULL, NULL, 5, NULL),
-(13, 10, '2025-04-24', 'Test Case_3', 'Testing', '4124253235532', 'Repairs', 'Testing Street awooga removed cont num redundant', '2025-04-24 17:02:47', 'approved', 'admin', NULL, '2025-04-12 16:13:00', '2025-04-25 04:07:33', NULL, NULL, 0, NULL),
+(13, 10, '2025-04-24', 'Test Case_3', 'Testing', '4124253235532', 'Repairs', 'Testing Street awooga removed cont num redundant', '2025-04-24 17:02:47', 'approved', 'admin', NULL, '2025-04-12 16:13:00', '2025-04-25 04:07:33', NULL, NULL, 1, NULL),
 (14, 18, '2025-05-28', 'Hoshi Yomi', 'Awooga', '4124253235532', 'Minor Construction', 'Testing Street awoogaaeweq', '2025-05-28 10:27:18', 'approved', NULL, NULL, '2025-06-11 07:48:00', '2025-05-29 15:44:38', NULL, NULL, 0, NULL),
 (15, 18, '2025-05-29', 'Hoshi Yomi', 'Awooga', '4124253235532', 'Minor Construction', 'Oflsd Street, 0424 lot 32', '2025-05-29 07:56:24', 'approved', 'admin', NULL, '2025-05-31 19:00:00', '2025-05-29 15:56:39', NULL, NULL, 1, NULL),
 (16, 18, '2025-05-29', 'Hoshi Yomi', 'Alien', '230592395823582', 'Construction', 'zib zib zib', '2025-05-29 08:04:11', 'rejected', NULL, 'bla bla bla ble ble ble blu blu blu ablaubulabuuablua', NULL, NULL, 'admin', '2025-05-29 16:04:34', 0, NULL),
-(17, 18, '2025-05-30', 'Hoshi Yomi', 'Awooga asdads', '2340230400', 'Minor Construction', 'Oflsd Street, 0424 lot 32', '2025-05-30 10:39:53', 'approved', 'admin', NULL, '2025-06-06 10:44:00', '2025-05-30 18:40:27', NULL, NULL, 1, NULL),
+(17, 18, '2025-05-30', 'Hoshi Yomi', 'Awooga asdads', '2340230400', 'Minor Construction', 'Oflsd Street, 0424 lot 32', '2025-05-30 10:39:53', 'approved', 'admin', NULL, '2025-06-06 10:44:00', '2025-05-30 18:40:27', NULL, NULL, 2, NULL),
 (18, 18, '2025-05-30', 'Hoshi Yomi', 'Awooga asdads', '230592395823582', 'Minor Construction', 'Amog', '2025-05-30 10:42:13', 'rejected', NULL, 'sadads', NULL, NULL, 'admin', '2025-05-30 18:42:27', 0, NULL),
 (19, 18, '2025-05-30', 'Hoshi Yomi', 'Awooga asdads', '2340230494', 'Repairs', 'Road 1 Dona Petra Tumana', '2025-05-30 15:31:14', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, 0, 'YOmi WOir'),
 (20, 18, '2025-05-30', 'Hoshi Yomi', 'Wiiwoowiiwoo', '02492492454', 'Repairs', 'Construction wherer!??!?!', '2025-05-30 15:52:00', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, 0, 'YOmi WOirss'),
@@ -502,7 +534,14 @@ INSERT INTO `reservations` (`id`, `user_id`, `venue_type`, `start_time`, `end_ti
 (12, 24, 'Court A', '2025-06-07 14:00:00', '2025-06-07 18:00:00', 1, 0, 0, 0, 5400.00, '2025-06-07 03:31:20', 'pending', NULL, NULL, NULL, NULL, NULL),
 (13, 24, 'Court A', '2025-06-07 13:00:00', '2025-06-07 14:00:00', 0, 0, 0, 0, 100.00, '2025-06-07 03:33:18', 'rejected', NULL, 'Among Us', NULL, 'admin', '2025-06-07 18:39:23'),
 (14, 24, 'Court A', '2025-06-07 14:00:00', '2025-06-07 19:00:00', 1, 1, 1, 0, 7000.00, '2025-06-07 03:36:07', 'approved', 'admin', NULL, '2025-06-07 18:39:11', NULL, NULL),
-(15, 24, 'Court A', '2025-06-13 10:00:00', '2025-06-13 18:00:00', 1, 0, 0, 0, 9800.00, '2025-06-07 10:05:54', 'approved', 'admin', NULL, '2025-06-07 18:07:02', NULL, NULL);
+(15, 24, 'Court A', '2025-06-13 10:00:00', '2025-06-13 18:00:00', 1, 0, 0, 0, 9800.00, '2025-06-07 10:05:54', 'approved', 'admin', NULL, '2025-06-07 18:07:02', NULL, NULL),
+(16, 24, 'Court A', '2025-08-29 17:00:00', '2025-08-29 22:00:00', 0, 0, 0, 0, 500.00, '2025-08-23 09:58:45', 'pending', NULL, NULL, NULL, NULL, NULL),
+(17, 24, 'Court B', '2025-08-29 18:00:00', '2025-08-29 20:00:00', 0, 0, 0, 0, 400.00, '2025-08-23 10:05:55', 'pending', NULL, NULL, NULL, NULL, NULL),
+(18, 24, 'Court A', '2025-08-29 18:00:00', '2025-08-29 22:00:00', 0, 0, 0, 0, 400.00, '2025-08-23 10:09:21', 'pending', NULL, NULL, NULL, NULL, NULL),
+(19, 24, 'Court A', '2025-08-29 18:00:00', '2025-08-29 22:00:00', 0, 0, 0, 0, 400.00, '2025-08-23 10:36:35', 'pending', NULL, NULL, NULL, NULL, NULL),
+(20, 24, 'Court A', '2025-08-29 18:00:00', '2025-08-29 20:00:00', 0, 0, 0, 0, 200.00, '2025-08-23 10:48:16', 'approved', 'admin-golf', NULL, '2025-08-27 14:41:47', NULL, NULL),
+(21, 24, 'Court A', '2025-09-02 16:00:00', '2025-09-02 18:00:00', 0, 0, 0, 0, 200.00, '2025-08-27 08:14:10', 'approved', 'admin-golf', NULL, '2025-08-27 16:14:55', NULL, NULL),
+(22, 24, 'Court A', '2025-09-02 18:00:00', '2025-09-02 19:00:00', 0, 0, 0, 0, 100.00, '2025-08-27 08:31:05', 'pending', NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -523,31 +562,34 @@ CREATE TABLE `users` (
   `birthdate` date NOT NULL,
   `street` varchar(255) NOT NULL,
   `lot_block` varchar(100) DEFAULT NULL,
-  `blood_type` varchar(5) DEFAULT NULL,
+  `blood_type` varchar(10) DEFAULT NULL,
   `house_number` varchar(50) NOT NULL,
   `date_registered` timestamp NOT NULL DEFAULT current_timestamp(),
   `is_verified` tinyint(1) DEFAULT 0,
-  `verify_token` varchar(64) DEFAULT NULL
+  `verify_token` varchar(64) DEFAULT NULL,
+  `sector` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `first_name`, `middle_name`, `last_name`, `gender`, `phone_number`, `email`, `birthdate`, `street`, `lot_block`, `blood_type`, `house_number`, `date_registered`, `is_verified`, `verify_token`) VALUES
-(1, 'user', '$2y$10$Ue1SPKQnFG4ZpI9BEVbfdOm72jxkwZzX8kjMVDSk.p/Vhc6H8Na92', 'John', NULL, 'Doe', 'Male', '09123456789', 'user@gmail.com', '2025-02-01', 'asd', NULL, NULL, 'wqeqew', '2025-02-11 11:17:35', 0, NULL),
-(2, 'user2', '$2y$10$Mggs9pMcCTsH.q9tVV44I.Hn8.k5Kgl/LO9os6lBKK.GSe5nBKffO', 'Jane', NULL, 'Doe', 'Female', '091234567892', 'user2@gmail.com', '2025-02-05', 'asd', NULL, NULL, '8', '2025-02-11 11:53:42', 0, NULL),
-(3, 'bryan', '$2y$10$IaCL/9OMrYV1.B8iWFQqlOIrlh5YN0LllFfYmrJFG4CL9UVowPZBO', 'bryan', NULL, 'last', 'Male', '09217327039', 'bryan@gmail.com', '2025-02-05', 'asd', NULL, NULL, '32', '2025-02-11 14:32:25', 0, NULL),
-(4, 'Laoke', '$2y$10$nUYpUdZjpZbC/v602M0R5OG3HEYPoSNWUKeJiRS3KPMl5SkT2qIDK', 'Bryan', NULL, 'Laoke', 'Male', '09217327039', 'laoke@email.com', '2025-01-29', '32', NULL, NULL, '3434', '2025-02-12 11:33:51', 0, NULL),
-(5, 'Bryan.laoke', '$2y$10$VRLPTjmISYVkOet69sBnwONpu9IcQQDepO6mz/yxbNOiomuGwd4Sa', 'Bryan', NULL, 'Laoke', 'Male', '09123456789', 'bryan.laoke@email.com', '2004-06-07', 'Piling Santos', NULL, NULL, '23', '2025-02-12 13:34:34', 0, NULL),
-(7, 'Charmaine_ferrer', '$2y$10$U2RgASH843ykGemvLyt6DOvwhfu3tFZZrnZ6F/8fl7J67VEGcZYFa', 'Charmaine', NULL, 'Ferrer', 'Female', '0932234345', 'charmaine_ferrer@gmail.com', '2008-10-03', 'Testing Street', NULL, NULL, '32', '2025-04-23 00:21:11', 0, NULL),
-(8, 'Test_Case', '$2y$10$dqHOn1hTcouF7m5dAJ7fAOSAG90T329S9FG2O3yvunp.1Nk1Je2u2', 'Test', NULL, 'Case', 'Female', '02484822323', 'test_case@gmail.com', '2025-03-05', 'Piling Santos', NULL, NULL, 'wqeqew23. Lot.42', '2025-04-23 00:44:05', 0, NULL),
-(9, 'Test_Case2', '$2y$10$RKRUx0Cf7veaA5vdyjeH3O2VMgj7bY5sBzWk3e9x0pvYwfJkHgVxK', 'Test', NULL, 'Case_2', 'Female', '092173270392', 'test_case2@gmail.com', '2025-04-19', 'Union Lane', NULL, NULL, '2323 Lot.423', '2025-04-24 09:33:09', 0, NULL),
-(10, 'Test_Case3', '$2y$10$fnpwRL0CXiVuagIj7xCYwOG5M8bJWHlg7uGB9GrKC6jcr51XiA.G2', 'Test', NULL, 'Case_3', 'Female', '023232342', 'test_case3@gmail.com', '2025-04-02', 'Starline Drive', NULL, NULL, '2323', '2025-04-24 16:45:29', 0, NULL),
-(18, 'hoshiyomii', '', 'Hoshi', 'Users', 'Yomi', 'Male', '09123456789', 'hoshiyomi08@gmail.com', '2004-11-07', 'Twin Peaks Drive', '422424', 'A+', 'qweew', '2025-05-20 10:08:45', 1, NULL),
-(21, 'miyomishi', '$2y$10$kV/rTPJpn/6JUfFH6UheQe4Oeoeq63mn4zfhUqzMIqsQHqwNQnSZe', 'Miyom', 'Yomi', 'Mimoy', 'Male', '09123456789', 'mhyrrcs@gmail.com', '2010-11-17', 'Starline Drive', '240, Lots03', 'A-', '2424', '2025-05-26 11:57:57', 1, NULL),
-(23, 'Miyoshi', '$2y$10$VTUnOuhIJ4Ipt8wsUoCqOORpaQInIozCACGM32uEKoY0dy6HAFPR.', 'Bryan', 'James', 'Laoke', 'Male', '0912345674560', 'chimikunhd@gmail.com', '2008-02-28', 'Twin Peaks Drive', '422424', 'A+', '242', '2025-06-04 12:20:04', 1, NULL),
-(24, 'testcase', '$2y$10$S.hajHBo0YcpK0U7sr5w6ez0SGgDrQWeG8GNpGmJPuIj1XE.7H2bu', 'test', 'test', 'case', 'Male', '09123456789', 'gecitot313@jeanssi.com', '2010-02-02', 'Union Lane', '422424', 'A+', 'wqeqew', '2025-06-05 01:37:49', 1, NULL);
+INSERT INTO `users` (`id`, `username`, `password`, `first_name`, `middle_name`, `last_name`, `gender`, `phone_number`, `email`, `birthdate`, `street`, `lot_block`, `blood_type`, `house_number`, `date_registered`, `is_verified`, `verify_token`, `sector`) VALUES
+(1, 'user', '$2y$10$Ue1SPKQnFG4ZpI9BEVbfdOm72jxkwZzX8kjMVDSk.p/Vhc6H8Na92', 'John', NULL, 'Doe', 'Male', '09123456789', 'user@gmail.com', '2025-02-01', 'asd', NULL, NULL, 'wqeqew', '2025-02-11 11:17:35', 0, NULL, NULL),
+(2, 'user2', '$2y$10$Mggs9pMcCTsH.q9tVV44I.Hn8.k5Kgl/LO9os6lBKK.GSe5nBKffO', 'Jane', NULL, 'Doe', 'Female', '091234567892', 'user2@gmail.com', '2025-02-05', 'asd', NULL, NULL, '8', '2025-02-11 11:53:42', 0, NULL, NULL),
+(3, 'bryan', '$2y$10$IaCL/9OMrYV1.B8iWFQqlOIrlh5YN0LllFfYmrJFG4CL9UVowPZBO', 'bryan', NULL, 'last', 'Male', '09217327039', 'bryan@gmail.com', '2025-02-05', 'asd', NULL, NULL, '32', '2025-02-11 14:32:25', 0, NULL, NULL),
+(4, 'Laoke', '$2y$10$nUYpUdZjpZbC/v602M0R5OG3HEYPoSNWUKeJiRS3KPMl5SkT2qIDK', 'Bryan', NULL, 'Laoke', 'Male', '09217327039', 'laoke@email.com', '2025-01-29', '32', NULL, NULL, '3434', '2025-02-12 11:33:51', 0, NULL, NULL),
+(5, 'Bryan.laoke', '$2y$10$VRLPTjmISYVkOet69sBnwONpu9IcQQDepO6mz/yxbNOiomuGwd4Sa', 'Bryan', NULL, 'Laoke', 'Male', '09123456789', 'bryan.laoke@email.com', '2004-06-07', 'Piling Santos', NULL, NULL, '23', '2025-02-12 13:34:34', 0, NULL, NULL),
+(7, 'Charmaine_ferrer', '$2y$10$U2RgASH843ykGemvLyt6DOvwhfu3tFZZrnZ6F/8fl7J67VEGcZYFa', 'Charmaine', NULL, 'Ferrer', 'Female', '0932234345', 'charmaine_ferrer@gmail.com', '2008-10-03', 'Testing Street', NULL, NULL, '32', '2025-04-23 00:21:11', 0, NULL, NULL),
+(8, 'Test_Case', '$2y$10$dqHOn1hTcouF7m5dAJ7fAOSAG90T329S9FG2O3yvunp.1Nk1Je2u2', 'Test', NULL, 'Case', 'Female', '02484822323', 'test_case@gmail.com', '2025-03-05', 'Piling Santos', NULL, NULL, 'wqeqew23. Lot.42', '2025-04-23 00:44:05', 0, NULL, NULL),
+(9, 'Test_Case2', '$2y$10$RKRUx0Cf7veaA5vdyjeH3O2VMgj7bY5sBzWk3e9x0pvYwfJkHgVxK', 'Test', NULL, 'Case_2', 'Female', '092173270392', 'test_case2@gmail.com', '2025-04-19', 'Union Lane', NULL, NULL, '2323 Lot.423', '2025-04-24 09:33:09', 0, NULL, NULL),
+(10, 'Test_Case3', '$2y$10$fnpwRL0CXiVuagIj7xCYwOG5M8bJWHlg7uGB9GrKC6jcr51XiA.G2', 'Test', NULL, 'Case_3', 'Female', '023232342', 'test_case3@gmail.com', '2025-04-02', 'Starline Drive', NULL, NULL, '2323', '2025-04-24 16:45:29', 0, NULL, NULL),
+(18, 'hoshiyomii', '', 'Hoshi', 'Users', 'Yomi', 'Male', '09123456789', 'hoshiyomi08@gmail.com', '2004-11-07', 'Twin Peaks Drive', '422424', 'A+', 'qweew', '2025-05-20 10:08:45', 1, NULL, NULL),
+(21, 'miyomishi', '$2y$10$kV/rTPJpn/6JUfFH6UheQe4Oeoeq63mn4zfhUqzMIqsQHqwNQnSZe', 'Miyom', 'Yomi', 'Mimoy', 'Male', '09123456789', 'mhyrrcs@gmail.com', '2010-11-17', 'Starline Drive', '240, Lots03', 'A-', '2424', '2025-05-26 11:57:57', 1, NULL, NULL),
+(23, 'Miyoshi', '$2y$10$VTUnOuhIJ4Ipt8wsUoCqOORpaQInIozCACGM32uEKoY0dy6HAFPR.', 'Bryan', 'James', 'Laoke', 'Male', '0912345674560', 'chimikunhd@gmail.com', '2008-02-28', 'Twin Peaks Drive', '422424', 'A+', '242', '2025-06-04 12:20:04', 1, NULL, NULL),
+(24, 'testcase', '$2y$10$S.hajHBo0YcpK0U7sr5w6ez0SGgDrQWeG8GNpGmJPuIj1XE.7H2bu', 'test', 'test', 'case', 'Male', '09123456789', 'gecitot313@jeanssi.com', '2010-02-02', 'Union Lane', '422424', 'A+', 'wqeqew', '2025-06-05 01:37:49', 1, NULL, NULL),
+(25, 'testcase2', '$2y$10$ToSGZxzX6ZE5sH7O6sHe3Ov68FSjHN1YhsnBCG1XVnj4i3n6hP/Uy', 'test', 'case', 'case', 'Male', '09123456789', 'kelec99489@linacit.com', '2011-06-09', 'Twin Peaks Drive', '422424', 'A+', '242', '2025-06-09 12:05:34', 1, NULL, NULL),
+(26, 'testcaser', '$2y$10$bN5nQjhZ6dEvf6mGb5O8gubiuX1U5dRGBEGufKb.i/OlVD1w3sDzG', 'Bryan', 'Laoke', 'Laoke', 'Male', '09123456789', 'lexeca4198@evoxury.com', '2011-01-19', 'Union Lane', '422424', 'Unknown', '2424', '2025-08-27 09:49:44', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -580,7 +622,8 @@ INSERT INTO `user_audit_logs` (`id`, `user_id`, `action_type`, `action_details`,
 (13, 21, 'profile_update', 'Changed fields: first_name, middle_name', '2025-06-05 12:10:35'),
 (14, 21, 'profile_update', 'Changed fields: birthdate', '2025-06-05 14:32:43'),
 (15, 21, 'profile_update', 'Changed fields: birthdate', '2025-06-05 14:57:16'),
-(16, 21, 'profile_update', 'Changed fields: birthdate', '2025-06-05 15:01:53');
+(16, 21, 'profile_update', 'Changed fields: birthdate', '2025-06-05 15:01:53'),
+(17, 26, 'profile_update', 'Changed fields: ', '2025-08-27 18:05:47');
 
 -- --------------------------------------------------------
 
@@ -624,7 +667,7 @@ INSERT INTO `work_permit_utilities` (`id`, `user_id`, `date_of_request`, `date_o
 (5, 2, '2025-04-24', '2025-05-07', '2509824892480', 'asd 8', 'Meralco', NULL, 'New installation', '2025-04-24 16:43:12', 'Water', NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL),
 (6, 10, '2025-04-24', '2025-05-09', '2509824892480', 'Starline Drive 2323', 'CIGNAL', NULL, 'Reconnection', '2025-04-24 16:46:56', 'Internet', NULL, 'approved', 'admin', NULL, '2025-04-15 00:10:00', '2025-04-25 04:08:22', NULL, NULL, 0, NULL),
 (7, 10, '2025-04-24', '2025-05-02', '2509824892480', 'Starline Drive 2323', 'Meralco', NULL, 'New installation', '2025-04-24 16:53:59', 'Water', NULL, 'rejected', NULL, 'Testing', NULL, NULL, 'admin', '2025-04-25 04:08:09', 0, NULL),
-(8, 2, '2025-04-25', '2025-05-01', '2509824892480', 'asd 8', 'Meralco', NULL, 'New installation', '2025-04-25 03:18:55', 'Water', NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL),
+(8, 2, '2025-04-25', '2025-05-01', '2509824892480', 'asd 8', 'Meralco', NULL, 'New installation', '2025-04-25 03:18:55', 'Water', NULL, 'approved', 'admin-golf', NULL, '2025-08-26 16:27:00', '2025-08-25 16:27:08', NULL, NULL, 0, NULL),
 (9, 18, '2025-05-29', '2025-06-28', '2509824892480', 'Twin Peaks Drive qweew', 'Others', 'Others Ert ert ', 'Repair/Maintenance', '2025-05-29 13:25:03', 'Others', 'Otherssadasdaiods', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL),
 (10, 21, '2025-06-05', '2025-06-20', '2509824892480', 'Amogus', 'Meralco', NULL, 'Repair/Maintenance', '2025-06-05 04:24:22', 'Water', NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Tst on person pick up'),
 (11, 24, '2025-06-08', '2025-06-16', '09124274128', 'qweqwdddfdgdfgfgdfgdfgfgfgfgfg', 'Meralco', NULL, 'New installation', '2025-06-08 02:29:14', 'Water', NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, 0, 'asd');
@@ -644,6 +687,12 @@ ALTER TABLE `admins`
 -- Indexes for table `announcements`
 --
 ALTER TABLE `announcements`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `audit_logs`
+--
+ALTER TABLE `audit_logs`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -757,7 +806,13 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
+
+--
+-- AUTO_INCREMENT for table `audit_logs`
+--
+ALTER TABLE `audit_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `barangay_officials`
@@ -793,13 +848,13 @@ ALTER TABLE `document_requests`
 -- AUTO_INCREMENT for table `facilities_reservations`
 --
 ALTER TABLE `facilities_reservations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `history`
 --
 ALTER TABLE `history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `new_business_permit`
@@ -811,7 +866,7 @@ ALTER TABLE `new_business_permit`
 -- AUTO_INCREMENT for table `registrations`
 --
 ALTER TABLE `registrations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `repair_and_construction`
@@ -823,19 +878,19 @@ ALTER TABLE `repair_and_construction`
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `user_audit_logs`
 --
 ALTER TABLE `user_audit_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `work_permit_utilities`

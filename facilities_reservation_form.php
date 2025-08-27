@@ -173,6 +173,7 @@ $user = $user_query->fetch_assoc();
                             <div class="form-group">
                                 <p id="feedbackMessage" class="text-danger mt-3" style="display: none;"></p>
                             </div>
+                            <div id="approvedListContainer" class="alert alert-info mt-2" style="display:none;"></div>
                             <button type="button" class="btn btn-primary mt-3" id="submitReservationButton">Submit</button>
                         </form>
                     </div>
@@ -311,6 +312,7 @@ $user = $user_query->fetch_assoc();
         const lifetimeChairInput = document.getElementById('lifetime_chair');
         const longTableInput = document.getElementById('long_table');
         const monoblockChairInput = document.getElementById('monoblock_chair');
+        const approvedListContainer = document.getElementById('approvedListContainer');
 
         // Show/Hide "With Aircon" checkbox based on facility type
         facilityTypeInput.addEventListener('change', () => {
@@ -507,6 +509,80 @@ $user = $user_query->fetch_assoc();
             // Display total cost
             receiptList.innerHTML += `<li><strong>Total Cost: ${totalCost} Php</strong></li>`;
         }
+
+        // --- Show approved reservations for the selected day ---
+        function fetchApprovedReservations() {
+            approvedListContainer.style.display = 'none';
+            approvedListContainer.innerHTML = '';
+            const facility = facilityTypeInput.value;
+            const start = startTimeInput.value;
+            if (!facility || !start) return;
+            const date = new Date(start);
+            if (isNaN(date.getTime())) return;
+            const yyyy = date.getFullYear();
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            const dayStr = `${yyyy}-${mm}-${dd}`;
+            fetch(`get_approved_reservations.php?facility_type=${encodeURIComponent(facility)}&date=${dayStr}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success && data.reservations.length > 0) {
+                        let html = '<strong>Approved Reservations for this day:</strong><ul class="mb-0">';
+                        data.reservations.forEach(r => {
+                            const st = new Date(r.start_time);
+                            const et = new Date(r.end_time);
+                            html += `<li>${st.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - ${et.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</li>`;
+                        });
+                        html += '</ul>';
+                        approvedListContainer.innerHTML = html;
+                        approvedListContainer.style.display = 'block';
+                    } else {
+                        approvedListContainer.style.display = 'none';
+                        approvedListContainer.innerHTML = '';
+                    }
+                })
+                .catch(() => {
+                    approvedListContainer.style.display = 'none';
+                    approvedListContainer.innerHTML = '';
+                });
+        }
+        startTimeInput.addEventListener('change', fetchApprovedReservations);
+        facilityTypeInput.addEventListener('change', fetchApprovedReservations);
+
+        // --- Prevent double booking (conflict check) ---
+        async function checkReservationConflict() {
+            const facility = facilityTypeInput.value;
+            const start = startTimeInput.value;
+            const end = endTimeInput.value;
+            if (!facility || !start || !end) return;
+            try {
+                const params = new URLSearchParams({
+                    facility_type: facility,
+                    start_time: start,
+                    end_time: end
+                });
+                const res = await fetch('check_reservation_conflict.php?' + params.toString());
+                const data = await res.json();
+                if (data.conflict) {
+                    feedbackMessage.textContent = 'There is already an approved reservation for this time slot.';
+                    feedbackMessage.style.display = 'block';
+                    submitReservationButton.disabled = true;
+                    confirmReservationButton.disabled = true;
+                } else {
+                    feedbackMessage.style.display = 'none';
+                    submitReservationButton.disabled = false;
+                    confirmReservationButton.disabled = !agreeGuidelinesCheckbox.checked;
+                }
+            } catch (e) {
+                feedbackMessage.textContent = 'Could not check for conflicts. Please try again.';
+                feedbackMessage.style.display = 'block';
+                submitReservationButton.disabled = true;
+                confirmReservationButton.disabled = true;
+            }
+        }
+        startTimeInput.addEventListener('change', checkReservationConflict);
+        endTimeInput.addEventListener('change', checkReservationConflict);
+        facilityTypeInput.addEventListener('change', checkReservationConflict);
 
         // Recalculate total cost on input changes
         startTimeInput.addEventListener('change', calculateTotal);

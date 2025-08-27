@@ -17,7 +17,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $house_number = trim($_POST["house_number"]);
     $middle_name = trim($_POST["middle_name"]);
     $lot_block = trim($_POST["lot_block"]);
+
     $blood_type = $_POST["blood_type"];
+    // Handle sector (array of checkboxes)
+    $sector = isset($_POST['sector']) ? implode(',', $_POST['sector']) : NULL;
 
     // Check if username or email already exists
     $stmt = $conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
@@ -31,9 +34,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     $stmt->close();
 
+
     // Insert user into database (set is_verified=0 by default)
-    $stmt = $conn->prepare("INSERT INTO users (username, password, first_name, last_name, phone_number, email, birthdate, gender, street, house_number, middle_name, lot_block, blood_type, is_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)");
-    $stmt->bind_param("sssssssssssss", $username, $password, $first_name, $last_name, $phone_number, $email, $birthdate, $gender, $street, $house_number, $middle_name, $lot_block, $blood_type);
+    $stmt = $conn->prepare("INSERT INTO users (username, password, first_name, last_name, phone_number, email, birthdate, gender, street, house_number, middle_name, lot_block, blood_type, sector, is_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)");
+    $stmt->bind_param("ssssssssssssss", $username, $password, $first_name, $last_name, $phone_number, $email, $birthdate, $gender, $street, $house_number, $middle_name, $lot_block, $blood_type, $sector);
 
     if ($stmt->execute()) {
         // Generate verification token

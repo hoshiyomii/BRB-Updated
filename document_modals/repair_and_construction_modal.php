@@ -38,13 +38,16 @@ function formatStatus($status) {
     $status = ucfirst($status); // Capitalize the first letter
     switch ($status) {
         case 'Approved':
-            return "<span class='badge badge-success'>$status</span>";
+            return "<span class='badge bg-success'>$status</span>";
         case 'Rejected':
-            return "<span class='badge badge-danger'>$status</span>";
+            return "<span class='badge bg-danger'>$status</span>";
         case 'Pending':
-            return "<span class='badge badge-warning'>$status</span>";
+            return "<span class='badge bg-warning text-dark'>$status</span>";
+        case 'Picked_up':
+        case 'Picked up':
+            return "<span class='badge bg-info'>Picked Up</span>";
         default:
-            return "<span class='badge badge-secondary'>$status</span>";
+            return "<span class='badge bg-secondary'>$status</span>";
     }
 }
 
@@ -64,30 +67,118 @@ $prefix = getDocumentPrefix($document_type);
 $controlNumber = sprintf('%s-%03d', $prefix, $request['id']);
 ?>
 
-<div class="modal-header bg-primary text-white">
+<div class="modal-header">
     <h5 class="modal-title">Repair and Construction Details</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <div class="modal-body">
-    <p><i class="fas fa-hashtag"></i> <strong>Control Number:</strong> <?php echo htmlspecialchars($controlNumber); ?></p>
-    <p><i class="fas fa-user"></i> <strong>Full Name:</strong> <?php echo htmlspecialchars($request['full_name']); ?></p>
-    <p><i class="fas fa-building"></i> <strong>Contractor Name:</strong> <?php echo htmlspecialchars($request['contractor_name']); ?></p>
-    <p><i class="fas fa-phone"></i> <strong>Contractor Contact:</strong> <?php echo htmlspecialchars($request['contractor_contact']); ?></p>
-    <p><i class="fas fa-tools"></i> <strong>Nature of Activity:</strong> <?php echo htmlspecialchars($request['activity_nature']); ?></p>
-    <p><i class="fas fa-map-marker-alt"></i> <strong>Construction Address:</strong> <?php echo htmlspecialchars($request['construction_address']); ?></p>
-    <p><i class="fas fa-calendar-alt"></i> <strong>Created At:</strong> <?php echo date("F j, Y, g:i a", strtotime($request['created_at'])); ?></p>
-    <p><i class="fas fa-info-circle"></i> <strong>Status:</strong> <?php echo formatStatus($request['status']); ?></p>
-
-    <!-- Add the "Will be picked up by" field -->
-    <p><i class="fas fa-user-tag"></i> <strong>Will be picked up by:</strong> <?php echo htmlspecialchars($request['pickup_name'] ?? 'N/A'); ?></p>
+    <div class="detail-row">
+        <span class="detail-icon">
+            <i class="fas fa-hashtag"></i>
+        </span>
+        <div class="detail-label">Control Number:</div>
+        <div class="detail-value"><?php echo htmlspecialchars($controlNumber); ?></div>
+    </div>
+    <div class="detail-row">
+        <span class="detail-icon">
+            <i class="fas fa-user"></i>
+        </span>
+        <div class="detail-label">Full Name:</div>
+        <div class="detail-value"><?php echo htmlspecialchars($request['full_name']); ?></div>
+    </div>
+    <div class="detail-row">
+        <span class="detail-icon">
+            <i class="fas fa-building"></i>
+        </span>
+        <div class="detail-label">Contractor Name:</div>
+        <div class="detail-value"><?php echo htmlspecialchars($request['contractor_name']); ?></div>
+    </div>
+    <div class="detail-row">
+        <span class="detail-icon">
+            <i class="fas fa-phone"></i>
+        </span>
+        <div class="detail-label">Contractor Contact:</div>
+        <div class="detail-value"><?php echo htmlspecialchars($request['contractor_contact']); ?></div>
+    </div>
+    <div class="detail-row">
+        <span class="detail-icon">
+            <i class="fas fa-tools"></i>
+        </span>
+        <div class="detail-label">Nature of Activity:</div>
+        <div class="detail-value"><?php echo htmlspecialchars($request['activity_nature']); ?></div>
+    </div>
+    <div class="detail-row">
+        <span class="detail-icon">
+            <i class="fas fa-map-marker-alt"></i>
+        </span>
+        <div class="detail-label">Construction Address:</div>
+        <div class="detail-value"><?php echo htmlspecialchars($request['construction_address']); ?></div>
+    </div>
+    <div class="detail-row">
+        <span class="detail-icon">
+            <i class="fas fa-calendar-alt"></i>
+        </span>
+        <div class="detail-label">Created At:</div>
+        <div class="detail-value"><?php echo date("F j, Y, g:i a", strtotime($request['created_at'])); ?></div>
+    </div>
+    <div class="detail-row">
+        <span class="detail-icon">
+            <i class="fas fa-info-circle"></i>
+        </span>
+        <div class="detail-label">Status:</div>
+        <div class="detail-value"><?php echo formatStatus($request['status']); ?></div>
+    </div>
+    <div class="detail-row">
+        <span class="detail-icon">
+            <i class="fas fa-user-tag"></i>
+        </span>
+        <div class="detail-label">Will be picked up by:</div>
+        <div class="detail-value"><?php echo htmlspecialchars($request['pickup_name'] ?? 'N/A'); ?></div>
+    </div>
 
     <?php if ($request['status'] === 'approved'): ?>
-        <p><i class="fas fa-user-check"></i> <strong>Approved By:</strong> <?php echo htmlspecialchars($request['approved_by']); ?></p>
-        <p><i class="fas fa-clock"></i> <strong>Time Approved:</strong> <?php echo date("F j, Y, g:i a", strtotime($request['time_approved'])); ?></p>
-        <p><i class="fas fa-calendar-check"></i> <strong>Pickup Schedule:</strong> <?php echo htmlspecialchars($request['pickup_schedule']); ?></p>
+        <div class="detail-row">
+            <span class="detail-icon">
+                <i class="fas fa-user-check"></i>
+            </span>
+            <div class="detail-label">Approved By:</div>
+            <div class="detail-value"><?php echo htmlspecialchars($request['approved_by']); ?></div>
+        </div>
+        <div class="detail-row">
+            <span class="detail-icon">
+                <i class="fas fa-clock"></i>
+            </span>
+            <div class="detail-label">Time Approved:</div>
+            <div class="detail-value"><?php echo date("F j, Y, g:i a", strtotime($request['time_approved'])); ?></div>
+        </div>
+        <div class="detail-row">
+            <span class="detail-icon">
+                <i class="fas fa-calendar-check"></i>
+            </span>
+            <div class="detail-label">Pickup Schedule:</div>
+            <div class="detail-value"><?php echo htmlspecialchars($request['pickup_schedule']); ?></div>
+        </div>
     <?php elseif ($request['status'] === 'rejected'): ?>
-        <p><i class="fas fa-user-times"></i> <strong>Rejected By:</strong> <?php echo htmlspecialchars($request['rejected_by']); ?></p>
-        <p><i class="fas fa-clock"></i> <strong>Time Rejected:</strong> <?php echo date("F j, Y, g:i a", strtotime($request['time_rejected'])); ?></p>
-        <p><i class="fas fa-ban"></i> <strong>Rejection Reason:</strong> <?php echo htmlspecialchars($request['rejection_reason']); ?></p>
+        <div class="detail-row">
+            <span class="detail-icon">
+                <i class="fas fa-user-times"></i>
+            </span>
+            <div class="detail-label">Rejected By:</div>
+            <div class="detail-value"><?php echo htmlspecialchars($request['rejected_by']); ?></div>
+        </div>
+        <div class="detail-row">
+            <span class="detail-icon">
+                <i class="fas fa-clock"></i>
+            </span>
+            <div class="detail-label">Time Rejected:</div>
+            <div class="detail-value"><?php echo date("F j, Y, g:i a", strtotime($request['time_rejected'])); ?></div>
+        </div>
+        <div class="detail-row">
+            <span class="detail-icon">
+                <i class="fas fa-ban"></i>
+            </span>
+            <div class="detail-label">Rejection Reason:</div>
+            <div class="detail-value"><?php echo htmlspecialchars($request['rejection_reason']); ?></div>
+        </div>
     <?php endif; ?>
 </div>
