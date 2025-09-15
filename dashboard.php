@@ -46,7 +46,36 @@ if (!$userData) {
     exit();
 }
 
+
 $userId = $userData['id']; // Get the user ID
+
+// Handle profile picture upload
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_picture'])) {
+    $targetDir = 'uploads/profile_pictures/';
+    if (!is_dir($targetDir)) {
+        mkdir($targetDir, 0777, true);
+    }
+    $fileName = basename($_FILES['profile_picture']['name']);
+    $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+    if (in_array($fileExt, $allowed)) {
+        $newFileName = 'user_' . $userId . '_' . time() . '.' . $fileExt;
+        $targetFile = $targetDir . $newFileName;
+        if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $targetFile)) {
+            // Update user's profile picture in DB
+            $updatePic = $conn->prepare("UPDATE users SET profile_picture = ? WHERE id = ?");
+            $updatePic->bind_param("si", $targetFile, $userId);
+            $updatePic->execute();
+            // Refresh user data
+            $userData['profile_picture'] = $targetFile;
+            $uploadSuccess = 'Profile picture updated successfully!';
+        } else {
+            $uploadError = 'Failed to upload image.';
+        }
+    } else {
+        $uploadError = 'Invalid file type. Allowed: jpg, jpeg, png, gif.';
+    }
+}
 
 // Fetch audit logs for this user
 $auditLogsQuery = $conn->prepare("SELECT * FROM user_audit_logs WHERE user_id = ? ORDER BY created_at DESC");
@@ -166,7 +195,25 @@ $facilitiesReservations = $facilitiesQuery->get_result();
                 </li>
             </ul>
             <div class="tab-content" id="dashboardTabsContent">
-                <?php include 'profile_tab.php'; ?>
+                <!-- Profile Tab with Profile Picture Upload -->
+                <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="row justify-content-center mt-4">
+                        <div class="col-md-4 text-center">
+                            <form method="POST" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <img src="<?php echo !empty($userData['profile_picture']) ? $userData['profile_picture'] : 'https://ui-avatars.com/api/?name=' . urlencode($userData['first_name'] . ' ' . $userData['last_name']); ?>" alt="Profile Picture" class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover; border: 2px solid #ccc;">
+                                </div>
+                                <div class="mb-3">
+                                    <input class="form-control" type="file" name="profile_picture" accept="image/*">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Change Profile Picture</button>
+                                <?php if (!empty($uploadSuccess)) { echo '<div class="alert alert-success mt-2">' . $uploadSuccess . '</div>'; }
+                                if (!empty($uploadError)) { echo '<div class="text-danger mt-2">' . $uploadError . '</div>'; } ?>
+                            </form>
+                        </div>
+                    </div>
+                    <?php include 'profile_tab.php'; ?>
+                </div>
                 <?php include 'audit_log_tab.php'; ?>
                 <?php include 'pending_requests_tab.php'; ?>
                 <?php include 'joined_events_tab.php'; ?>

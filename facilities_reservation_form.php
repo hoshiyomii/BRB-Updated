@@ -12,15 +12,6 @@ include 'db.php';
 $username = $_SESSION['username'];
 $user_query = $conn->query("SELECT * FROM users WHERE username = '$username'");
 $user = $user_query->fetch_assoc();
-
-// Fetch facility limits
-$facility_limits = [];
-$limits_query = $conn->query("SELECT facility_name, max_quantity FROM facility_limits");
-if ($limits_query) {
-    while ($row = $limits_query->fetch_assoc()) {
-        $facility_limits[$row['facility_name']] = $row['max_quantity'];
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -135,6 +126,11 @@ if ($limits_query) {
                                     <option value="Small Meeting Room">Small Meeting Room</option>
                                 </select>
                             </div>
+                            <!-- Facility Image Preview -->
+                            <div id="facilityImageContainer" class="text-center my-3">
+                                <img id="facilityImage" src="" alt="Facility Preview" style="max-width: 400px; max-height: 350px; display: none; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                <div id="facilityImageCaption" class="mt-2 text-muted"></div>
+                            </div>
                             <div class="form-check mt-3">
                                 <input type="checkbox" class="form-check-input" id="with_aircon" name="with_aircon">
                                 <label class="form-check-label" for="with_aircon">With Aircon</label>
@@ -160,20 +156,20 @@ if ($limits_query) {
                                 <label class="form-check-label" for="projector">Projector With Screen</label>
                             </div>
                             <div class="form-group mt-3">
-                                <label for="lifetime_table">Life-time Table (Available: <?php echo isset($facility_limits['Life-time Table']) ? $facility_limits['Life-time Table'] : 'N/A'; ?>)</label>
-                                <input type="number" class="form-control" id="lifetime_table" name="lifetime_table" min="0" value="0" max="<?php echo isset($facility_limits['Life-time Table']) ? $facility_limits['Life-time Table'] : ''; ?>">
+                                <label for="lifetime_table">Life-time Table</label>
+                                <input type="number" class="form-control" id="lifetime_table" name="lifetime_table" min="0" value="0">
                             </div>
                             <div class="form-group mt-3">
-                                <label for="lifetime_chair">Life-time Chair (Available: <?php echo isset($facility_limits['Life-time Chair']) ? $facility_limits['Life-time Chair'] : 'N/A'; ?>)</label>
-                                <input type="number" class="form-control" id="lifetime_chair" name="lifetime_chair" min="0" value="0" max="<?php echo isset($facility_limits['Life-time Chair']) ? $facility_limits['Life-time Chair'] : ''; ?>">
+                                <label for="lifetime_chair">Life-time Chair</label>
+                                <input type="number" class="form-control" id="lifetime_chair" name="lifetime_chair" min="0" value="0">
                             </div>
                             <div class="form-group mt-3">
-                                <label for="long_table">Long Table (Available: <?php echo isset($facility_limits['Long Table']) ? $facility_limits['Long Table'] : 'N/A'; ?>)</label>
-                                <input type="number" class="form-control" id="long_table" name="long_table" min="0" value="0" max="<?php echo isset($facility_limits['Long Table']) ? $facility_limits['Long Table'] : ''; ?>">
+                                <label for="long_table">Long Table</label>
+                                <input type="number" class="form-control" id="long_table" name="long_table" min="0" value="0">
                             </div>
                             <div class="form-group mt-3">
-                                <label for="monoblock_chair">Monoblock Chair (Available: <?php echo isset($facility_limits['Monoblock Chair']) ? $facility_limits['Monoblock Chair'] : 'N/A'; ?>)</label>
-                                <input type="number" class="form-control" id="monoblock_chair" name="monoblock_chair" min="0" value="0" max="<?php echo isset($facility_limits['Monoblock Chair']) ? $facility_limits['Monoblock Chair'] : ''; ?>">
+                                <label for="monoblock_chair">Monoblock Chair (10 Php each)</label>
+                                <input type="number" class="form-control" id="monoblock_chair" name="monoblock_chair" min="0" value="0">
                             </div>
                             <div class="form-check mt-3">
                                 <input type="checkbox" class="form-check-input" id="group_over_50" name="group_over_50">
@@ -182,6 +178,7 @@ if ($limits_query) {
                             <div class="form-group">
                                 <p id="feedbackMessage" class="text-danger mt-3" style="display: none;"></p>
                             </div>
+                            <div id="approvedListContainer" class="alert alert-info mt-2" style="display:none;"></div>
                             <button type="button" class="btn btn-primary mt-3" id="submitReservationButton">Submit</button>
                         </form>
                     </div>
@@ -301,6 +298,25 @@ if ($limits_query) {
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // --- Fetch inventory limits and set max attributes ---
+        fetch('get_inventory_limits.php')
+            .then(r => r.json())
+            .then(data => {
+                if (data.success && data.limits) {
+                    if (data.limits.lifetime_table !== undefined) {
+                        document.getElementById('lifetime_table').setAttribute('max', data.limits.lifetime_table);
+                    }
+                    if (data.limits.lifetime_chair !== undefined) {
+                        document.getElementById('lifetime_chair').setAttribute('max', data.limits.lifetime_chair);
+                    }
+                    if (data.limits.long_table !== undefined) {
+                        document.getElementById('long_table').setAttribute('max', data.limits.long_table);
+                    }
+                    if (data.limits.monoblock_chair !== undefined) {
+                        document.getElementById('monoblock_chair').setAttribute('max', data.limits.monoblock_chair);
+                    }
+                }
+            });
         const facilityTypeInput = document.getElementById('facility_type');
         const withAirconCheckbox = document.getElementById('with_aircon');
         const rooftopOptionCheckbox = document.getElementById('rooftop_option');
@@ -320,6 +336,7 @@ if ($limits_query) {
         const lifetimeChairInput = document.getElementById('lifetime_chair');
         const longTableInput = document.getElementById('long_table');
         const monoblockChairInput = document.getElementById('monoblock_chair');
+        const approvedListContainer = document.getElementById('approvedListContainer');
 
         // Show/Hide "With Aircon" checkbox based on facility type
         facilityTypeInput.addEventListener('change', () => {
@@ -516,6 +533,80 @@ if ($limits_query) {
             // Display total cost
             receiptList.innerHTML += `<li><strong>Total Cost: ${totalCost} Php</strong></li>`;
         }
+
+        // --- Show approved reservations for the selected day ---
+        function fetchApprovedReservations() {
+            approvedListContainer.style.display = 'none';
+            approvedListContainer.innerHTML = '';
+            const facility = facilityTypeInput.value;
+            const start = startTimeInput.value;
+            if (!facility || !start) return;
+            const date = new Date(start);
+            if (isNaN(date.getTime())) return;
+            const yyyy = date.getFullYear();
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            const dayStr = `${yyyy}-${mm}-${dd}`;
+            fetch(`get_approved_reservations.php?facility_type=${encodeURIComponent(facility)}&date=${dayStr}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success && data.reservations.length > 0) {
+                        let html = '<strong>Approved Reservations for this day:</strong><ul class="mb-0">';
+                        data.reservations.forEach(r => {
+                            const st = new Date(r.start_time);
+                            const et = new Date(r.end_time);
+                            html += `<li>${st.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - ${et.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</li>`;
+                        });
+                        html += '</ul>';
+                        approvedListContainer.innerHTML = html;
+                        approvedListContainer.style.display = 'block';
+                    } else {
+                        approvedListContainer.style.display = 'none';
+                        approvedListContainer.innerHTML = '';
+                    }
+                })
+                .catch(() => {
+                    approvedListContainer.style.display = 'none';
+                    approvedListContainer.innerHTML = '';
+                });
+        }
+        startTimeInput.addEventListener('change', fetchApprovedReservations);
+        facilityTypeInput.addEventListener('change', fetchApprovedReservations);
+
+        // --- Prevent double booking (conflict check) ---
+        async function checkReservationConflict() {
+            const facility = facilityTypeInput.value;
+            const start = startTimeInput.value;
+            const end = endTimeInput.value;
+            if (!facility || !start || !end) return;
+            try {
+                const params = new URLSearchParams({
+                    facility_type: facility,
+                    start_time: start,
+                    end_time: end
+                });
+                const res = await fetch('check_reservation_conflict.php?' + params.toString());
+                const data = await res.json();
+                if (data.conflict) {
+                    feedbackMessage.textContent = 'There is already an approved reservation for this time slot.';
+                    feedbackMessage.style.display = 'block';
+                    submitReservationButton.disabled = true;
+                    confirmReservationButton.disabled = true;
+                } else {
+                    feedbackMessage.style.display = 'none';
+                    submitReservationButton.disabled = false;
+                    confirmReservationButton.disabled = !agreeGuidelinesCheckbox.checked;
+                }
+            } catch (e) {
+                feedbackMessage.textContent = 'Could not check for conflicts. Please try again.';
+                feedbackMessage.style.display = 'block';
+                submitReservationButton.disabled = true;
+                confirmReservationButton.disabled = true;
+            }
+        }
+        startTimeInput.addEventListener('change', checkReservationConflict);
+        endTimeInput.addEventListener('change', checkReservationConflict);
+        facilityTypeInput.addEventListener('change', checkReservationConflict);
 
         // Recalculate total cost on input changes
         startTimeInput.addEventListener('change', calculateTotal);
@@ -898,6 +989,52 @@ if ($limits_query) {
             // Redirect to dashboard
             window.location.href = 'dashboard.php';
         });
+        
+        // Facility images mapping
+        const facilityImages = {
+            "Multi Purpose Hall": {
+                src: "img/Bulwagan 1.jpg",
+                caption: "Multi Purpose Hall (Bulwagan)"
+            },
+            "Community Center": {
+                src: "img/Community Center.jpg",
+                caption: "Community Center"
+            },
+            "Session Hall": {
+                src: "img/new_logo.png",
+                caption: "Session Hall"
+            },
+            "Conference Room": {
+                src: "img/new_logo.png",
+                caption: "Conference Room"
+            },
+            "Small Meeting Room": {
+                src: "img/Small Meeting Room.jpg",
+                caption: "Small Meeting Room"
+            }
+        };
+
+        const facilityImage = document.getElementById('facilityImage');
+        const facilityImageCaption = document.getElementById('facilityImageCaption');
+
+        function updateFacilityImage() {
+            const selected = facilityTypeInput.value;
+            if (facilityImages[selected]) {
+                facilityImage.src = facilityImages[selected].src;
+                facilityImage.alt = facilityImages[selected].caption;
+                facilityImage.style.display = 'block';
+                facilityImageCaption.textContent = facilityImages[selected].caption;
+            } else {
+                facilityImage.style.display = 'none';
+                facilityImageCaption.textContent = '';
+            }
+        }
+
+        // Initial image load
+        updateFacilityImage();
+
+        // Update image on facility type change
+        facilityTypeInput.addEventListener('change', updateFacilityImage);
     });
 </script>
 

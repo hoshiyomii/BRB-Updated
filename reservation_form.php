@@ -131,6 +131,11 @@ $user = $user_query->fetch_assoc();
                                     <option value="Court B">Court B (Badminton Court)</option>
                                 </select>
                             </div>
+                            <!-- Court Image Preview -->
+                            <div id="courtImageContainer" class="text-center my-3">
+                                <img id="courtImage" src="" alt="Court Preview" style="max-width: 400px; max-height: 350px; display: none; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                <div id="courtImageCaption" class="mt-2 text-muted"></div>
+                            </div>
                             <div class="form-group">
                                 <label for="start_time">Start Time</label>
                                 <input type="datetime-local" class="form-control" id="start_time" name="start_time" required>
@@ -428,6 +433,43 @@ $user = $user_query->fetch_assoc();
         securityOptionCheckbox.addEventListener('change', calculateTotal);
         caretakerOptionCheckbox.addEventListener('change', calculateTotal);
         venueTypeInput.addEventListener('change', calculateTotal);
+
+        // Conflict check for approved reservations
+        async function checkReservationConflict() {
+            const venue = venueTypeInput.value;
+            const start = startTimeInput.value;
+            const end = endTimeInput.value;
+            if (!venue || !start || !end) return;
+            try {
+                const params = new URLSearchParams({
+                    venue_type: venue,
+                    start_time: start,
+                    end_time: end
+                });
+                const res = await fetch('check_reservation_conflict.php?' + params.toString());
+                const data = await res.json();
+                if (data.conflict) {
+                    feedbackMessage.textContent = 'There is already an APPROVED reservation for this venue and time. Please select a different time.';
+                    feedbackMessage.style.display = 'block';
+                    confirmReservationButton.disabled = true;
+                    submitReservationButton.disabled = true;
+                } else {
+                    feedbackMessage.style.display = 'none';
+                    confirmReservationButton.disabled = !agreeGuidelinesCheckbox.checked;
+                    submitReservationButton.disabled = false;
+                }
+            } catch (e) {
+                feedbackMessage.textContent = 'Could not check for conflicts. Please try again.';
+                feedbackMessage.style.display = 'block';
+                confirmReservationButton.disabled = true;
+                submitReservationButton.disabled = true;
+            }
+        }
+
+        // Trigger conflict check on relevant input changes
+        startTimeInput.addEventListener('change', checkReservationConflict);
+        endTimeInput.addEventListener('change', checkReservationConflict);
+        venueTypeInput.addEventListener('change', checkReservationConflict);
 
         // Show guidelines modal on submit button click
         submitReservationButton.addEventListener('click', () => {
@@ -791,6 +833,84 @@ $user = $user_query->fetch_assoc();
             item.appendChild(row);
             list.appendChild(item);
         }
+        
+        // Show approved reservations for the selected day
+        const approvedListContainer = document.createElement('div');
+        approvedListContainer.id = 'approvedReservationsList';
+        approvedListContainer.className = 'alert alert-info mt-3';
+        approvedListContainer.style.display = 'none';
+        reservationForm.parentNode.insertBefore(approvedListContainer, reservationForm.nextSibling);
+
+        async function showApprovedReservationsForDay() {
+            const venue = venueTypeInput.value;
+            const start = startTimeInput.value;
+            if (!venue || !start) {
+                approvedListContainer.style.display = 'none';
+                return;
+            }
+            const date = start.split('T')[0];
+            try {
+                const params = new URLSearchParams({
+                    venue_type: venue,
+                    date: date
+                });
+                const res = await fetch('get_approved_reservations.php?' + params.toString());
+                const data = await res.json();
+                if (data.success && data.reservations.length > 0) {
+                    let html = '<strong>Approved Reservations for this day:</strong><ul class="mb-0">';
+                    data.reservations.forEach(r => {
+                        const st = new Date(r.start_time);
+                        const et = new Date(r.end_time);
+                        html += `<li>${st.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - ${et.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</li>`;
+                    });
+                    html += '</ul>';
+                    approvedListContainer.innerHTML = html;
+                    approvedListContainer.style.display = 'block';
+                } else {
+                    approvedListContainer.innerHTML = '<em>No approved reservations for this day.</em>';
+                    approvedListContainer.style.display = 'block';
+                }
+            } catch (e) {
+                approvedListContainer.innerHTML = '<em>Could not load approved reservations.</em>';
+                approvedListContainer.style.display = 'block';
+            }
+        }
+        startTimeInput.addEventListener('change', showApprovedReservationsForDay);
+        venueTypeInput.addEventListener('change', showApprovedReservationsForDay);
+
+        // Court images mapping
+        const courtImages = {
+            "Court A": {
+                src: "img/CourtA.jpg", // or "img/court_a.jpg" if that's the file name
+                caption: "Court A (Basketball / Volleyball Court)"
+            },
+            "Court B": {
+                src: "img/CourtB.jpg", // or "img/court_b.jpg" if that's the file name
+                caption: "Court B (Badminton Court)"
+            }
+        };
+
+        const courtImage = document.getElementById('courtImage');
+        const courtImageCaption = document.getElementById('courtImageCaption');
+
+        function updateCourtImage() {
+            const selected = venueTypeInput.value;
+            if (courtImages[selected]) {
+                courtImage.src = courtImages[selected].src;
+                courtImage.alt = courtImages[selected].caption;
+                courtImage.style.display = 'block';
+                courtImageCaption.textContent = courtImages[selected].caption;
+            } else {
+                courtImage.style.display = 'none';
+                courtImageCaption.textContent = '';
+            }
+        }
+
+        // Initial image load
+        updateCourtImage();
+
+        // Update image on venue type change
+        venueTypeInput.addEventListener('change', updateCourtImage);
     });
 </script>
 <!-- Bootstrap Bundle with Popper -->
